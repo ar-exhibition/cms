@@ -50,7 +50,11 @@ namespace cms.ar.xarchitecture.de
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=About}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "upload",
+                    pattern: "{controller=Upload}/{action=UploadModel}/{id?}");
             });
         }
     }
