@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  cms.ar.xarchitecture.de:
+    image: ${DOCKER_REGISTRY-}cmsarxarchitecturede
+    build:
+      context: .
+      dockerfile: cms.ar.xarchitecture.de/Dockerfile
