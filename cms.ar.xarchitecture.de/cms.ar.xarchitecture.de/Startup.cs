@@ -26,7 +26,7 @@ namespace cms.ar.xarchitecture.de
             services.AddControllersWithViews();
 
             //MySql
-            services.AddTransient<MySQLDatabase>(_ => new MySQLDatabase("server=localhost; database=assetdb; uid=root; pwd=qqqq;"));
+            //services.AddTransient<MySQLDatabase>(_ => new MySQLDatabase("server=localhost; database=assetdb; uid=root; pwd=qqqq;"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

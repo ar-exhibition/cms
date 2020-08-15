@@ -18,22 +18,6 @@ namespace cms.ar.xarchitecture.de.Controllers
             this.MySQLDatabase = db;
         }
 
-        [HttpPost]
-        public void Upload(dto.Creator creator, dto.Course course, dto.Asset asset)
-        {
-            var cmd = this.MySQLDatabase.Connection.CreateCommand() as MySqlCommand;
-
-            //do some sql magic here
-            /*
-             From tutorial:
-            cmd.CommandText = @"UPDATE Tasks SET Completed = STR_TO_DATE(@Date, '%Y/%m/%d') WHERE TaskId = @TaskId;";
-            cmd.Parameters.AddWithValue("@TaskId", input.TaskId);
-            cmd.Parameters.AddWithValue("@Date", DateTime.Now.ToString("yyyy/MM/dd"));
-             */
-
-            var recs = cmd.ExecuteNonQuery();
-        }
-
         public IActionResult Upload()
         {
             return View();
