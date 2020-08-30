@@ -28,6 +28,11 @@ namespace cms.ar.xarchitecture.de.Controllers
             return View();
         }
 
+        public string debug()
+        {
+            return "put debug here printf-style";
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

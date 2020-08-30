@@ -9,6 +9,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using cms.ar.xarchitecture.de.cmsDatabase;
+using MySQL.Data.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Renci.SshNet;
+
 namespace cms.ar.xarchitecture.de
 {
     public class Startup
@@ -23,10 +28,12 @@ namespace cms.ar.xarchitecture.de
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            cmsConnectionOptions _options = new cmsConnectionOptions();
+
             services.AddControllersWithViews();
 
-            //MySql
-            //services.AddTransient<MySQLDatabase>(_ => new MySQLDatabase("server=localhost; database=assetdb; uid=root; pwd=qqqq;"));
+            services.AddDbContext<cmsDatabaseContext>(options => options.UseMySQL(_options.GetConnectionString()));
+                //options.UseMySQL(Configuration.GetConnectionString(conn)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,8 +64,39 @@ namespace cms.ar.xarchitecture.de
 
                 endpoints.MapControllerRoute(
                     name: "upload",
-                    pattern: "{controller=Upload}/{action=UploadModel}/{id?}");
+                    pattern: "{controller=Upload}/{action=Create}/{id?}");
+                
+                endpoints.MapControllerRoute(
+                    name: "adminPanel",
+                    pattern: "{controller=Admin}/{action=Index}/{id?}");
             });
+        }
+    }
+
+    public class cmsConnectionOptions
+    {
+        public cmsConnectionOptions()
+        {
+            ServerAdress = Environment.GetEnvironmentVariable("DB_SERVER");
+            Port = Environment.GetEnvironmentVariable("DB_PORT");
+            Database = Environment.GetEnvironmentVariable("DB_NAME");
+            User = Environment.GetEnvironmentVariable("DB_USER");
+            Password = Environment.GetEnvironmentVariable("DB_PASSWORD");
+        }
+
+        private string ServerAdress { get; set; }
+        private string Port { get; set; }
+        private string Database { get; set; }
+        private string User { get; set; }
+        private string Password { get; set; }
+
+        public string GetConnectionString()
+        {
+            return "server=" + ServerAdress + ";" 
+                + "port=" + Port + ";" 
+                + "user=" + User + ";" 
+                + "password=" + Password + ";" 
+                + "database=" + Database;
         }
     }
 }

@@ -22,3 +22,9 @@ COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "cms.ar.xarchitecture.de.dll"]
 
 USER 1003:1004
+
+ENV DB_SERVER=127.0.0.1
+ENV DB_PORT=9000
+ENV DB_NAME=default
+ENV DB_USER=default
+ENV DB_PASSWORD=default
