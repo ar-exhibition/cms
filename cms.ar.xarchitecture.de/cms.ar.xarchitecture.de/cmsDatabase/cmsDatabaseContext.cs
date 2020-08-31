@@ -21,6 +21,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
         public virtual DbSet<Creator> Creator { get; set; }
         public virtual DbSet<Scene> Scene { get; set; }
         public virtual DbSet<SceneAsset> SceneAsset { get; set; }
+        public virtual DbSet<Studies> Studies { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -204,6 +205,17 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .HasForeignKey(d => d.Creator)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_SceneAsset_Creator1");
+            });
+
+            modelBuilder.Entity<Studies>(entity =>
+            {
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasColumnType("int unsigned");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(45)
+                    .IsUnicode(false);
             });
 
             OnModelCreatingPartial(modelBuilder);

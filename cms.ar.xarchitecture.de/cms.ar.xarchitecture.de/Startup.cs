@@ -18,9 +18,12 @@ namespace cms.ar.xarchitecture.de
 {
     public class Startup
     {
+        cmsConnectionOptions _options;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            _options = new cmsConnectionOptions();
         }
 
         public IConfiguration Configuration { get; }
