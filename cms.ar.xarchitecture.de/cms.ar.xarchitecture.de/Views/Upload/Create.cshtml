@@ -25,12 +25,17 @@
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Filename" class="control-label">Drag File Here</label>
+                <input asp-for="Filename" class="form-control" />
+                <span asp-validation-for="Filename" class="text-danger"></span>
+            </div>
             @*<div class="form-group">
                 <label asp-for="Filename" class="control-label"></label>
                 <input asp-for="Filename" class="form-control" />
                 <span asp-validation-for="Filename" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            </div>*@
+            @*<div class="form-group">
                 <label asp-for="Filetype" class="control-label"></label>
                 <input asp-for="Filetype" class="form-control" />
                 <span asp-validation-for="Filetype" class="text-danger"></span>
