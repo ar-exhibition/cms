@@ -49,15 +49,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
                 entity.Property(e => e.AssetId).HasColumnName("AssetID");
 
-                entity.Property(e => e.Rotate)
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.Scale)
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Translate)
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
@@ -65,13 +57,13 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .WithMany(p => p.Anchor)
                     .HasPrincipalKey(p => p.AssetId)
                     .HasForeignKey(d => d.AssetId)
-                    .HasConstraintName("fk_Anchor_SceneAsset1");
+                    .HasConstraintName("fk_Anchor_SceneAsset");
 
                 entity.HasOne(d => d.Scene)
                     .WithMany(p => p.Anchor)
                     .HasForeignKey(d => d.SceneId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_Anchor_Scene1");
+                    .HasConstraintName("fk_Anchor_Scene");
             });
 
             modelBuilder.Entity<AssetType>(entity =>
@@ -85,41 +77,65 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
             modelBuilder.Entity<Course>(entity =>
             {
+                entity.HasKey(e => new { e.CourseId, e.Programme })
+                    .HasName("PRIMARY");
+
                 entity.HasIndex(e => e.CourseId)
                     .HasName("CourseID_UNIQUE")
                     .IsUnique();
 
-                entity.Property(e => e.CourseId).HasColumnName("CourseID");
+                entity.HasIndex(e => e.Programme)
+                    .HasName("fk_Course_Studies1_idx");
+
+                entity.Property(e => e.CourseId)
+                    .HasColumnName("CourseID")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Programme)
+                    .HasMaxLength(45)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Course1)
                     .HasColumnName("Course")
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Programme)
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
+                entity.HasOne(d => d.ProgrammeNavigation)
+                    .WithMany(p => p.Course)
+                    .HasPrincipalKey(p => p.Studies1)
+                    .HasForeignKey(d => d.Programme)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_Course_Studies");
             });
 
             modelBuilder.Entity<Creator>(entity =>
             {
+                entity.HasKey(e => new { e.CreatorId, e.Studies })
+                    .HasName("PRIMARY");
+
                 entity.HasIndex(e => e.CreatorId)
                     .HasName("CreatorID_UNIQUE")
                     .IsUnique();
 
-                entity.Property(e => e.CreatorId).HasColumnName("CreatorID");
+                entity.HasIndex(e => e.Studies)
+                    .HasName("fk_Creator_Studies1_idx");
 
-                entity.Property(e => e.Name)
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
+                entity.Property(e => e.CreatorId).HasColumnName("CreatorID");
 
                 entity.Property(e => e.Studies)
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Surname)
+                entity.Property(e => e.Name)
                     .HasMaxLength(45)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.StudiesNavigation)
+                    .WithMany(p => p.Creator)
+                    .HasPrincipalKey(p => p.Studies1)
+                    .HasForeignKey(d => d.Studies)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_Creator_Studies");
             });
 
             modelBuilder.Entity<Scene>(entity =>
@@ -133,10 +149,45 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                 entity.Property(e => e.Name)
                     .HasMaxLength(45)
                     .IsUnicode(false);
+
+                entity.Property(e => e.SceneFile)
+                    .HasMaxLength(1024)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<SceneAsset>(entity =>
             {
+
+                modelBuilder.Entity<Creator>(entity =>
+                {
+                    entity.HasKey(e => new { e.CreatorId, e.Studies })
+                        .HasName("PRIMARY");
+
+                    entity.HasIndex(e => e.CreatorId)
+                        .HasName("CreatorID_UNIQUE")
+                        .IsUnique();
+
+                    entity.HasIndex(e => e.Studies)
+                        .HasName("fk_Creator_Studies1_idx");
+
+                    entity.Property(e => e.CreatorId).HasColumnName("CreatorID");
+
+                    entity.Property(e => e.Studies)
+                        .HasMaxLength(45)
+                        .IsUnicode(false);
+
+                    entity.Property(e => e.Name)
+                        .HasMaxLength(45)
+                        .IsUnicode(false);
+
+                    entity.HasOne(d => d.StudiesNavigation)
+                        .WithMany(p => p.Creator)
+                        .HasPrincipalKey(p => p.Studies1)
+                        .HasForeignKey(d => d.Studies)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("fk_Creator_Studies");
+                });
+
                 entity.HasKey(e => new { e.AssetId, e.Creator, e.Course })
                     .HasName("PRIMARY");
 
@@ -192,28 +243,36 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                 entity.HasOne(d => d.AssetTypeNavigation)
                     .WithMany(p => p.SceneAsset)
                     .HasForeignKey(d => d.AssetType)
-                    .HasConstraintName("fk_SceneAsset_AssetType1");
+                    .HasConstraintName("fk_SceneAsset_AssetType");
 
                 entity.HasOne(d => d.CourseNavigation)
                     .WithMany(p => p.SceneAsset)
+                    .HasPrincipalKey(p => p.CourseId)
                     .HasForeignKey(d => d.Course)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_SceneAsset_Course1");
+                    .HasConstraintName("fk_SceneAsset_Course");
 
                 entity.HasOne(d => d.CreatorNavigation)
                     .WithMany(p => p.SceneAsset)
+                    .HasPrincipalKey(p => p.CreatorId)
                     .HasForeignKey(d => d.Creator)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_SceneAsset_Creator1");
+                    .HasConstraintName("fk_SceneAsset_Creator");
             });
 
             modelBuilder.Entity<Studies>(entity =>
             {
+                entity.HasIndex(e => e.Studies1)
+                    .HasName("Studies_UNIQUE")
+                    .IsUnique();
+
                 entity.Property(e => e.Id)
                     .HasColumnName("ID")
                     .HasColumnType("int unsigned");
 
-                entity.Property(e => e.Name)
+                entity.Property(e => e.Studies1)
+                    .IsRequired()
+                    .HasColumnName("Studies")
                     .HasMaxLength(45)
                     .IsUnicode(false);
             });

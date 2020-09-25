@@ -8,8 +8,6 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
         public int AnchorId { get; set; }
         public int SceneId { get; set; }
         public int? AssetId { get; set; }
-        public string Translate { get; set; }
-        public string Rotate { get; set; }
         public string Scale { get; set; }
 
         public virtual SceneAsset Asset { get; set; }

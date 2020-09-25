@@ -36,7 +36,6 @@ namespace cms.ar.xarchitecture.de
             services.AddControllersWithViews();
 
             services.AddDbContext<cmsDatabaseContext>(options => options.UseMySQL(_options.GetConnectionString()));
-                //options.UseMySQL(Configuration.GetConnectionString(conn)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

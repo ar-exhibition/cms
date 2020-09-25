@@ -14,6 +14,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
         public string Programme { get; set; }
         public string Course1 { get; set; }
 
+        public virtual Studies ProgrammeNavigation { get; set; }
         public virtual ICollection<SceneAsset> SceneAsset { get; set; }
     }
 }

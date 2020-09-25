@@ -12,6 +12,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
         public int SceneId { get; set; }
         public string Name { get; set; }
+        public string SceneFile { get; set; }
 
         public virtual ICollection<Anchor> Anchor { get; set; }
     }
