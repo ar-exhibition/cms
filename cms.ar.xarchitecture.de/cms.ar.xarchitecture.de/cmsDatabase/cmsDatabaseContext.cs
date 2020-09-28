@@ -158,36 +158,6 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
             modelBuilder.Entity<SceneAsset>(entity =>
             {
 
-                modelBuilder.Entity<Creator>(entity =>
-                {
-                    entity.HasKey(e => new { e.CreatorId, e.Studies })
-                        .HasName("PRIMARY");
-
-                    entity.HasIndex(e => e.CreatorId)
-                        .HasName("CreatorID_UNIQUE")
-                        .IsUnique();
-
-                    entity.HasIndex(e => e.Studies)
-                        .HasName("fk_Creator_Studies1_idx");
-
-                    entity.Property(e => e.CreatorId).HasColumnName("CreatorID");
-
-                    entity.Property(e => e.Studies)
-                        .HasMaxLength(45)
-                        .IsUnicode(false);
-
-                    entity.Property(e => e.Name)
-                        .HasMaxLength(45)
-                        .IsUnicode(false);
-
-                    entity.HasOne(d => d.StudiesNavigation)
-                        .WithMany(p => p.Creator)
-                        .HasPrincipalKey(p => p.Studies1)
-                        .HasForeignKey(d => d.Studies)
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("fk_Creator_Studies");
-                });
-
                 entity.HasKey(e => new { e.AssetId, e.Creator, e.Course })
                     .HasName("PRIMARY");
 

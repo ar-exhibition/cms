@@ -376,4 +376,4 @@ MigrationBackup/
 .ionide/
 
 #bat files 
-.bat
+*.bat

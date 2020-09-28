@@ -60,11 +60,14 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AssetId,Creator,Course,Name,Filename,Filetype,Date,Link,Thumbnail,Type,Power,Color,Deleted,AssetType")] SceneAsset sceneAsset)
+        //public async Task<IActionResult> Create([Bind("AssetId,Creator,Course,Name,Filename,Filetype,Date,Link,Thumbnail,Type,Power,Color,Deleted,AssetType")] SceneAsset sceneAsset)
+        public async Task<IActionResult> Create([Bind("CreatorID,Name,Studies,Course")] Creator creator, [Bind("AssetId,Creator,Course,Name,Filename,Filetype,Date,Link,Thumbnail,Type,Power,Color,Deleted,AssetType")] SceneAsset sceneAsset)
         {
             if (ModelState.IsValid)
             {
+                _context.Add(creator); //new
                 _context.Add(sceneAsset);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
