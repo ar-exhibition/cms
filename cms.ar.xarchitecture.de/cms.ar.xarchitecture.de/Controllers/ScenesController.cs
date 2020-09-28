@@ -9,22 +9,22 @@ using cms.ar.xarchitecture.de.cmsDatabase;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
-    public class AdminController : Controller
+    public class ScenesController : Controller
     {
         private readonly cmsDatabaseContext _context;
 
-        public AdminController(cmsDatabaseContext context)
+        public ScenesController(cmsDatabaseContext context)
         {
             _context = context;
         }
 
-        // GET: Admin
+        // GET: Scenes
         public async Task<IActionResult> Index()
         {
             return View(await _context.Scene.ToListAsync());
         }
 
-        // GET: Admin/Details/5
+        // GET: Scenes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,18 +42,18 @@ namespace cms.ar.xarchitecture.de.Controllers
             return View(scene);
         }
 
-        // GET: Admin/Create
+        // GET: Scenes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Admin/Create
+        // POST: Scenes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SceneId,Name")] Scene scene)
+        public async Task<IActionResult> Create([Bind("SceneId,Name,SceneFile,MarkerFile")] Scene scene)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +64,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             return View(scene);
         }
 
-        // GET: Admin/Edit/5
+        // GET: Scenes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,12 +80,12 @@ namespace cms.ar.xarchitecture.de.Controllers
             return View(scene);
         }
 
-        // POST: Admin/Edit/5
+        // POST: Scenes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SceneId,Name")] Scene scene)
+        public async Task<IActionResult> Edit(int id, [Bind("SceneId,Name,SceneFile,MarkerFile")] Scene scene)
         {
             if (id != scene.SceneId)
             {
@@ -115,7 +115,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             return View(scene);
         }
 
-        // GET: Admin/Delete/5
+        // GET: Scenes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,7 +133,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             return View(scene);
         }
 
-        // POST: Admin/Delete/5
+        // POST: Scenes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

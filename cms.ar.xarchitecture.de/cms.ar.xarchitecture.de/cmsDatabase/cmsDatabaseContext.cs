@@ -77,21 +77,21 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
             modelBuilder.Entity<Course>(entity =>
             {
-                entity.HasKey(e => new { e.CourseId, e.Programme })
+                entity.HasKey(e => new { e.CourseId, e.Studies })
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.CourseId)
                     .HasName("CourseID_UNIQUE")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Programme)
+                entity.HasIndex(e => e.Studies)
                     .HasName("fk_Course_Studies1_idx");
 
                 entity.Property(e => e.CourseId)
                     .HasColumnName("CourseID")
                     .ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Programme)
+                entity.Property(e => e.Studies)
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
@@ -100,10 +100,10 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.ProgrammeNavigation)
+                entity.HasOne(d => d.StudiesNavigation)
                     .WithMany(p => p.Course)
                     .HasPrincipalKey(p => p.Studies1)
-                    .HasForeignKey(d => d.Programme)
+                    .HasForeignKey(d => d.Studies)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Course_Studies");
             });
@@ -146,6 +146,10 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
                 entity.Property(e => e.SceneId).HasColumnName("SceneID");
 
+                entity.Property(e => e.MarkerFile)
+                    .HasMaxLength(1024)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Name)
                     .HasMaxLength(45)
                     .IsUnicode(false);
@@ -157,7 +161,6 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
             modelBuilder.Entity<SceneAsset>(entity =>
             {
-
                 entity.HasKey(e => new { e.AssetId, e.Creator, e.Course })
                     .HasName("PRIMARY");
 

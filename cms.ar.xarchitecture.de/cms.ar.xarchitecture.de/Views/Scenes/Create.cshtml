@@ -19,6 +19,16 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="SceneFile" class="control-label"></label>
+                <input asp-for="SceneFile" class="form-control" />
+                <span asp-validation-for="SceneFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MarkerFile" class="control-label"></label>
+                <input asp-for="MarkerFile" class="form-control" />
+                <span asp-validation-for="MarkerFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>

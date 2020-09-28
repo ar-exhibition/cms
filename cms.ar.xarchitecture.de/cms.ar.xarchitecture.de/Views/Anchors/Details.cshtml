@@ -1,0 +1,37 @@
+﻿@model cms.ar.xarchitecture.de.cmsDatabase.Anchor
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Anchor</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Scale)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Scale)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Asset)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Asset.AssetId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Scene)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Scene.SceneId)
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>
