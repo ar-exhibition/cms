@@ -12,7 +12,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
         public int AssetId { get; set; }
         public int Creator { get; set; }
-        public int Course { get; set; }
+        public int CourseName { get; set; }
         public string Name { get; set; }
         public string Filename { get; set; }
         public string Filetype { get; set; }
@@ -26,7 +26,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
         public int? AssetType { get; set; }
 
         public virtual AssetType AssetTypeNavigation { get; set; }
-        public virtual Course CourseNavigation { get; set; }
+        public virtual Course CourseNameNavigation { get; set; }
         public virtual Creator CreatorNavigation { get; set; }
         public virtual ICollection<Anchor> Anchor { get; set; }
     }

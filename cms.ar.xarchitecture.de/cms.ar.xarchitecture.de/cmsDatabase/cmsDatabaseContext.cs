@@ -88,9 +88,8 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Course1)
+                entity.Property(e => e.CourseName)
                     .IsRequired()
-                    .HasColumnName("Course")
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
@@ -174,7 +173,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
             modelBuilder.Entity<SceneAsset>(entity =>
             {
-                entity.HasKey(e => new { e.AssetId, e.Creator, e.Course })
+                entity.HasKey(e => new { e.AssetId, e.Creator, e.CourseName })
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.AssetId)
@@ -184,7 +183,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                 entity.HasIndex(e => e.AssetType)
                     .HasName("fk_SceneAsset_AssetType1_idx");
 
-                entity.HasIndex(e => e.Course)
+                entity.HasIndex(e => e.CourseName)
                     .HasName("fk_SceneAsset_Course1_idx");
 
                 entity.HasIndex(e => e.Creator)
@@ -232,10 +231,10 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .HasForeignKey(d => d.AssetType)
                     .HasConstraintName("fk_SceneAsset_AssetType");
 
-                entity.HasOne(d => d.CourseNavigation)
+                entity.HasOne(d => d.CourseNameNavigation)
                     .WithMany(p => p.SceneAsset)
                     .HasPrincipalKey(p => p.CourseId)
-                    .HasForeignKey(d => d.Course)
+                    .HasForeignKey(d => d.CourseName)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_SceneAsset_Course");
 

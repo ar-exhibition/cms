@@ -79,10 +79,10 @@
             @Html.DisplayFor(model => model.AssetTypeNavigation.Designator)
         </dd class>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CourseNavigation)
+            @Html.DisplayNameFor(model => model.CourseNameNavigation)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CourseNavigation.Programme)
+            @Html.DisplayFor(model => model.CourseNameNavigation.Programme)
         </dd class>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CreatorNavigation)
@@ -95,7 +95,7 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="AssetId" />
         <input type="hidden" asp-for="Creator" />
-        <input type="hidden" asp-for="Course" />
+        <input type="hidden" asp-for="CourseName" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>
