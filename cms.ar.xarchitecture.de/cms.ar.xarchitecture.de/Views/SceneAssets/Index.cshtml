@@ -89,13 +89,13 @@
                 @Html.DisplayFor(modelItem => item.Deleted)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AssetTypeNavigation.AssetTypeId)
+                @Html.DisplayFor(modelItem => item.AssetTypeNavigation.Designator)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CourseNavigation.Studies)
+                @Html.DisplayFor(modelItem => item.CourseNavigation.Programme)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatorNavigation.Studies)
+                @Html.DisplayFor(modelItem => item.CreatorNavigation.Programme)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |

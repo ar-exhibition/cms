@@ -49,9 +49,9 @@ namespace cms.ar.xarchitecture.de.Controllers
         // GET: SceneAssets/Create
         public IActionResult Create()
         {
-            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "AssetTypeId");
-            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "Studies");
-            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Studies");
+            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "Designator");
+            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "Programme");
+            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Programme");
             return View();
         }
 
@@ -68,9 +68,9 @@ namespace cms.ar.xarchitecture.de.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "AssetTypeId", sceneAsset.AssetType);
-            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "Studies", sceneAsset.Course);
-            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Studies", sceneAsset.Creator);
+            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "Designator", sceneAsset.AssetType);
+            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "Programme", sceneAsset.Course);
+            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Programme", sceneAsset.Creator);
             return View(sceneAsset);
         }
 
@@ -87,9 +87,9 @@ namespace cms.ar.xarchitecture.de.Controllers
             {
                 return NotFound();
             }
-            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "AssetTypeId", sceneAsset.AssetType);
-            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "Studies", sceneAsset.Course);
-            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Studies", sceneAsset.Creator);
+            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "Designator", sceneAsset.AssetType);
+            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "Programme", sceneAsset.Course);
+            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Programme", sceneAsset.Creator);
             return View(sceneAsset);
         }
 
@@ -125,9 +125,9 @@ namespace cms.ar.xarchitecture.de.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "AssetTypeId", sceneAsset.AssetType);
-            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "Studies", sceneAsset.Course);
-            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Studies", sceneAsset.Creator);
+            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "Designator", sceneAsset.AssetType);
+            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "Programme", sceneAsset.Course);
+            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Programme", sceneAsset.Creator);
             return View(sceneAsset);
         }
 

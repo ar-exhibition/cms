@@ -53,7 +53,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Studies1")] Studies studies)
+        public async Task<IActionResult> Create([Bind("Id,Programme")] Studies studies)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Studies1")] Studies studies)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Programme")] Studies studies)
         {
             if (id != studies.Id)
             {

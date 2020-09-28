@@ -21,12 +21,12 @@ namespace cms.ar.xarchitecture.de.Controllers
         // GET: Anchors
         public async Task<IActionResult> Index()
         {
-            var cmsDatabaseContext = _context.Anchor.Include(a => a.Asset).Include(a => a.Scene);
+            var cmsDatabaseContext = _context.Anchor.Include(a => a.Asset);
             return View(await cmsDatabaseContext.ToListAsync());
         }
 
         // GET: Anchors/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -35,7 +35,6 @@ namespace cms.ar.xarchitecture.de.Controllers
 
             var anchor = await _context.Anchor
                 .Include(a => a.Asset)
-                .Include(a => a.Scene)
                 .FirstOrDefaultAsync(m => m.AnchorId == id);
             if (anchor == null)
             {
@@ -49,7 +48,6 @@ namespace cms.ar.xarchitecture.de.Controllers
         public IActionResult Create()
         {
             ViewData["AssetId"] = new SelectList(_context.SceneAsset, "AssetId", "AssetId");
-            ViewData["SceneId"] = new SelectList(_context.Scene, "SceneId", "SceneId");
             return View();
         }
 
@@ -58,7 +56,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AnchorId,SceneId,AssetId,Scale")] Anchor anchor)
+        public async Task<IActionResult> Create([Bind("AnchorId,AssetId,Scale")] Anchor anchor)
         {
             if (ModelState.IsValid)
             {
@@ -67,12 +65,11 @@ namespace cms.ar.xarchitecture.de.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AssetId"] = new SelectList(_context.SceneAsset, "AssetId", "AssetId", anchor.AssetId);
-            ViewData["SceneId"] = new SelectList(_context.Scene, "SceneId", "SceneId", anchor.SceneId);
             return View(anchor);
         }
 
         // GET: Anchors/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
@@ -85,7 +82,6 @@ namespace cms.ar.xarchitecture.de.Controllers
                 return NotFound();
             }
             ViewData["AssetId"] = new SelectList(_context.SceneAsset, "AssetId", "AssetId", anchor.AssetId);
-            ViewData["SceneId"] = new SelectList(_context.Scene, "SceneId", "SceneId", anchor.SceneId);
             return View(anchor);
         }
 
@@ -94,7 +90,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AnchorId,SceneId,AssetId,Scale")] Anchor anchor)
+        public async Task<IActionResult> Edit(string id, [Bind("AnchorId,AssetId,Scale")] Anchor anchor)
         {
             if (id != anchor.AnchorId)
             {
@@ -122,12 +118,11 @@ namespace cms.ar.xarchitecture.de.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AssetId"] = new SelectList(_context.SceneAsset, "AssetId", "AssetId", anchor.AssetId);
-            ViewData["SceneId"] = new SelectList(_context.Scene, "SceneId", "SceneId", anchor.SceneId);
             return View(anchor);
         }
 
         // GET: Anchors/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -136,7 +131,6 @@ namespace cms.ar.xarchitecture.de.Controllers
 
             var anchor = await _context.Anchor
                 .Include(a => a.Asset)
-                .Include(a => a.Scene)
                 .FirstOrDefaultAsync(m => m.AnchorId == id);
             if (anchor == null)
             {
@@ -149,7 +143,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // POST: Anchors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var anchor = await _context.Anchor.FindAsync(id);
             _context.Anchor.Remove(anchor);
@@ -157,7 +151,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AnchorExists(int id)
+        private bool AnchorExists(string id)
         {
             return _context.Anchor.Any(e => e.AnchorId == id);
         }

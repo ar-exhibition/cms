@@ -21,7 +21,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // GET: Creators
         public async Task<IActionResult> Index()
         {
-            var cmsDatabaseContext = _context.Creator.Include(c => c.StudiesNavigation);
+            var cmsDatabaseContext = _context.Creator.Include(c => c.ProgrammeNavigation);
             return View(await cmsDatabaseContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             }
 
             var creator = await _context.Creator
-                .Include(c => c.StudiesNavigation)
+                .Include(c => c.ProgrammeNavigation)
                 .FirstOrDefaultAsync(m => m.CreatorId == id);
             if (creator == null)
             {
@@ -47,7 +47,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // GET: Creators/Create
         public IActionResult Create()
         {
-            ViewData["Studies"] = new SelectList(_context.Studies, "Studies1", "Studies1");
+            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme");
             return View();
         }
 
@@ -56,7 +56,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CreatorId,Name,Studies")] Creator creator)
+        public async Task<IActionResult> Create([Bind("CreatorId,Name,Programme")] Creator creator)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +64,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Studies"] = new SelectList(_context.Studies, "Studies1", "Studies1", creator.Studies);
+            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", creator.Programme);
             return View(creator);
         }
 
@@ -81,7 +81,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             {
                 return NotFound();
             }
-            ViewData["Studies"] = new SelectList(_context.Studies, "Studies1", "Studies1", creator.Studies);
+            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", creator.Programme);
             return View(creator);
         }
 
@@ -90,7 +90,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CreatorId,Name,Studies")] Creator creator)
+        public async Task<IActionResult> Edit(int id, [Bind("CreatorId,Name,Programme")] Creator creator)
         {
             if (id != creator.CreatorId)
             {
@@ -117,7 +117,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Studies"] = new SelectList(_context.Studies, "Studies1", "Studies1", creator.Studies);
+            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", creator.Programme);
             return View(creator);
         }
 
@@ -130,7 +130,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             }
 
             var creator = await _context.Creator
-                .Include(c => c.StudiesNavigation)
+                .Include(c => c.ProgrammeNavigation)
                 .FirstOrDefaultAsync(m => m.CreatorId == id);
             if (creator == null)
             {

@@ -14,7 +14,6 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="AnchorId" />
-            <input type="hidden" asp-for="SceneId" />
             <div class="form-group">
                 <label asp-for="AssetId" class="control-label"></label>
                 <select asp-for="AssetId" class="form-control" asp-items="ViewBag.AssetId"></select>

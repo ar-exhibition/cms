@@ -21,7 +21,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            var cmsDatabaseContext = _context.Course.Include(c => c.StudiesNavigation);
+            var cmsDatabaseContext = _context.Course.Include(c => c.ProgrammeNavigation);
             return View(await cmsDatabaseContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             }
 
             var course = await _context.Course
-                .Include(c => c.StudiesNavigation)
+                .Include(c => c.ProgrammeNavigation)
                 .FirstOrDefaultAsync(m => m.CourseId == id);
             if (course == null)
             {
@@ -47,7 +47,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // GET: Courses/Create
         public IActionResult Create()
         {
-            ViewData["Studies"] = new SelectList(_context.Studies, "Studies1", "Studies1");
+            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme");
             return View();
         }
 
@@ -56,7 +56,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseId,Studies,Course1")] Course course)
+        public async Task<IActionResult> Create([Bind("CourseId,Programme,Course1,Term")] Course course)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +64,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Studies"] = new SelectList(_context.Studies, "Studies1", "Studies1", course.Studies);
+            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", course.Programme);
             return View(course);
         }
 
@@ -81,7 +81,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             {
                 return NotFound();
             }
-            ViewData["Studies"] = new SelectList(_context.Studies, "Studies1", "Studies1", course.Studies);
+            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", course.Programme);
             return View(course);
         }
 
@@ -90,7 +90,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CourseId,Studies,Course1")] Course course)
+        public async Task<IActionResult> Edit(int id, [Bind("CourseId,Programme,Course1,Term")] Course course)
         {
             if (id != course.CourseId)
             {
@@ -117,7 +117,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Studies"] = new SelectList(_context.Studies, "Studies1", "Studies1", course.Studies);
+            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", course.Programme);
             return View(course);
         }
 
@@ -130,7 +130,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             }
 
             var course = await _context.Course
-                .Include(c => c.StudiesNavigation)
+                .Include(c => c.ProgrammeNavigation)
                 .FirstOrDefaultAsync(m => m.CourseId == id);
             if (course == null)
             {

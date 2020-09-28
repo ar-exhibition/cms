@@ -53,7 +53,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SceneId,Name,SceneFile,MarkerFile")] Scene scene)
+        public async Task<IActionResult> Create([Bind("SceneId,Name,SceneFile,SceneFileName,MarkerFile,MarkerName")] Scene scene)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SceneId,Name,SceneFile,MarkerFile")] Scene scene)
+        public async Task<IActionResult> Edit(int id, [Bind("SceneId,Name,SceneFile,SceneFileName,MarkerFile,MarkerName")] Scene scene)
         {
             if (id != scene.SceneId)
             {

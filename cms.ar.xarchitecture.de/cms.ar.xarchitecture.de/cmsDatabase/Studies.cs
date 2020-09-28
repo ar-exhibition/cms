@@ -12,7 +12,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
         }
 
         public int Id { get; set; }
-        public string Studies1 { get; set; }
+        public string Programme { get; set; }
 
         public virtual ICollection<Course> Course { get; set; }
         public virtual ICollection<Creator> Creator { get; set; }

@@ -12,9 +12,9 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
         public int CreatorId { get; set; }
         public string Name { get; set; }
-        public string Studies { get; set; }
+        public string Programme { get; set; }
 
-        public virtual Studies StudiesNavigation { get; set; }
+        public virtual Studies ProgrammeNavigation { get; set; }
         public virtual ICollection<SceneAsset> SceneAsset { get; set; }
     }
 }
