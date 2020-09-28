@@ -12,6 +12,11 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
+        "DB_USER": "root",
+        "DB_NAME": "cmsDatabase",
+        "DB_PORT": "3306",
+        "DB_PASSWORD": "vdh",
+        "DB_SERVER": "luziffer.ddnss.de",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

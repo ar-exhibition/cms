@@ -1,0 +1,60 @@
+﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsDatabase.Scene>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SceneFile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SceneFileName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MarkerFile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MarkerName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SceneFile)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SceneFileName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MarkerFile)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MarkerName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.SceneId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.SceneId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.SceneId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

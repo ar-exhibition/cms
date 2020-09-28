@@ -12,8 +12,10 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
         public int CourseId { get; set; }
         public string Programme { get; set; }
-        public string Course1 { get; set; }
+        public string CourseName { get; set; }
+        public string Term { get; set; }
 
+        public virtual Studies ProgrammeNavigation { get; set; }
         public virtual ICollection<SceneAsset> SceneAsset { get; set; }
     }
 }

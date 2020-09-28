@@ -4,7 +4,7 @@
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>96eff342-c17a-4f4c-890f-d4b667b7801b</ProjectGuid>
-    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
+    <DockerLaunchAction>None</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
     <DockerServiceName>cms.ar.xarchitecture.de</DockerServiceName>
   </PropertyGroup>

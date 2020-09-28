@@ -18,9 +18,12 @@ namespace cms.ar.xarchitecture.de
 {
     public class Startup
     {
+        cmsConnectionOptions _options;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            _options = new cmsConnectionOptions();
         }
 
         public IConfiguration Configuration { get; }
@@ -33,7 +36,6 @@ namespace cms.ar.xarchitecture.de
             services.AddControllersWithViews();
 
             services.AddDbContext<cmsDatabaseContext>(options => options.UseMySQL(_options.GetConnectionString()));
-                //options.UseMySQL(Configuration.GetConnectionString(conn)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,11 +66,23 @@ namespace cms.ar.xarchitecture.de
 
                 endpoints.MapControllerRoute(
                     name: "upload",
-                    pattern: "{controller=Upload}/{action=Create}/{id?}");
+                    pattern: "{controller=SceneAssets}/{action=Index}/{id?}");
                 
                 endpoints.MapControllerRoute(
                     name: "adminPanel",
                     pattern: "{controller=Admin}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "CRUD_Scene",
+                    pattern: "{controller=Scenes}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "CRUD_Studies",
+                    pattern: "{controller=Studies}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "CRUD_Course",
+                    pattern: "{controller=Courses}/{action=Index}/{id?}");
             });
         }
     }

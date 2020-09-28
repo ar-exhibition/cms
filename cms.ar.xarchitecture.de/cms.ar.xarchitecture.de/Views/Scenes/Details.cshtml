@@ -1,0 +1,49 @@
+﻿@model cms.ar.xarchitecture.de.cmsDatabase.Scene
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Scene</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SceneFile)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SceneFile)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SceneFileName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SceneFileName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MarkerFile)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MarkerFile)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MarkerName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MarkerName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.SceneId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

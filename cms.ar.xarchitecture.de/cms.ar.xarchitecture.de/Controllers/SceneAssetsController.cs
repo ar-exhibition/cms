@@ -9,23 +9,23 @@ using cms.ar.xarchitecture.de.cmsDatabase;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
-    public class UploadController : Controller
+    public class SceneAssetsController : Controller
     {
         private readonly cmsDatabaseContext _context;
 
-        public UploadController(cmsDatabaseContext context)
+        public SceneAssetsController(cmsDatabaseContext context)
         {
             _context = context;
         }
 
-        // GET: Upload
+        // GET: SceneAssets
         public async Task<IActionResult> Index()
         {
-            var cmsDatabaseContext = _context.SceneAsset.Include(s => s.AssetTypeNavigation).Include(s => s.CourseNavigation).Include(s => s.CreatorNavigation);
+            var cmsDatabaseContext = _context.SceneAsset.Include(s => s.AssetTypeNavigation).Include(s => s.CourseNameNavigation).Include(s => s.CreatorNavigation);
             return View(await cmsDatabaseContext.ToListAsync());
         }
 
-        // GET: Upload/Details/5
+        // GET: SceneAssets/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,7 +35,7 @@ namespace cms.ar.xarchitecture.de.Controllers
 
             var sceneAsset = await _context.SceneAsset
                 .Include(s => s.AssetTypeNavigation)
-                .Include(s => s.CourseNavigation)
+                .Include(s => s.CourseNameNavigation)
                 .Include(s => s.CreatorNavigation)
                 .FirstOrDefaultAsync(m => m.AssetId == id);
             if (sceneAsset == null)
@@ -46,21 +46,21 @@ namespace cms.ar.xarchitecture.de.Controllers
             return View(sceneAsset);
         }
 
-        // GET: Upload/Create
+        // GET: SceneAssets/Create
         public IActionResult Create()
         {
-            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "AssetTypeId");
-            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "CourseId");
-            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "CreatorId");
+            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "Designator");
+            ViewData["CourseName"] = new SelectList(_context.Course, "CourseId", "Programme");
+            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Programme");
             return View();
         }
 
-        // POST: Upload/Create
+        // POST: SceneAssets/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AssetId,Creator,Course,Name,Filename,Filetype,Date,Link,Thumbnail,Type,Power,Color,Deleted,AssetType")] SceneAsset sceneAsset)
+        public async Task<IActionResult> Create([Bind("AssetId,Creator,CourseName,Name,Filename,Filetype,Date,Link,Thumbnail,Type,Power,Color,Deleted,AssetType")] SceneAsset sceneAsset)
         {
             if (ModelState.IsValid)
             {
@@ -68,13 +68,13 @@ namespace cms.ar.xarchitecture.de.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "AssetTypeId", sceneAsset.AssetType);
-            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "CourseId", sceneAsset.Course);
-            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "CreatorId", sceneAsset.Creator);
+            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "Designator", sceneAsset.AssetType);
+            ViewData["CourseName"] = new SelectList(_context.Course, "CourseId", "Programme", sceneAsset.CourseName);
+            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Programme", sceneAsset.Creator);
             return View(sceneAsset);
         }
 
-        // GET: Upload/Edit/5
+        // GET: SceneAssets/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -87,18 +87,18 @@ namespace cms.ar.xarchitecture.de.Controllers
             {
                 return NotFound();
             }
-            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "AssetTypeId", sceneAsset.AssetType);
-            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "CourseId", sceneAsset.Course);
-            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "CreatorId", sceneAsset.Creator);
+            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "Designator", sceneAsset.AssetType);
+            ViewData["CourseName"] = new SelectList(_context.Course, "CourseId", "Programme", sceneAsset.CourseName);
+            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Programme", sceneAsset.Creator);
             return View(sceneAsset);
         }
 
-        // POST: Upload/Edit/5
+        // POST: SceneAssets/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AssetId,Creator,Course,Name,Filename,Filetype,Date,Link,Thumbnail,Type,Power,Color,Deleted,AssetType")] SceneAsset sceneAsset)
+        public async Task<IActionResult> Edit(int id, [Bind("AssetId,Creator,CourseName,Name,Filename,Filetype,Date,Link,Thumbnail,Type,Power,Color,Deleted,AssetType")] SceneAsset sceneAsset)
         {
             if (id != sceneAsset.AssetId)
             {
@@ -125,13 +125,13 @@ namespace cms.ar.xarchitecture.de.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "AssetTypeId", sceneAsset.AssetType);
-            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "CourseId", sceneAsset.Course);
-            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "CreatorId", sceneAsset.Creator);
+            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "Designator", sceneAsset.AssetType);
+            ViewData["CourseName"] = new SelectList(_context.Course, "CourseId", "Programme", sceneAsset.CourseName);
+            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Programme", sceneAsset.Creator);
             return View(sceneAsset);
         }
 
-        // GET: Upload/Delete/5
+        // GET: SceneAssets/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -141,7 +141,7 @@ namespace cms.ar.xarchitecture.de.Controllers
 
             var sceneAsset = await _context.SceneAsset
                 .Include(s => s.AssetTypeNavigation)
-                .Include(s => s.CourseNavigation)
+                .Include(s => s.CourseNameNavigation)
                 .Include(s => s.CreatorNavigation)
                 .FirstOrDefaultAsync(m => m.AssetId == id);
             if (sceneAsset == null)
@@ -152,7 +152,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             return View(sceneAsset);
         }
 
-        // POST: Upload/Delete/5
+        // POST: SceneAssets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
