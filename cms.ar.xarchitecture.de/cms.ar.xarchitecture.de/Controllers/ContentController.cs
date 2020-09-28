@@ -6,7 +6,7 @@ using cms.ar.xarchitecture.de.cmsDatabase;
 using cms.ar.xarchitecture.de.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,13 +28,8 @@ namespace cms.ar.xarchitecture.de.Controllers
         public async Task<String> Get()
         {
             Content content = new Content();
-
-            content.assets = await _context.SceneAsset.ToListAsync();
-            content.anchors = await _context.Anchor.ToListAsync();
-            content.scenes = await _context.Scene.ToListAsync();
-
-            return JsonConvert.SerializeObject(content, Formatting.Indented);
-            //return new string[] { "value1", "value2" };
+          
+            return await content.getJson(_context);
         }
 
         // GET api/<APIController>/5
