@@ -39,7 +39,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .IsUnique();
 
                 entity.HasIndex(e => e.AssetId)
-                    .HasName("fk_Anchor_SceneAsset1_idx");
+                    .HasName("fk_Anchor_SceneAsset_idx");
 
                 entity.Property(e => e.AnchorId)
                     .HasColumnName("AnchorID")
@@ -52,7 +52,6 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
                 entity.HasOne(d => d.Asset)
                     .WithMany(p => p.Anchor)
-                    .HasPrincipalKey(p => p.AssetId)
                     .HasForeignKey(d => d.AssetId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Anchor_SceneAsset");
@@ -70,25 +69,21 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
             modelBuilder.Entity<Course>(entity =>
             {
-                entity.HasKey(e => new { e.CourseId, e.Programme })
-                    .HasName("PRIMARY");
-
                 entity.HasIndex(e => e.CourseId)
                     .HasName("CourseID_UNIQUE")
                     .IsUnique();
 
                 entity.HasIndex(e => e.Programme)
-                    .HasName("fk_Course_Studies1_idx");
+                    .HasName("fk_Course_Studies_idx");
 
-                entity.Property(e => e.CourseId)
-                    .HasColumnName("CourseID")
-                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.CourseId).HasColumnName("CourseID");
 
-                entity.Property(e => e.Programme)
+                entity.Property(e => e.CourseName)
+                    .IsRequired()
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CourseName)
+                entity.Property(e => e.Programme)
                     .IsRequired()
                     .HasMaxLength(45)
                     .IsUnicode(false);
@@ -108,25 +103,21 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
             modelBuilder.Entity<Creator>(entity =>
             {
-                entity.HasKey(e => new { e.CreatorId, e.Programme })
-                    .HasName("PRIMARY");
-
                 entity.HasIndex(e => e.CreatorId)
                     .HasName("CreatorID_UNIQUE")
                     .IsUnique();
 
                 entity.HasIndex(e => e.Programme)
-                    .HasName("fk_Creator_Studies1_idx");
+                    .HasName("fk_Creator_Studies_idx");
 
-                entity.Property(e => e.CreatorId)
-                    .HasColumnName("CreatorID")
-                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.CreatorId).HasColumnName("CreatorID");
 
-                entity.Property(e => e.Programme)
+                entity.Property(e => e.Name)
+                    .IsRequired()
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Name)
+                entity.Property(e => e.Programme)
                     .IsRequired()
                     .HasMaxLength(45)
                     .IsUnicode(false);
@@ -173,7 +164,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
             modelBuilder.Entity<SceneAsset>(entity =>
             {
-                entity.HasKey(e => new { e.AssetId, e.Creator, e.CourseName })
+                entity.HasKey(e => e.AssetId)
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.AssetId)
@@ -181,17 +172,15 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .IsUnique();
 
                 entity.HasIndex(e => e.AssetType)
-                    .HasName("fk_SceneAsset_AssetType1_idx");
+                    .HasName("fk_SceneAsset_AssetType_idx");
 
                 entity.HasIndex(e => e.CourseName)
-                    .HasName("fk_SceneAsset_Course1_idx");
+                    .HasName("fk_SceneAsset_Course_idx");
 
                 entity.HasIndex(e => e.Creator)
-                    .HasName("fk_SceneAsset_Creator1_idx");
+                    .HasName("fk_SceneAsset_Creator_idx");
 
-                entity.Property(e => e.AssetId)
-                    .HasColumnName("AssetID")
-                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.AssetId).HasColumnName("AssetID");
 
                 entity.Property(e => e.Color)
                     .HasMaxLength(45)
@@ -233,14 +222,12 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
                 entity.HasOne(d => d.CourseNameNavigation)
                     .WithMany(p => p.SceneAsset)
-                    .HasPrincipalKey(p => p.CourseId)
                     .HasForeignKey(d => d.CourseName)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_SceneAsset_Course");
 
                 entity.HasOne(d => d.CreatorNavigation)
                     .WithMany(p => p.SceneAsset)
-                    .HasPrincipalKey(p => p.CreatorId)
                     .HasForeignKey(d => d.Creator)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_SceneAsset_Creator");

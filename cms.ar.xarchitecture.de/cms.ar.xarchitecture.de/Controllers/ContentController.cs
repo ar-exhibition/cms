@@ -28,7 +28,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         public async Task<String> Get()
         {
             Content content = new Content();
-          
+
             return await content.getJson(_context);
         }
 

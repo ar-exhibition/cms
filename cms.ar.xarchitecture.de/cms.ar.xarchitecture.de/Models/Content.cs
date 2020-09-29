@@ -6,19 +6,24 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Diagnostics;
 
 namespace cms.ar.xarchitecture.de.Models
 {
     public class Content
     {
-        public IEnumerable<assets> assets;
-        public IEnumerable<anchors> anchors;
-        public IEnumerable<scenes> scenes;
+        //public IEnumerable<assets> assets;
+        public List<assets> assets;
+        //public IEnumerable<anchors> anchors;
+        public List<anchors> anchors;
+        //public IEnumerable<scenes> scenes;
+        public List<scenes> scenes;
 
         public Content()
         {
-
-
+            assets = new List<assets>();
+            anchors = new List<anchors>();
+            scenes = new List<scenes>();
         }
 
         public async Task<String> getJson(cmsDatabaseContext _context)
@@ -32,7 +37,8 @@ namespace cms.ar.xarchitecture.de.Models
             {
                 if (element.AssetType == 1) //3d
                 {
-                    assets temp = new assets();
+                    //sceneassets temp = new sceneassets();
+                    sceneassets temp = new sceneassets();
 
                     temp.assetId = element.AssetId;
                     temp.creator = new creator(element.Creator, _context);
@@ -42,18 +48,22 @@ namespace cms.ar.xarchitecture.de.Models
                     temp.thumbnail = element.Thumbnail;
                     temp.assetType = "3d";
 
-                    assets.Append<assets>(temp);
+                    assets.Append(temp);
+
+
                 }
 
-                else if(element.AssetType == 5) //light
+                else if (element.AssetType == 5) //light
                 {
-                    light temp = new light();
+                    lightassets temp = new lightassets();
 
+                    temp.assetId = element.AssetId;
                     temp.type = element.Type;
                     temp.power = element.Power;
                     temp.color = element.Color;
+                    temp.assetType = "light";
 
-                    assets.Append<light>(temp);
+                    assets.Append(temp);
                 }
 
             }
@@ -61,6 +71,11 @@ namespace cms.ar.xarchitecture.de.Models
             foreach (Anchor element in _anchors)
             {
                 anchors temp = new anchors();
+
+                temp.anchorId = element.AnchorId;
+                temp.assetId = element.AssetId;
+                temp.scale = element.Scale;
+
                 anchors.Append<anchors>(temp);
 
             }
@@ -68,6 +83,12 @@ namespace cms.ar.xarchitecture.de.Models
             foreach (Scene element in _scenes)
             {
                 scenes temp = new scenes();
+
+                temp.sceneId = element.SceneId;
+                temp.name = element.Name;
+                temp.worldMapLink = element.SceneFile;
+                temp.marker = new marker(element.MarkerName, element.MarkerFile);
+
                 scenes.Append<scenes>(temp);
 
             }
@@ -77,21 +98,41 @@ namespace cms.ar.xarchitecture.de.Models
         }
     }
 
+    //public class JSONassets
     public class assets
     {
         public int assetId { get; set; }
+        //
+        //public creator creator { get; set; }
+        //public course course { get; set; }
+        //public string name { get; set; }
+        //public string link { get; set; }
+        //public string thumbnail { get; set; }
+        //
+        public string assetType { get; set; }
+    }
+
+    public class sceneassets : assets
+    {
         public creator creator { get; set; }
         public course course { get; set; }
         public string name { get; set; }
         public string link { get; set; }
         public string thumbnail { get; set; }
-        public string assetType { get; set; }
+    }
+
+    public class lightassets : assets
+    {
+        public string type { get; set; }
+        public string power { get; set; }
+        public string color { get; set; }
     }
 
     public class anchors
     {
-        public int anchorId { get; set; }
-        public float scale { get; set; }
+        public string anchorId { get; set; }
+        public int assetId { get; set; }
+        public float? scale { get; set; }
     }
 
     public class scenes
@@ -106,7 +147,7 @@ namespace cms.ar.xarchitecture.de.Models
     {
         public creator(int id, cmsDatabaseContext _context)
         {
-            Creator record =  _context.Creator.Find(id);
+            Creator record = _context.Creator.Find(id);
             this.name = record.Name;
             this.studies = record.Programme;
         }
@@ -127,15 +168,20 @@ namespace cms.ar.xarchitecture.de.Models
         public string term { get; set; }
     }
 
-    public class light
-    {
-        public string type { get; set; }
-        public string power { get; set; }
-        public string color { get; set; }
-    }
+    //public class light
+    //{
+    //    public string type { get; set; }
+    //    public string power { get; set; }
+    //    public string color { get; set; }
+    //}
 
     public class marker
     {
+        public marker(string _name, string _link)
+        {
+            name = _name;
+            link = _link;
+        }
         public string name { get; set; }
         public string link { get; set; }
     }
