@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Diagnostics;
+
 
 namespace cms.ar.xarchitecture.de.Models
 {
@@ -21,100 +21,7 @@ namespace cms.ar.xarchitecture.de.Models
             assets = new List<assets>();
             anchors = new List<anchors>();
             scenes = new List<scenes>();
-        }
-
-        public async Task<String> getJson(cmsDatabaseContext _context)
-        {
-            IEnumerable<SceneAsset> _assets = await _context.SceneAsset.ToListAsync();
-            IEnumerable<Anchor> _anchors = await _context.Anchor.ToListAsync();
-            IEnumerable<Scene> _scenes = await _context.Scene.ToListAsync();
-
-            foreach (SceneAsset element in _assets)
-            {
-                if (element.AssetType == (int)AssetTypes.light) //light
-                {
-                    lightassets temp = new lightassets();
-
-                    temp.assetId = element.AssetId;
-                    temp.type = element.Type;
-                    temp.power = element.Power;
-                    temp.color = element.Color;
-                    temp.assetType = mapAssetType(element.AssetType);
-
-                    assets.Add(temp);
-                }
-
-                else //3d and everything else except light
-                {
-                    sceneassets temp = new sceneassets();
-
-                    temp.assetId = element.AssetId;
-                    temp.creator = new creator(element.Creator, _context);
-                    temp.course = new course(element.CourseName, _context);
-                    temp.name = element.Name;
-                    temp.link = element.Link;
-                    temp.thumbnail = element.Thumbnail;
-                    temp.assetType = mapAssetType(element.AssetType);
-
-                    assets.Add(temp);
-                }
-
-            }
-
-            foreach (Anchor element in _anchors)
-            {
-                anchors temp = new anchors();
-
-                temp.anchorId = element.AnchorId;
-                temp.assetId = element.AssetId;
-                temp.scale = element.Scale;
-
-                anchors.Add(temp);
-            }
-
-            foreach (Scene element in _scenes)
-            {
-                scenes temp = new scenes();
-
-                temp.sceneId = element.SceneId;
-                temp.name = element.Name;
-                temp.worldMapLink = element.SceneFile;
-                temp.marker = new marker(element.MarkerName, element.MarkerFile);
-
-                scenes.Add(temp);
-
-            }
-
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        string mapAssetType(int? ID)
-        {
-            switch (ID)
-            {
-                case (int)AssetTypes.model:
-                    return "3d";
-                case (int)AssetTypes.image:
-                    return "image";
-                case (int)AssetTypes.video:
-                    return "video";
-                case (int)AssetTypes.pdf:
-                    return "pdf";
-                case (int)AssetTypes.light:
-                    return "light";
-                default:
-                    return "";
-            }
-        }
-
-        private enum AssetTypes
-        {
-            model = 1,
-            image = 2,
-            video = 3,
-            pdf = 4,
-            light = 5
-        }
+        }     
     }
 
     public class assets

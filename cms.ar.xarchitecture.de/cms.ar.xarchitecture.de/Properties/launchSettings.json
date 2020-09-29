@@ -17,7 +17,11 @@
         "DB_PORT": "3306",
         "DB_PASSWORD": "vdh",
         "DB_SERVER": "luziffer.ddnss.de",
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "THUMBS": "D:\\_P2\\content\\thumbnails",
+        "WORLDMAPS": "D:\\_P2\\content\\worldmaps",
+        "MARKER": "D:\\_P2\\content\\marker",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASSETS": "D:\\_P2\\content\\assets"
       }
     },
     "cms.ar.xarchitecture.de": {

@@ -6,3 +6,8 @@ services:
     build:
       context: .
       dockerfile: cms.ar.xarchitecture.de/Dockerfile
+    volumes:
+      - ${ASSETS}:/app/wwwroot/content/assets
+      - ${WORLDMAPS}:/app/wwwroot/content/worldmaps
+      - ${MARKER}:/app/wwwroot/content/marker
+      - ${THUMBS}:/app/wwwroot/content/thumbnails   
