@@ -35,9 +35,22 @@ namespace cms.ar.xarchitecture.de.Models
 
             foreach (SceneAsset element in _assets)
             {
-                if (element.AssetType == 1) //3d
+                if (element.AssetType == (int)AssetTypes.light) //light
                 {
-                    //sceneassets temp = new sceneassets();
+                    lightassets temp = new lightassets();
+
+                    temp.assetId = element.AssetId;
+                    temp.type = element.Type;
+                    temp.power = element.Power;
+                    temp.color = element.Color;
+                    temp.assetType = mapAssetType(element.AssetType);
+
+                    //assets = assets.Append(temp);
+                    assets.Add(temp);
+                }
+
+                else //3d and everything else except light
+                {
                     sceneassets temp = new sceneassets();
 
                     temp.assetId = element.AssetId;
@@ -46,24 +59,10 @@ namespace cms.ar.xarchitecture.de.Models
                     temp.name = element.Name;
                     temp.link = element.Link;
                     temp.thumbnail = element.Thumbnail;
-                    temp.assetType = "3d";
+                    temp.assetType = mapAssetType(element.AssetType);
 
-                    assets.Append(temp);
-
-
-                }
-
-                else if (element.AssetType == 5) //light
-                {
-                    lightassets temp = new lightassets();
-
-                    temp.assetId = element.AssetId;
-                    temp.type = element.Type;
-                    temp.power = element.Power;
-                    temp.color = element.Color;
-                    temp.assetType = "light";
-
-                    assets.Append(temp);
+                    //assets = assets.Append(temp);
+                    assets.Add(temp);
                 }
 
             }
@@ -76,8 +75,7 @@ namespace cms.ar.xarchitecture.de.Models
                 temp.assetId = element.AssetId;
                 temp.scale = element.Scale;
 
-                anchors.Append<anchors>(temp);
-
+                anchors.Add(temp);
             }
 
             foreach (Scene element in _scenes)
@@ -89,12 +87,40 @@ namespace cms.ar.xarchitecture.de.Models
                 temp.worldMapLink = element.SceneFile;
                 temp.marker = new marker(element.MarkerName, element.MarkerFile);
 
-                scenes.Append<scenes>(temp);
+                //scenes = scenes.Append<scenes>(temp);
+                scenes.Add(temp);
 
             }
 
-            result = JsonConvert.SerializeObject(this, Formatting.Indented);
-            return result;
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        string mapAssetType(int? ID)
+        {
+            switch (ID)
+            {
+                case (int)AssetTypes.model:
+                    return "3d";
+                case (int)AssetTypes.image:
+                    return "image";
+                case (int)AssetTypes.video:
+                    return "video";
+                case (int)AssetTypes.pdf:
+                    return "pdf";
+                case (int)AssetTypes.light:
+                    return "light";
+                default:
+                    return "";
+            }
+        }
+
+        private enum AssetTypes
+        {
+            model = 1,
+            image = 2,
+            video = 3,
+            pdf = 4,
+            light = 5
         }
     }
 
