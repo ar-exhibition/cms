@@ -12,11 +12,8 @@ namespace cms.ar.xarchitecture.de.Models
 {
     public class Content
     {
-        //public IEnumerable<assets> assets;
         public List<assets> assets;
-        //public IEnumerable<anchors> anchors;
         public List<anchors> anchors;
-        //public IEnumerable<scenes> scenes;
         public List<scenes> scenes;
 
         public Content()
@@ -28,7 +25,6 @@ namespace cms.ar.xarchitecture.de.Models
 
         public async Task<String> getJson(cmsDatabaseContext _context)
         {
-            string result = "";
             IEnumerable<SceneAsset> _assets = await _context.SceneAsset.ToListAsync();
             IEnumerable<Anchor> _anchors = await _context.Anchor.ToListAsync();
             IEnumerable<Scene> _scenes = await _context.Scene.ToListAsync();
@@ -45,7 +41,6 @@ namespace cms.ar.xarchitecture.de.Models
                     temp.color = element.Color;
                     temp.assetType = mapAssetType(element.AssetType);
 
-                    //assets = assets.Append(temp);
                     assets.Add(temp);
                 }
 
@@ -61,7 +56,6 @@ namespace cms.ar.xarchitecture.de.Models
                     temp.thumbnail = element.Thumbnail;
                     temp.assetType = mapAssetType(element.AssetType);
 
-                    //assets = assets.Append(temp);
                     assets.Add(temp);
                 }
 
@@ -87,7 +81,6 @@ namespace cms.ar.xarchitecture.de.Models
                 temp.worldMapLink = element.SceneFile;
                 temp.marker = new marker(element.MarkerName, element.MarkerFile);
 
-                //scenes = scenes.Append<scenes>(temp);
                 scenes.Add(temp);
 
             }
@@ -124,17 +117,9 @@ namespace cms.ar.xarchitecture.de.Models
         }
     }
 
-    //public class JSONassets
     public class assets
     {
         public int assetId { get; set; }
-        //
-        //public creator creator { get; set; }
-        //public course course { get; set; }
-        //public string name { get; set; }
-        //public string link { get; set; }
-        //public string thumbnail { get; set; }
-        //
         public string assetType { get; set; }
     }
 
@@ -193,13 +178,6 @@ namespace cms.ar.xarchitecture.de.Models
         public string name { get; set; }
         public string term { get; set; }
     }
-
-    //public class light
-    //{
-    //    public string type { get; set; }
-    //    public string power { get; set; }
-    //    public string color { get; set; }
-    //}
 
     public class marker
     {
