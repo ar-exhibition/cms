@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
 using System.Web;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.AspNetCore.Http;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -24,14 +26,14 @@ namespace cms.ar.xarchitecture.de.Controllers
     {
         private readonly cmsDatabaseContext _context;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        //private readonly FileService _fileService; //implement this class!
+        string host;
 
         //public ContentController(cmsDatabaseContext context, IWebHostEnvironment hostingEnvironment, FileService fileService)
-        public ContentController(cmsDatabaseContext context, IWebHostEnvironment hostingEnvironment)
+        public ContentController(cmsDatabaseContext context, IWebHostEnvironment hostingEnvironment, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _hostingEnvironment = hostingEnvironment;
-            //_fileService = fileService;
+            host = httpContextAccessor.HttpContext.Request.Host.Value; 
         }
 
         // GET: api/Content
@@ -136,47 +138,42 @@ namespace cms.ar.xarchitecture.de.Controllers
 
         string mapFilenameToDownloadLink(RessourceType ressourceType, string filename)
         {
-            string wwwrootpath = _hostingEnvironment.WebRootPath;
             string fullpath = "";
 
             switch ((int)ressourceType)
             {
                 case (int)RessourceType.asset:
-                    fullpath = Path.Combine(wwwrootpath, "content", "asset", filename);
+                    fullpath = host + "/content/assets/" + filename;
                     break;
                 case (int)RessourceType.marker:
-                    fullpath = Path.Combine(wwwrootpath, "content", "marker", filename);
+                    fullpath = host + "/content/marker/" + filename; 
                     break;
                 case (int)RessourceType.thumbnail:
-                    fullpath = Path.Combine(wwwrootpath, "content", "thumbnail", filename);
+                    fullpath = host + "/content/thumbnails/" + filename;
                     break;
                 case (int)RessourceType.worldmap:
-                    fullpath = Path.Combine(wwwrootpath, "content", "worldmap", filename);
+                    fullpath = host + "/content/worldmaps/" + filename;
                     break;
                 default:
                     fullpath = "";
                     break;
             }
+            return fullpath;
+        }
 
-            FileInfo file = new FileInfo(fullpath);
+        public string GetMimeMapping(string fileName)
+        {
+            var provider = new FileExtensionContentTypeProvider();
 
-            var provider = new PhysicalFileProvider(wwwrootpath);
-            var contents = provider.GetDirectoryContents(string.Empty);
-            var filePath = Path.Combine(wwwrootpath);
-            var fileInfo = provider.GetFileInfo(filePath);
+            //add custom mime-mappings
+            provider.Mappings.Add(".gltf", "model/gltf+json");
 
-
-            //if (file.Exists)
-            //{
-            //    IFileProvider provider = new PhysicalFileProvider(wwwrootpath);
-            //    IFileInfo fileInfo = provider.GetFileInfo(filename);
-            //    string contentType = MimeMapping.GetMimeMapping(filePath);
-            //    var readStream = fileInfo.CreateReadStream();
-            //    return File(readStream, filename);
-            //}
-            //return filePath;
-            return file.ToString();
-            //return File(Path.Combine(wwwrootpath, filename), MimeMapping.GetMimeMapping(fullpath), "DownloadFileNameHere");
+            string contentType;
+            if (!provider.TryGetContentType(fileName, out contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            return contentType;
         }
 
         string mapAssetType(int? ID)
