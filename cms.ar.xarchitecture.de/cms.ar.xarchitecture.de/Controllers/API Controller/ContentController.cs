@@ -10,10 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 
-
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace cms.ar.xarchitecture.de.Controllers
 {
     [Route("api/[controller]")]
@@ -24,7 +20,6 @@ namespace cms.ar.xarchitecture.de.Controllers
         string host;
         string prot;
 
-        //public ContentController(cmsDatabaseContext context, IWebHostEnvironment hostingEnvironment, FileService fileService)
         public ContentController(cmsDatabaseContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
@@ -126,12 +121,10 @@ namespace cms.ar.xarchitecture.de.Controllers
                 temp.marker = new marker(element.MarkerName, mapFilenameToDownloadLink(RessourceType.marker, element.MarkerName));
 
                 content.scenes.Add(temp);
-
             }
 
             return JsonConvert.SerializeObject(content, Formatting.Indented);
         }
-
         string mapFilenameToDownloadLink(RessourceType ressourceType, string filename)
         {
             string controllerPath = prot + "://" + host + "/Download/Get?";

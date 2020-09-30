@@ -29,7 +29,7 @@ ENV DB_NAME=default
 ENV DB_USER=default
 ENV DB_PASSWORD=default
 
-VOLUME /app/wwwroot/content/assets
-VOLUME /app/wwwroot/content/worldmaps
-VOLUME /app/wwwroot/content/marker
-VOLUME /app/wwwroot/content/thumbnails
+VOLUME /app/content/assets
+VOLUME /app/content/worldmaps
+VOLUME /app/content/marker
+VOLUME /app/content/thumbnails
