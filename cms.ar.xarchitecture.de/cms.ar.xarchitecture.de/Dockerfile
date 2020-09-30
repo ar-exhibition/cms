@@ -28,3 +28,8 @@ ENV DB_PORT=9000
 ENV DB_NAME=default
 ENV DB_USER=default
 ENV DB_PASSWORD=default
+
+VOLUME /app/content/assets
+VOLUME /app/content/worldmaps
+VOLUME /app/content/marker
+VOLUME /app/content/thumbnails

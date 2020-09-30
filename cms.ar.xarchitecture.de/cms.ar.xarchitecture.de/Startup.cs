@@ -13,6 +13,9 @@ using cms.ar.xarchitecture.de.cmsDatabase;
 using MySQL.Data.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Renci.SshNet;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace cms.ar.xarchitecture.de
 {
@@ -34,6 +37,11 @@ namespace cms.ar.xarchitecture.de
             cmsConnectionOptions _options = new cmsConnectionOptions();
 
             services.AddControllersWithViews();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddSingleton<IFileProvider>(
+                new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
 
             services.AddDbContext<cmsDatabaseContext>(options => options.UseMySQL(_options.GetConnectionString()));
         }
@@ -52,10 +60,9 @@ namespace cms.ar.xarchitecture.de
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            //app.UseStaticFiles();
 
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
