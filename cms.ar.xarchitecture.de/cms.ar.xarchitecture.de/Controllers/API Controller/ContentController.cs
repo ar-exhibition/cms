@@ -24,11 +24,14 @@ namespace cms.ar.xarchitecture.de.Controllers
     {
         private readonly cmsDatabaseContext _context;
         private readonly IWebHostEnvironment _hostingEnvironment;
+        //private readonly FileService _fileService; //implement this class!
 
+        //public ContentController(cmsDatabaseContext context, IWebHostEnvironment hostingEnvironment, FileService fileService)
         public ContentController(cmsDatabaseContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _hostingEnvironment = hostingEnvironment;
+            //_fileService = fileService;
         }
 
         // GET: api/Content
