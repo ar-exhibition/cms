@@ -28,6 +28,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <th>
+                @Html.DisplayFor(model => model.AnchorId)
+            </th>
             <td>
                 @Html.DisplayFor(modelItem => item.Scale)
             </td>
