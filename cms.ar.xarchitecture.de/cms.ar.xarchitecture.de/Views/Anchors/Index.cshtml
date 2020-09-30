@@ -14,9 +14,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.AnchorId)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Scale)
             </th>
             <th>
@@ -26,11 +23,8 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model) {
         <tr>
-            <th>
-                @Html.DisplayFor(modelItem => item.AnchorId)
-            </th>
             <td>
                 @Html.DisplayFor(modelItem => item.Scale)
             </td>
