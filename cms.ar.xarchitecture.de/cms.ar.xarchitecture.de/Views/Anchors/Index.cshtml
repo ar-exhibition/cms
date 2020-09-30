@@ -29,7 +29,7 @@
 @foreach (var item in Model) {
         <tr>
             <th>
-                @Html.DisplayFor(model => model.AnchorId)
+                @Html.DisplayFor(modelItem => item.AnchorId)
             </th>
             <td>
                 @Html.DisplayFor(modelItem => item.Scale)
