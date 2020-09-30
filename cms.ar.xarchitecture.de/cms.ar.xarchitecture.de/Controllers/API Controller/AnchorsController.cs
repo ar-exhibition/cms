@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using cms.ar.xarchitecture.de.cmsDatabase;
+using cms.ar.xarchitecture.de.Models.Wrapper;
 
 //using Newtonsoft.Json;
 using System.Text.Json;
-using cms.ar.xarchitecture.de.Models.Wrapper;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -44,8 +45,17 @@ namespace cms.ar.xarchitecture.de.Controllers
         {
             AnchorList anchors = JsonSerializer.Deserialize<AnchorList>(body.GetRawText());
 
-            foreach (Anchor element in anchors.anchors){
-                _context.Anchor.Add(element);
+            foreach (POSTAnchor element in anchors.anchors){
+
+                Anchor tmp = new Anchor();
+                SceneAsset asset = _context.SceneAsset.Find(element.assetId);
+
+                tmp.AnchorId = element.anchorId;
+                tmp.AssetId = element.assetId;
+                tmp.Scale = element.scale;
+                tmp.Asset = asset;
+
+                _context.Anchor.Add(tmp);
                 await _context.SaveChangesAsync();
             }
 
