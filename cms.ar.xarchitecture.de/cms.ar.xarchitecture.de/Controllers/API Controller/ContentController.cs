@@ -8,12 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
-using Microsoft.Extensions.FileProviders;
-using System.Web;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.Http;
+
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -25,15 +21,15 @@ namespace cms.ar.xarchitecture.de.Controllers
     public class ContentController : ControllerBase
     {
         private readonly cmsDatabaseContext _context;
-        private readonly IWebHostEnvironment _hostingEnvironment;
         string host;
+        string prot;
 
         //public ContentController(cmsDatabaseContext context, IWebHostEnvironment hostingEnvironment, FileService fileService)
-        public ContentController(cmsDatabaseContext context, IWebHostEnvironment hostingEnvironment, IHttpContextAccessor httpContextAccessor)
+        public ContentController(cmsDatabaseContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
-            _hostingEnvironment = hostingEnvironment;
-            host = httpContextAccessor.HttpContext.Request.Host.Value; 
+            host = httpContextAccessor.HttpContext.Request.Host.Value;
+            prot = httpContextAccessor.HttpContext.Request.Scheme;
         }
 
         // GET: api/Content
@@ -138,42 +134,28 @@ namespace cms.ar.xarchitecture.de.Controllers
 
         string mapFilenameToDownloadLink(RessourceType ressourceType, string filename)
         {
+            string controllerPath = prot + "://" + host + "/Download/Get?";
             string fullpath = "";
 
             switch ((int)ressourceType)
             {
                 case (int)RessourceType.asset:
-                    fullpath = host + "/content/assets/" + filename;
+                    fullpath = controllerPath + "type=assets&file=" + filename;
                     break;
                 case (int)RessourceType.marker:
-                    fullpath = host + "/content/marker/" + filename; 
+                    fullpath = controllerPath + "type=marker&file=" + filename;
                     break;
                 case (int)RessourceType.thumbnail:
-                    fullpath = host + "/content/thumbnails/" + filename;
+                    fullpath = controllerPath + "type=thumbnails&file=" + filename;
                     break;
                 case (int)RessourceType.worldmap:
-                    fullpath = host + "/content/worldmaps/" + filename;
+                    fullpath = controllerPath + "type=worldmaps&file=" + filename;
                     break;
                 default:
                     fullpath = "";
                     break;
             }
             return fullpath;
-        }
-
-        public string GetMimeMapping(string fileName)
-        {
-            var provider = new FileExtensionContentTypeProvider();
-
-            //add custom mime-mappings
-            provider.Mappings.Add(".gltf", "model/gltf+json");
-
-            string contentType;
-            if (!provider.TryGetContentType(fileName, out contentType))
-            {
-                contentType = "application/octet-stream";
-            }
-            return contentType;
         }
 
         string mapAssetType(int? ID)
