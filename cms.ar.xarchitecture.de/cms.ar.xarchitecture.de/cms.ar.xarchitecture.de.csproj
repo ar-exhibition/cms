@@ -31,4 +31,8 @@
 		<PackageReference Include="Vlingo.UUID" Version="0.8.2" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Include="wwwroot\ModelViewer\Index.html" />
+	</ItemGroup>
+
 </Project>

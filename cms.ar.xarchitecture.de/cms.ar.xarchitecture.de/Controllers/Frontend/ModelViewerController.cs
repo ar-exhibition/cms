@@ -21,7 +21,7 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // GET: ModelViewerController
         public ActionResult Index()
         {
-            string path = Path.Combine(_hostingEnvironment.ContentRootPath,"Views", "ModelViewer", "index.html");
+            string path = Path.Combine(_hostingEnvironment.WebRootPath, "ModelViewer", "Index.html");
             return PhysicalFile(path, "text/html");
         }
     }
