@@ -90,6 +90,11 @@ namespace cms.ar.xarchitecture.de
                 endpoints.MapControllerRoute(
                     name: "CRUD_Course",
                     pattern: "{controller=Courses}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "Model Viewer",
+                    pattern: "{controller=ModelViewer}/{action=Index}");
+                    
             });
         }
     }
