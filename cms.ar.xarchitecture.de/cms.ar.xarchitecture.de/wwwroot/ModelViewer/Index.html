@@ -40,6 +40,7 @@
                 container.appendChild(h2);
                 const modelViewer = document.createElement("model-viewer");
                 modelViewer.src = asset.link;
+                modelViewer.setAttribute("ar", "true");
                 container.appendChild(modelViewer);
                 document.body.appendChild(container);
             }
