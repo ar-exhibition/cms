@@ -8,11 +8,11 @@ namespace cms.ar.xarchitecture.de.Models.Wrapper
 {
     public class AssetWrapper
     {
-        // these will be created
         public SceneAsset sceneAsset;
         public Creator creator;
 
-        //I need:
+        public virtual Course CourseNameNavigation { get; set; }
+        public virtual Studies ProgrammeNavigation { get; set; }
 
     }
 }

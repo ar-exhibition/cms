@@ -28,8 +28,9 @@ namespace cms.ar.xarchitecture.de.Controllers
         // GET: Upload/Create
         public IActionResult Create()
         {
-            ViewData["Programmes"] = new SelectList(_context.Studies, "Programme", "Programme");
-            ViewData["Courses"] = new SelectList(_context.Course, "Course", "Course");
+            ViewData["CourseName"] = new SelectList(_context.Course, "CourseId", "CourseName");
+            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme");
+
             return View();
         }
 
