@@ -2,33 +2,32 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace cms.ar.xarchitecture.de.cmsDatabase
+namespace cms.ar.xarchitecture.de.cmsXARCH
 {
-    public partial class cmsDatabaseContext : DbContext
+    public partial class cmsXARCHContext : DbContext
     {
-        public cmsDatabaseContext()
+        public cmsXARCHContext()
         {
         }
 
-        public cmsDatabaseContext(DbContextOptions<cmsDatabaseContext> options)
+        public cmsXARCHContext(DbContextOptions<cmsXARCHContext> options)
             : base(options)
         {
         }
 
         public virtual DbSet<Anchor> Anchor { get; set; }
-        public virtual DbSet<AssetType> AssetType { get; set; }
         public virtual DbSet<Course> Course { get; set; }
         public virtual DbSet<Creator> Creator { get; set; }
         public virtual DbSet<Scene> Scene { get; set; }
         public virtual DbSet<SceneAsset> SceneAsset { get; set; }
         public virtual DbSet<Studies> Studies { get; set; }
+        public virtual DbSet<Term> Term { get; set; }
+        public virtual DbSet<Thumbnail> Thumbnail { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySQL("server=luziffer.ddnss.de;port=3306;user=root;password=vdh;database=cmsDatabase");
             }
         }
 
@@ -41,7 +40,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .IsUnique();
 
                 entity.HasIndex(e => e.AssetId)
-                    .HasName("fk_Anchor_SceneAsset_idx");
+                    .HasName("fk_Anchor_SceneAsset1_idx");
 
                 entity.Property(e => e.AnchorId)
                     .HasColumnName("AnchorID")
@@ -59,16 +58,6 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .HasConstraintName("fk_Anchor_SceneAsset");
             });
 
-            modelBuilder.Entity<AssetType>(entity =>
-            {
-                entity.Property(e => e.AssetTypeId).HasColumnName("AssetTypeID");
-
-                entity.Property(e => e.Designator)
-                    .IsRequired()
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
-            });
-
             modelBuilder.Entity<Course>(entity =>
             {
                 entity.HasIndex(e => e.CourseId)
@@ -76,22 +65,23 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .IsUnique();
 
                 entity.HasIndex(e => e.Programme)
-                    .HasName("fk_Course_Studies_idx");
+                    .HasName("fk_Course_Studies1_idx");
+
+                entity.HasIndex(e => e.Term)
+                    .HasName("fk_Course_Term1_idx");
 
                 entity.Property(e => e.CourseId).HasColumnName("CourseID");
 
-                entity.Property(e => e.CourseName)
-                    .IsRequired()
+                entity.Property(e => e.Course1)
+                    .HasColumnName("Course")
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Programme)
-                    .IsRequired()
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Term)
-                    .IsRequired()
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
@@ -99,8 +89,13 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .WithMany(p => p.Course)
                     .HasPrincipalKey(p => p.Programme)
                     .HasForeignKey(d => d.Programme)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Course_Studies");
+
+                entity.HasOne(d => d.TermNavigation)
+                    .WithMany(p => p.Course)
+                    .HasPrincipalKey(p => p.Term1)
+                    .HasForeignKey(d => d.Term)
+                    .HasConstraintName("fk_Course_Term");
             });
 
             modelBuilder.Entity<Creator>(entity =>
@@ -110,17 +105,16 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .IsUnique();
 
                 entity.HasIndex(e => e.Programme)
-                    .HasName("fk_Creator_Studies_idx");
+                    .HasName("fk_Creator_Studies1_idx");
 
                 entity.Property(e => e.CreatorId).HasColumnName("CreatorID");
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
+                entity.Property(e => e.Creator1)
+                    .HasColumnName("Creator")
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Programme)
-                    .IsRequired()
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
@@ -128,7 +122,6 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .WithMany(p => p.Creator)
                     .HasPrincipalKey(p => p.Programme)
                     .HasForeignKey(d => d.Programme)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_Creator_Studies");
             });
 
@@ -140,26 +133,18 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
 
                 entity.Property(e => e.SceneId).HasColumnName("SceneID");
 
-                entity.Property(e => e.MarkerFile)
-                    .HasMaxLength(1024)
-                    .IsUnicode(false)
-                    .HasComment("Link");
+                entity.Property(e => e.FileUuid)
+                    .HasColumnName("FileUUID")
+                    .HasMaxLength(45)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.MarkerName)
+                entity.Property(e => e.MarkerUuid)
+                    .HasColumnName("MarkerUUID")
                     .HasMaxLength(45)
                     .IsUnicode(false)
                     .HasComment("UUID");
 
-                entity.Property(e => e.Name)
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SceneFile)
-                    .HasMaxLength(1024)
-                    .IsUnicode(false)
-                    .HasComment("Link");
-
-                entity.Property(e => e.SceneFileName)
+                entity.Property(e => e.SceneName)
                     .HasMaxLength(45)
                     .IsUnicode(false);
             });
@@ -173,84 +158,102 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
                     .HasName("AssetID_UNIQUE")
                     .IsUnique();
 
-                entity.HasIndex(e => e.AssetType)
-                    .HasName("fk_SceneAsset_AssetType_idx");
-
-                entity.HasIndex(e => e.CourseName)
-                    .HasName("fk_SceneAsset_Course_idx");
+                entity.HasIndex(e => e.Course)
+                    .HasName("fk_SceneAsset_Course1_idx");
 
                 entity.HasIndex(e => e.Creator)
-                    .HasName("fk_SceneAsset_Creator_idx");
+                    .HasName("fk_SceneAsset_Creator1_idx");
+
+                entity.HasIndex(e => e.ThumbnailUuid)
+                    .HasName("ThumbnailUUID_UNIQUE")
+                    .IsUnique();
 
                 entity.Property(e => e.AssetId).HasColumnName("AssetID");
 
-                entity.Property(e => e.Color)
+                entity.Property(e => e.AssetName)
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Filename)
+                entity.Property(e => e.ExternalLink)
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Filetype)
+                entity.Property(e => e.FileUuid)
+                    .HasColumnName("FileUUID")
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Link)
-                    .HasMaxLength(1024)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Name)
+                entity.Property(e => e.ThumbnailUuid)
+                    .HasColumnName("ThumbnailUUID")
                     .HasMaxLength(45)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Power)
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Thumbnail)
-                    .HasMaxLength(1024)
-                    .IsUnicode(false)
-                    .HasComment("Also Link to File!");
-
-                entity.Property(e => e.Type)
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.AssetTypeNavigation)
+                entity.HasOne(d => d.CourseNavigation)
                     .WithMany(p => p.SceneAsset)
-                    .HasForeignKey(d => d.AssetType)
-                    .HasConstraintName("fk_SceneAsset_AssetType");
-
-                entity.HasOne(d => d.CourseNameNavigation)
-                    .WithMany(p => p.SceneAsset)
-                    .HasForeignKey(d => d.CourseName)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasForeignKey(d => d.Course)
                     .HasConstraintName("fk_SceneAsset_Course");
 
                 entity.HasOne(d => d.CreatorNavigation)
                     .WithMany(p => p.SceneAsset)
                     .HasForeignKey(d => d.Creator)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_SceneAsset_Creator");
+
+                entity.HasOne(d => d.ThumbnailUu)
+                    .WithOne(p => p.SceneAsset)
+                    .HasPrincipalKey<Thumbnail>(p => p.ThumbnailUuid)
+                    .HasForeignKey<SceneAsset>(d => d.ThumbnailUuid)
+                    .HasConstraintName("fk_SceneAsset_Thumbnail1");
             });
 
             modelBuilder.Entity<Studies>(entity =>
             {
-                entity.HasIndex(e => e.Id)
-                    .HasName("ID_UNIQUE")
-                    .IsUnique();
+                entity.HasKey(e => e.ProgrammeId)
+                    .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.Programme)
                     .HasName("Studies_UNIQUE")
                     .IsUnique();
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
+                entity.HasIndex(e => e.ProgrammeId)
+                    .HasName("ID_UNIQUE")
+                    .IsUnique();
+
+                entity.Property(e => e.ProgrammeId)
+                    .HasColumnName("ProgrammeID")
                     .HasColumnType("int unsigned");
 
                 entity.Property(e => e.Programme)
                     .IsRequired()
+                    .HasMaxLength(45)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Term>(entity =>
+            {
+                entity.HasIndex(e => e.Term1)
+                    .HasName("Termn_UNIQUE")
+                    .IsUnique();
+
+                entity.Property(e => e.TermId).HasColumnName("TermID");
+
+                entity.Property(e => e.Term1)
+                    .IsRequired()
+                    .HasColumnName("Term")
+                    .HasMaxLength(45)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Thumbnail>(entity =>
+            {
+                entity.HasIndex(e => e.ThumbnailUuid)
+                    .HasName("ThumbnailUUID_UNIQUE")
+                    .IsUnique();
+
+                entity.Property(e => e.ThumbnailId).HasColumnName("ThumbnailID");
+
+                entity.Property(e => e.ThumbnailUuid)
+                    .IsRequired()
+                    .HasColumnName("ThumbnailUUID")
                     .HasMaxLength(45)
                     .IsUnicode(false);
             });
