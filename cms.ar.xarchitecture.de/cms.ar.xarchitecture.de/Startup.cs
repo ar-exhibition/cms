@@ -39,9 +39,7 @@ namespace cms.ar.xarchitecture.de
             services.AddControllersWithViews();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddSingleton<IFileProvider>(
-                new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+            services.AddSingleton<IFileProvider>(new PhysicalFileProvider((Directory.GetCurrentDirectory())));
 
             services.AddDbContext<cmsDatabaseContext>(options => options.UseMySQL(_options.GetConnectionString()));
         }
@@ -60,7 +58,8 @@ namespace cms.ar.xarchitecture.de
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            //app.UseStaticFiles();
+
+            app.UseStaticFiles();
 
             app.UseRouting();
             app.UseAuthorization();
@@ -90,6 +89,11 @@ namespace cms.ar.xarchitecture.de
                 endpoints.MapControllerRoute(
                     name: "CRUD_Course",
                     pattern: "{controller=Courses}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "Model Viewer",
+                    pattern: "{controller=ModelViewer}/{action=Index}");
+                    
             });
         }
     }
