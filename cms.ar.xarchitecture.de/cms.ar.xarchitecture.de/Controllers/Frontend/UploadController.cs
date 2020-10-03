@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Vlingo.UUID;
+using cms.ar.xarchitecture.de.cmsDatabase;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -14,11 +16,21 @@ namespace cms.ar.xarchitecture.de.Controllers
     {
         NameBasedGenerator uuidCreator;
         private readonly IFileProvider fileProvider;
+        cmsDatabaseContext _context;
 
-        public UploadController(IFileProvider fileProvider)
+        public UploadController(IFileProvider fileProvider, cmsDatabaseContext context)
         {
             this.fileProvider = fileProvider;
             uuidCreator = new NameBasedGenerator(HashType.SHA1);
+            _context = context;
+        }
+
+        // GET: Upload/Create
+        public IActionResult Create()
+        {
+            ViewData["Programmes"] = new SelectList(_context.Studies, "Programme", "Programme");
+            ViewData["Courses"] = new SelectList(_context.Course, "Course", "Course");
+            return View();
         }
 
         [HttpPost]

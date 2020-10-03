@@ -1,0 +1,59 @@
+﻿@model cms.ar.xarchitecture.de.Models.Wrapper.AssetWrapper
+
+@{
+    ViewData["Title"] = "Upload your 3D Model";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Upload here</h1>
+
+<h4>SceneAsset</h4>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="creator.Name" class="control-label"></label>
+                <input asp-for="creator.Name" class="form-control" />
+                <span asp-validation-for="creator.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="programme" class="control-label"></label>
+                <select asp-for="programme" class="form-control" asp-items="ViewData.programme"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="course.CourseName" class="control-label"></label>
+                <select asp-for="course.CourseName" class="form-control" asp-items="ViewData.CourseName"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="sceneAsset.Name" class="control-label"></label>
+                <input asp-for="sceneAsset.Name" class="form-control" />
+                <span asp-validation-for="sceneAsset.Name" class="text-danger"></span>
+            </div>
+
+            @*Below goes the field to select or drag and drop file*@
+
+            @*<div class="form-group">
+            <label asp-for="Filename" class="control-label"></label>
+            <input asp-for="Filename" class="form-control" />
+            <span asp-validation-for="Filename" class="text-danger"></span>
+        </div>*@
+
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
