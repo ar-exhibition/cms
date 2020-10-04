@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using cms.ar.xarchitecture.de.cmsXARCH;
+using Microsoft.AspNetCore.Http;
 
 namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
@@ -149,4 +150,11 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
             return _context.Scene.Any(e => e.SceneId == id);
         }
     }
+
+    public class SceneSubmissionValues
+    {
+        public string SceneName { get; set; }
+        public IFormFile FileToUpload { get; set; }
+    }
+
 }
