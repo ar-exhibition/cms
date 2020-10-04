@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using cms.ar.xarchitecture.de.cmsDatabase;
+using cms.ar.xarchitecture.de.cmsXARCH;
 
-namespace cms.ar.xarchitecture.de.Controllers
+namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
     public class SceneAssetsController : Controller
     {
-        private readonly cmsDatabaseContext _context;
+        private readonly cmsXARCHContext _context;
 
-        public SceneAssetsController(cmsDatabaseContext context)
+        public SceneAssetsController(cmsXARCHContext context)
         {
             _context = context;
         }
@@ -21,8 +21,8 @@ namespace cms.ar.xarchitecture.de.Controllers
         // GET: SceneAssets
         public async Task<IActionResult> Index()
         {
-            var cmsDatabaseContext = _context.SceneAsset.Include(s => s.AssetTypeNavigation).Include(s => s.CourseNameNavigation).Include(s => s.CreatorNavigation);
-            return View(await cmsDatabaseContext.ToListAsync());
+            var cmsXARCHContext = _context.SceneAsset.Include(s => s.CourseNavigation).Include(s => s.CreatorNavigation).Include(s => s.ThumbnailUu);
+            return View(await cmsXARCHContext.ToListAsync());
         }
 
         // GET: SceneAssets/Details/5
@@ -34,9 +34,9 @@ namespace cms.ar.xarchitecture.de.Controllers
             }
 
             var sceneAsset = await _context.SceneAsset
-                .Include(s => s.AssetTypeNavigation)
-                .Include(s => s.CourseNameNavigation)
+                .Include(s => s.CourseNavigation)
                 .Include(s => s.CreatorNavigation)
+                .Include(s => s.ThumbnailUu)
                 .FirstOrDefaultAsync(m => m.AssetId == id);
             if (sceneAsset == null)
             {
@@ -49,9 +49,9 @@ namespace cms.ar.xarchitecture.de.Controllers
         // GET: SceneAssets/Create
         public IActionResult Create()
         {
-            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "Designator");
-            ViewData["CourseName"] = new SelectList(_context.Course, "CourseId", "CourseName");
-            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Name");
+            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "CourseId");
+            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "CreatorId");
+            ViewData["ThumbnailUuid"] = new SelectList(_context.Thumbnail, "ThumbnailUuid", "ThumbnailUuid");
             return View();
         }
 
@@ -60,7 +60,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AssetId,Creator,CourseName,Name,Filename,Filetype,Date,Link,Thumbnail,Type,Power,Color,Deleted,AssetType")] SceneAsset sceneAsset)
+        public async Task<IActionResult> Create([Bind("AssetId,Creator,Course,AssetName,FileUuid,ExternalLink,ThumbnailUuid,CreationDate,Deleted")] SceneAsset sceneAsset)
         {
             if (ModelState.IsValid)
             {
@@ -68,9 +68,9 @@ namespace cms.ar.xarchitecture.de.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "Designator", sceneAsset.AssetType);
-            ViewData["CourseName"] = new SelectList(_context.Course, "CourseId", "CourseName", sceneAsset.CourseName);
-            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Name", sceneAsset.Creator);
+            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "CourseId", sceneAsset.Course);
+            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "CreatorId", sceneAsset.Creator);
+            ViewData["ThumbnailUuid"] = new SelectList(_context.Thumbnail, "ThumbnailUuid", "ThumbnailUuid", sceneAsset.ThumbnailUuid);
             return View(sceneAsset);
         }
 
@@ -87,9 +87,9 @@ namespace cms.ar.xarchitecture.de.Controllers
             {
                 return NotFound();
             }
-            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "Designator", sceneAsset.AssetType);
-            ViewData["CourseName"] = new SelectList(_context.Course, "CourseId", "CourseName", sceneAsset.CourseName);
-            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Name", sceneAsset.Creator);
+            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "CourseId", sceneAsset.Course);
+            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "CreatorId", sceneAsset.Creator);
+            ViewData["ThumbnailUuid"] = new SelectList(_context.Thumbnail, "ThumbnailUuid", "ThumbnailUuid", sceneAsset.ThumbnailUuid);
             return View(sceneAsset);
         }
 
@@ -98,7 +98,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AssetId,Creator,CourseName,Name,Filename,Filetype,Date,Link,Thumbnail,Type,Power,Color,Deleted,AssetType")] SceneAsset sceneAsset)
+        public async Task<IActionResult> Edit(int id, [Bind("AssetId,Creator,Course,AssetName,FileUuid,ExternalLink,ThumbnailUuid,CreationDate,Deleted")] SceneAsset sceneAsset)
         {
             if (id != sceneAsset.AssetId)
             {
@@ -125,9 +125,9 @@ namespace cms.ar.xarchitecture.de.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AssetType"] = new SelectList(_context.AssetType, "AssetTypeId", "Designator", sceneAsset.AssetType);
-            ViewData["CourseName"] = new SelectList(_context.Course, "CourseId", "CourseName", sceneAsset.CourseName);
-            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "Name", sceneAsset.Creator);
+            ViewData["Course"] = new SelectList(_context.Course, "CourseId", "CourseId", sceneAsset.Course);
+            ViewData["Creator"] = new SelectList(_context.Creator, "CreatorId", "CreatorId", sceneAsset.Creator);
+            ViewData["ThumbnailUuid"] = new SelectList(_context.Thumbnail, "ThumbnailUuid", "ThumbnailUuid", sceneAsset.ThumbnailUuid);
             return View(sceneAsset);
         }
 
@@ -140,9 +140,9 @@ namespace cms.ar.xarchitecture.de.Controllers
             }
 
             var sceneAsset = await _context.SceneAsset
-                .Include(s => s.AssetTypeNavigation)
-                .Include(s => s.CourseNameNavigation)
+                .Include(s => s.CourseNavigation)
                 .Include(s => s.CreatorNavigation)
+                .Include(s => s.ThumbnailUu)
                 .FirstOrDefaultAsync(m => m.AssetId == id);
             if (sceneAsset == null)
             {

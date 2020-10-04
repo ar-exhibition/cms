@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using cms.ar.xarchitecture.de.cmsDatabase;
+using cms.ar.xarchitecture.de.cmsXARCH;
 
-namespace cms.ar.xarchitecture.de.Controllers
+namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
     public class CoursesController : Controller
     {
-        private readonly cmsDatabaseContext _context;
+        private readonly cmsXARCHContext _context;
 
-        public CoursesController(cmsDatabaseContext context)
+        public CoursesController(cmsXARCHContext context)
         {
             _context = context;
         }
@@ -21,8 +21,8 @@ namespace cms.ar.xarchitecture.de.Controllers
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            var cmsDatabaseContext = _context.Course.Include(c => c.ProgrammeNavigation);
-            return View(await cmsDatabaseContext.ToListAsync());
+            var cmsXARCHContext = _context.Course.Include(c => c.ProgrammeNavigation).Include(c => c.TermNavigation);
+            return View(await cmsXARCHContext.ToListAsync());
         }
 
         // GET: Courses/Details/5
@@ -35,6 +35,7 @@ namespace cms.ar.xarchitecture.de.Controllers
 
             var course = await _context.Course
                 .Include(c => c.ProgrammeNavigation)
+                .Include(c => c.TermNavigation)
                 .FirstOrDefaultAsync(m => m.CourseId == id);
             if (course == null)
             {
@@ -48,6 +49,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         public IActionResult Create()
         {
             ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme");
+            ViewData["Term"] = new SelectList(_context.Term, "Term1", "Term1");
             return View();
         }
 
@@ -56,7 +58,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseId,Programme,CourseName,Term")] Course course)
+        public async Task<IActionResult> Create([Bind("CourseId,Programme,Course1,Term")] Course course)
         {
             if (ModelState.IsValid)
             {
@@ -65,6 +67,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", course.Programme);
+            ViewData["Term"] = new SelectList(_context.Term, "Term1", "Term1", course.Term);
             return View(course);
         }
 
@@ -82,6 +85,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 return NotFound();
             }
             ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", course.Programme);
+            ViewData["Term"] = new SelectList(_context.Term, "Term1", "Term1", course.Term);
             return View(course);
         }
 
@@ -90,7 +94,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CourseId,Programme,CourseName,Term")] Course course)
+        public async Task<IActionResult> Edit(int id, [Bind("CourseId,Programme,Course1,Term")] Course course)
         {
             if (id != course.CourseId)
             {
@@ -118,6 +122,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", course.Programme);
+            ViewData["Term"] = new SelectList(_context.Term, "Term1", "Term1", course.Term);
             return View(course);
         }
 
@@ -131,6 +136,7 @@ namespace cms.ar.xarchitecture.de.Controllers
 
             var course = await _context.Course
                 .Include(c => c.ProgrammeNavigation)
+                .Include(c => c.TermNavigation)
                 .FirstOrDefaultAsync(m => m.CourseId == id);
             if (course == null)
             {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using cms.ar.xarchitecture.de.cmsDatabase;
+using cms.ar.xarchitecture.de.cmsXARCH;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -13,9 +13,9 @@ namespace cms.ar.xarchitecture.de.Controllers
     [ApiController]
     public class StudiesAPIController : ControllerBase
     {
-        private readonly cmsDatabaseContext _context;
+        private readonly cmsXARCHContext _context;
 
-        public StudiesAPIController(cmsDatabaseContext context)
+        public StudiesAPIController(cmsXARCHContext context)
         {
             _context = context;
         }
@@ -47,7 +47,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStudies(int id, Studies studies)
         {
-            if (id != studies.Id)
+            if (id != studies.ProgrammeId)
             {
                 return BadRequest();
             }
@@ -82,7 +82,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             _context.Studies.Add(studies);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetStudies", new { id = studies.Id }, studies);
+            return CreatedAtAction("GetStudies", new { id = studies.ProgrammeId }, studies);
         }
 
         // DELETE: api/StudiesAPI/5
@@ -103,7 +103,7 @@ namespace cms.ar.xarchitecture.de.Controllers
 
         private bool StudiesExists(int id)
         {
-            return _context.Studies.Any(e => e.Id == id);
+            return _context.Studies.Any(e => e.ProgrammeId == id);
         }
     }
 }

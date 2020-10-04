@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using cms.ar.xarchitecture.de.cmsDatabase;
+using cms.ar.xarchitecture.de.cmsXARCH;
 
-namespace cms.ar.xarchitecture.de.Controllers
+namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
     public class ScenesController : Controller
     {
-        private readonly cmsDatabaseContext _context;
+        private readonly cmsXARCHContext _context;
 
-        public ScenesController(cmsDatabaseContext context)
+        public ScenesController(cmsXARCHContext context)
         {
             _context = context;
         }
@@ -53,7 +53,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SceneId,Name,SceneFile,SceneFileName,MarkerFile,MarkerName")] Scene scene)
+        public async Task<IActionResult> Create([Bind("SceneId,SceneName,FileUuid,MarkerUuid")] Scene scene)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SceneId,Name,SceneFile,SceneFileName,MarkerFile,MarkerName")] Scene scene)
+        public async Task<IActionResult> Edit(int id, [Bind("SceneId,SceneName,FileUuid,MarkerUuid")] Scene scene)
         {
             if (id != scene.SceneId)
             {

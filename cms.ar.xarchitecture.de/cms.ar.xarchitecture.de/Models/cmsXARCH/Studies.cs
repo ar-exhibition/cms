@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace cms.ar.xarchitecture.de.cmsDatabase
+namespace cms.ar.xarchitecture.de.cmsXARCH
 {
     public partial class Studies
     {
@@ -11,7 +11,7 @@ namespace cms.ar.xarchitecture.de.cmsDatabase
             Creator = new HashSet<Creator>();
         }
 
-        public int Id { get; set; }
+        public int ProgrammeId { get; set; }
         public string Programme { get; set; }
 
         public virtual ICollection<Course> Course { get; set; }

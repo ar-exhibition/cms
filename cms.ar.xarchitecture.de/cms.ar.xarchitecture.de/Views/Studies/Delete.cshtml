@@ -1,4 +1,4 @@
-﻿@model cms.ar.xarchitecture.de.cmsDatabase.Studies
+﻿@model cms.ar.xarchitecture.de.cmsXARCH.Studies
 
 @{
     ViewData["Title"] = "Delete";
@@ -21,7 +21,7 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ProgrammeId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

@@ -1,4 +1,4 @@
-﻿using cms.ar.xarchitecture.de.cmsDatabase;
+﻿using cms.ar.xarchitecture.de.cmsXARCH;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,10 +63,10 @@ namespace cms.ar.xarchitecture.de.Models
 
     public class creator
     {
-        public creator(int id, cmsDatabaseContext _context)
+        public creator(int? id, cmsXARCHContext _context)
         {
             Creator record = _context.Creator.Find(id);
-            this.name = record.Name;
+            this.name = record.Creator1;
             this.studies = record.Programme;
         }
 
@@ -76,10 +76,10 @@ namespace cms.ar.xarchitecture.de.Models
 
     public class course
     {
-        public course(int id, cmsDatabaseContext _context)
+        public course(int? id, cmsXARCHContext _context)
         {
             Course record = _context.Course.Find(id);
-            this.name = record.CourseName;
+            this.name = record.Course1;
             this.term = record.Term;
         }
         public string name { get; set; }

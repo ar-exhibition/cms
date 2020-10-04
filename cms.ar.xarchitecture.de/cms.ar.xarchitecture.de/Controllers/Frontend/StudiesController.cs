@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using cms.ar.xarchitecture.de.cmsDatabase;
+using cms.ar.xarchitecture.de.cmsXARCH;
 
-namespace cms.ar.xarchitecture.de.Controllers
+namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
     public class StudiesController : Controller
     {
-        private readonly cmsDatabaseContext _context;
+        private readonly cmsXARCHContext _context;
 
-        public StudiesController(cmsDatabaseContext context)
+        public StudiesController(cmsXARCHContext context)
         {
             _context = context;
         }
@@ -33,7 +33,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             }
 
             var studies = await _context.Studies
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ProgrammeId == id);
             if (studies == null)
             {
                 return NotFound();
@@ -53,7 +53,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Programme")] Studies studies)
+        public async Task<IActionResult> Create([Bind("ProgrammeId,Programme")] Studies studies)
         {
             if (ModelState.IsValid)
             {
@@ -85,9 +85,9 @@ namespace cms.ar.xarchitecture.de.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Programme")] Studies studies)
+        public async Task<IActionResult> Edit(int id, [Bind("ProgrammeId,Programme")] Studies studies)
         {
-            if (id != studies.Id)
+            if (id != studies.ProgrammeId)
             {
                 return NotFound();
             }
@@ -101,7 +101,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudiesExists(studies.Id))
+                    if (!StudiesExists(studies.ProgrammeId))
                     {
                         return NotFound();
                     }
@@ -124,7 +124,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             }
 
             var studies = await _context.Studies
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ProgrammeId == id);
             if (studies == null)
             {
                 return NotFound();
@@ -146,7 +146,7 @@ namespace cms.ar.xarchitecture.de.Controllers
 
         private bool StudiesExists(int id)
         {
-            return _context.Studies.Any(e => e.Id == id);
+            return _context.Studies.Any(e => e.ProgrammeId == id);
         }
     }
 }

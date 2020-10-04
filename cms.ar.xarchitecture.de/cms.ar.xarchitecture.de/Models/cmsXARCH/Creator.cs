@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace cms.ar.xarchitecture.de.cmsDatabase
+namespace cms.ar.xarchitecture.de.cmsXARCH
 {
-    public partial class Course
+    public partial class Creator
     {
-        public Course()
+        public Creator()
         {
             SceneAsset = new HashSet<SceneAsset>();
         }
 
-        public int CourseId { get; set; }
+        public int CreatorId { get; set; }
+        public string Creator1 { get; set; }
         public string Programme { get; set; }
-        public string CourseName { get; set; }
-        public string Term { get; set; }
 
         public virtual Studies ProgrammeNavigation { get; set; }
         public virtual ICollection<SceneAsset> SceneAsset { get; set; }

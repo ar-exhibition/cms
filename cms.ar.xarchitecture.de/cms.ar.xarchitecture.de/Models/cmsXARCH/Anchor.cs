@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace cms.ar.xarchitecture.de.cmsDatabase
+namespace cms.ar.xarchitecture.de.cmsXARCH
 {
     public partial class Anchor
     {
