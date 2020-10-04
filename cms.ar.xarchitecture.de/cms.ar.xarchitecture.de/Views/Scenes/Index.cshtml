@@ -1,4 +1,4 @@
-﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsDatabase.Scene>
+﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsXARCH.Scene>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,19 +14,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.SceneName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SceneFile)
+                @Html.DisplayNameFor(model => model.FileUuid)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SceneFileName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MarkerFile)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MarkerName)
+                @Html.DisplayNameFor(model => model.MarkerUuid)
             </th>
             <th></th>
         </tr>
@@ -35,19 +29,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.SceneName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SceneFile)
+                @Html.DisplayFor(modelItem => item.FileUuid)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SceneFileName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MarkerFile)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MarkerName)
+                @Html.DisplayFor(modelItem => item.MarkerUuid)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.SceneId">Edit</a> |

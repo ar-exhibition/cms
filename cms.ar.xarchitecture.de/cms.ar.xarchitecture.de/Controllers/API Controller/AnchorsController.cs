@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using cms.ar.xarchitecture.de.cmsDatabase;
+using cms.ar.xarchitecture.de.cmsXARCH;
 using cms.ar.xarchitecture.de.Models.Wrapper;
 
 //using Newtonsoft.Json;
@@ -18,9 +18,9 @@ namespace cms.ar.xarchitecture.de.Controllers
     [ApiController]
     public class AnchorsController : ControllerBase
     {
-        private readonly cmsDatabaseContext _context;
+        private readonly cmsXARCHContext _context;
 
-        public AnchorsController(cmsDatabaseContext context)
+        public AnchorsController(cmsXARCHContext context)
         {
             _context = context;
         }

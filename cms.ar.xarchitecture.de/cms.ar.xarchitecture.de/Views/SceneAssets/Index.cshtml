@@ -1,4 +1,4 @@
-﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsDatabase.SceneAsset>
+﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsXARCH.SceneAsset>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,43 +14,28 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.AssetName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Filename)
+                @Html.DisplayNameFor(model => model.FileUuid)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Filetype)
+                @Html.DisplayNameFor(model => model.ExternalLink)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Link)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Thumbnail)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Power)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Color)
+                @Html.DisplayNameFor(model => model.CreationDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Deleted)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AssetTypeNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CourseNameNavigation)
+                @Html.DisplayNameFor(model => model.CourseNavigation)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CreatorNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ThumbnailUu)
             </th>
             <th></th>
         </tr>
@@ -59,43 +44,28 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.AssetName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Filename)
+                @Html.DisplayFor(modelItem => item.FileUuid)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Filetype)
+                @Html.DisplayFor(modelItem => item.ExternalLink)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Link)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Thumbnail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Power)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Color)
+                @Html.DisplayFor(modelItem => item.CreationDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Deleted)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AssetTypeNavigation.Designator)
+                @Html.DisplayFor(modelItem => item.CourseNavigation.CourseId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CourseNameNavigation.CourseName)
+                @Html.DisplayFor(modelItem => item.CreatorNavigation.CreatorId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatorNavigation.Name)
+                @Html.DisplayFor(modelItem => item.ThumbnailUu.ThumbnailUuid)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.AssetId">Edit</a> |

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Vlingo.UUID;
-using cms.ar.xarchitecture.de.cmsDatabase;
+using cms.ar.xarchitecture.de.cmsXARCH;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -16,9 +16,9 @@ namespace cms.ar.xarchitecture.de.Controllers
     {
         NameBasedGenerator uuidCreator;
         private readonly IFileProvider fileProvider;
-        cmsDatabaseContext _context;
+        cmsXARCHContext _context;
 
-        public UploadController(IFileProvider fileProvider, cmsDatabaseContext context)
+        public UploadController(IFileProvider fileProvider, cmsXARCHContext context)
         {
             this.fileProvider = fileProvider;
             uuidCreator = new NameBasedGenerator(HashType.SHA1);

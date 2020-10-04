@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using cms.ar.xarchitecture.de.cmsDatabase;
+using cms.ar.xarchitecture.de.cmsXARCH;
 using MySQL.Data.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Renci.SshNet;
@@ -41,7 +41,7 @@ namespace cms.ar.xarchitecture.de
 
             services.AddSingleton<IFileProvider>(new PhysicalFileProvider((Directory.GetCurrentDirectory())));
 
-            services.AddDbContext<cmsDatabaseContext>(options => options.UseMySQL(_options.GetConnectionString()));
+            services.AddDbContext<cmsXARCHContext>(options => options.UseMySQL(_options.GetConnectionString()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

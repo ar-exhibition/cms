@@ -1,4 +1,4 @@
-﻿@model cms.ar.xarchitecture.de.cmsDatabase.SceneAsset
+﻿@model cms.ar.xarchitecture.de.cmsXARCH.SceneAsset
 
 @{
     ViewData["Title"] = "Delete";
@@ -13,58 +13,28 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.AssetName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.AssetName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Filename)
+            @Html.DisplayNameFor(model => model.FileUuid)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Filename)
+            @Html.DisplayFor(model => model.FileUuid)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Filetype)
+            @Html.DisplayNameFor(model => model.ExternalLink)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Filetype)
+            @Html.DisplayFor(model => model.ExternalLink)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
+            @Html.DisplayNameFor(model => model.CreationDate)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Link)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Link)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Thumbnail)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Thumbnail)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Power)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Power)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Color)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Color)
+            @Html.DisplayFor(model => model.CreationDate)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Deleted)
@@ -73,22 +43,22 @@
             @Html.DisplayFor(model => model.Deleted)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AssetTypeNavigation)
+            @Html.DisplayNameFor(model => model.CourseNavigation)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AssetTypeNavigation.Designator)
-        </dd class>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CourseNameNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CourseNameNavigation.CourseName)
+            @Html.DisplayFor(model => model.CourseNavigation.CourseId)
         </dd class>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CreatorNavigation)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatorNavigation.Name)
+            @Html.DisplayFor(model => model.CreatorNavigation.CreatorId)
+        </dd class>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ThumbnailUu)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ThumbnailUu.ThumbnailUuid)
         </dd class>
     </dl>
     

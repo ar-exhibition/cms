@@ -16,9 +16,9 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <label asp-for="creator.Name" class="control-label"></label>
-                <input asp-for="creator.Name" class="form-control" />
-                <span asp-validation-for="creator.Name" class="text-danger"></span>
+                <label asp-for="creator.Creator1" class="control-label"></label>
+                <input asp-for="creator.Creator1" class="form-control" />
+                <span asp-validation-for="creator.Creator1" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -27,14 +27,14 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="sceneAsset.CourseName" class="control-label"></label>
-                <select asp-for="sceneAsset.CourseName" class="form-control" asp-items="ViewBag.CourseName"></select>
+                <label asp-for="sceneAsset.Course" class="control-label"></label>
+                <select asp-for="sceneAsset.Course" class="form-control" asp-items="ViewBag.CourseName"></select>
             </div>
 
             <div class="form-group">
-                <label asp-for="sceneAsset.Name" class="control-label"></label>
-                <input asp-for="sceneAsset.Name" class="form-control" />
-                <span asp-validation-for="sceneAsset.Name" class="text-danger"></span>
+                <label asp-for="sceneAsset.AssetName" class="control-label"></label>
+                <input asp-for="sceneAsset.AssetName" class="form-control" />
+                <span asp-validation-for="sceneAsset.AssetName" class="text-danger"></span>
             </div>
 
             @*Below goes the field to select or drag and drop file*@

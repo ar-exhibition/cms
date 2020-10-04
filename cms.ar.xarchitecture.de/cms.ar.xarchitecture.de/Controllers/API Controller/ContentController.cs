@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using cms.ar.xarchitecture.de.cmsDatabase;
+using cms.ar.xarchitecture.de.cmsXARCH;
 using cms.ar.xarchitecture.de.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +16,11 @@ namespace cms.ar.xarchitecture.de.Controllers
     [ApiController]
     public class ContentController : ControllerBase
     {
-        private readonly cmsDatabaseContext _context;
+        private readonly cmsXARCHContext _context;
         string host;
         string prot;
 
-        public ContentController(cmsDatabaseContext context, IHttpContextAccessor httpContextAccessor)
+        public ContentController(cmsXARCHContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             host = httpContextAccessor.HttpContext.Request.Host.Value;
@@ -59,7 +59,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         {
         }
 
-        public async Task<String> getContent(cmsDatabaseContext _context)
+        public async Task<String> getContent(cmsXARCHContext _context)
         {
 
             Content content = new Content();
@@ -70,34 +70,16 @@ namespace cms.ar.xarchitecture.de.Controllers
 
             foreach (SceneAsset element in _assets)
             {
-                if (element.AssetType == (int)AssetTypes.light) //light
-                {
-                    lightassets temp = new lightassets();
+                sceneassets temp = new sceneassets();
 
-                    temp.assetId = element.AssetId;
-                    temp.type = element.Type;
-                    temp.power = element.Power;
-                    temp.color = element.Color;
-                    temp.assetType = mapAssetType(element.AssetType);
+                temp.assetId = element.AssetId;
+                temp.creator = new creator(element.Creator, _context);
+                temp.course = new course(element.Course, _context);
+                temp.name = element.AssetName;
+                temp.link = mapFilenameToDownloadLink(RessourceType.asset, element.FileUuid);
+                temp.thumbnail = mapFilenameToDownloadLink(RessourceType.thumbnail, element.ThumbnailUuid); //name of the thumbnail
 
-                    content.assets.Add(temp);
-                }
-
-                else //3d and everything else except light
-                {
-                    sceneassets temp = new sceneassets();
-
-                    temp.assetId = element.AssetId;
-                    temp.creator = new creator(element.Creator, _context);
-                    temp.course = new course(element.CourseName, _context);
-                    temp.name = element.Name;
-                    temp.link = mapFilenameToDownloadLink(RessourceType.asset, element.Filename);
-                    temp.thumbnail = mapFilenameToDownloadLink(RessourceType.thumbnail, element.Thumbnail); //name of the thumbnail
-                    temp.assetType = mapAssetType(element.AssetType);
-
-                    content.assets.Add(temp);
-                }
-
+                content.assets.Add(temp);
             }
 
             foreach (Anchor element in _anchors)
@@ -116,9 +98,9 @@ namespace cms.ar.xarchitecture.de.Controllers
                 scenes temp = new scenes();
 
                 temp.sceneId = element.SceneId;
-                temp.name = element.Name;
-                temp.worldMapLink = mapFilenameToDownloadLink(RessourceType.worldmap, element.SceneFileName);
-                temp.marker = new marker(element.MarkerName, mapFilenameToDownloadLink(RessourceType.marker, element.MarkerName));
+                temp.name = element.SceneName;
+                temp.worldMapLink = mapFilenameToDownloadLink(RessourceType.worldmap, element.FileUuid);
+                temp.marker = new marker(element.MarkerUuid, mapFilenameToDownloadLink(RessourceType.marker, element.MarkerUuid));
 
                 content.scenes.Add(temp);
             }

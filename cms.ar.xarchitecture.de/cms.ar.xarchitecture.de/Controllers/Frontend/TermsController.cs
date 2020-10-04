@@ -5,27 +5,26 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using cms.ar.xarchitecture.de.cmsDatabase;
+using cms.ar.xarchitecture.de.cmsXARCH;
 
-namespace cms.ar.xarchitecture.de.Controllers
+namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
-    public class CreatorsController : Controller
+    public class TermsController : Controller
     {
-        private readonly cmsDatabaseContext _context;
+        private readonly cmsXARCHContext _context;
 
-        public CreatorsController(cmsDatabaseContext context)
+        public TermsController(cmsXARCHContext context)
         {
             _context = context;
         }
 
-        // GET: Creators
+        // GET: Terms
         public async Task<IActionResult> Index()
         {
-            var cmsDatabaseContext = _context.Creator.Include(c => c.ProgrammeNavigation);
-            return View(await cmsDatabaseContext.ToListAsync());
+            return View(await _context.Term.ToListAsync());
         }
 
-        // GET: Creators/Details/5
+        // GET: Terms/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,42 +32,39 @@ namespace cms.ar.xarchitecture.de.Controllers
                 return NotFound();
             }
 
-            var creator = await _context.Creator
-                .Include(c => c.ProgrammeNavigation)
-                .FirstOrDefaultAsync(m => m.CreatorId == id);
-            if (creator == null)
+            var term = await _context.Term
+                .FirstOrDefaultAsync(m => m.TermId == id);
+            if (term == null)
             {
                 return NotFound();
             }
 
-            return View(creator);
+            return View(term);
         }
 
-        // GET: Creators/Create
+        // GET: Terms/Create
         public IActionResult Create()
         {
-            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme");
             return View();
         }
 
-        // POST: Creators/Create
+        // POST: Terms/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CreatorId,Name,Programme")] Creator creator)
+        public async Task<IActionResult> Create([Bind("TermId,Term1")] Term term)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(creator);
+                _context.Add(term);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", creator.Programme);
-            return View(creator);
+            return View(term);
         }
 
-        // GET: Creators/Edit/5
+        // GET: Terms/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,23 +72,22 @@ namespace cms.ar.xarchitecture.de.Controllers
                 return NotFound();
             }
 
-            var creator = await _context.Creator.FindAsync(id);
-            if (creator == null)
+            var term = await _context.Term.FindAsync(id);
+            if (term == null)
             {
                 return NotFound();
             }
-            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", creator.Programme);
-            return View(creator);
+            return View(term);
         }
 
-        // POST: Creators/Edit/5
+        // POST: Terms/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CreatorId,Name,Programme")] Creator creator)
+        public async Task<IActionResult> Edit(int id, [Bind("TermId,Term1")] Term term)
         {
-            if (id != creator.CreatorId)
+            if (id != term.TermId)
             {
                 return NotFound();
             }
@@ -101,12 +96,12 @@ namespace cms.ar.xarchitecture.de.Controllers
             {
                 try
                 {
-                    _context.Update(creator);
+                    _context.Update(term);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CreatorExists(creator.CreatorId))
+                    if (!TermExists(term.TermId))
                     {
                         return NotFound();
                     }
@@ -117,11 +112,10 @@ namespace cms.ar.xarchitecture.de.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", creator.Programme);
-            return View(creator);
+            return View(term);
         }
 
-        // GET: Creators/Delete/5
+        // GET: Terms/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,31 +123,30 @@ namespace cms.ar.xarchitecture.de.Controllers
                 return NotFound();
             }
 
-            var creator = await _context.Creator
-                .Include(c => c.ProgrammeNavigation)
-                .FirstOrDefaultAsync(m => m.CreatorId == id);
-            if (creator == null)
+            var term = await _context.Term
+                .FirstOrDefaultAsync(m => m.TermId == id);
+            if (term == null)
             {
                 return NotFound();
             }
 
-            return View(creator);
+            return View(term);
         }
 
-        // POST: Creators/Delete/5
+        // POST: Terms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var creator = await _context.Creator.FindAsync(id);
-            _context.Creator.Remove(creator);
+            var term = await _context.Term.FindAsync(id);
+            _context.Term.Remove(term);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CreatorExists(int id)
+        private bool TermExists(int id)
         {
-            return _context.Creator.Any(e => e.CreatorId == id);
+            return _context.Term.Any(e => e.TermId == id);
         }
     }
 }
