@@ -10,6 +10,7 @@ using System.IO;
 using Vlingo.UUID;
 using cms.ar.xarchitecture.de.cmsXARCH;
 using System.Collections;
+using cms.ar.xarchitecture.de.Models.Wrapper;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -46,12 +47,12 @@ namespace cms.ar.xarchitecture.de.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadFile(IFormFile file)
+        public async Task<IActionResult> SubmitFile(AssetSubmissionValues values)
         {
-            if (file == null || file.Length == 0)
+            if (values.FileToUpload == null || values.FileToUpload.Length == 0)
                 return Content("file not selected");
 
-            string filename = uuidCreator.GenerateGuid(file.FileName) + ".glb";
+            string filename = uuidCreator.GenerateGuid(values.FileToUpload.FileName) + ".glb";
 
             var path = Path.Combine(
                         Directory.GetCurrentDirectory(), "/content/assets/",
@@ -59,11 +60,10 @@ namespace cms.ar.xarchitecture.de.Controllers
 
             using (var stream = new FileStream(path, FileMode.Create))
             {
-                await file.CopyToAsync(stream);
+                await values.FileToUpload.CopyToAsync(stream);
             }
 
             return RedirectToAction("Files");
         }
     }
-
 }
