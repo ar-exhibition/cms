@@ -11,6 +11,7 @@ using Vlingo.UUID;
 using cms.ar.xarchitecture.de.cmsXARCH;
 using System.Collections;
 using cms.ar.xarchitecture.de.Models.Wrapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -49,13 +50,19 @@ namespace cms.ar.xarchitecture.de.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitFile(AssetSubmissionValues values)
         {
+            Creator newCreator = new Creator();
+            SceneAsset newAsset = new SceneAsset();
+            List<Course> cl = _context.Course.ToList();
+
             if (values.FileToUpload == null || values.FileToUpload.Length == 0)
                 return Content("file not selected");
 
-            string filename = uuidCreator.GenerateGuid(values.FileToUpload.FileName) + ".glb";
+            string filename = uuidCreator.GenerateGuid(values.FileToUpload.FileName + DateTime.Now) + ".glb";
+
+            string dir = Directory.GetCurrentDirectory();
 
             var path = Path.Combine(
-                        Directory.GetCurrentDirectory(), "/content/assets/",
+                        dir, "content" ,"assets",
                         filename);
 
             using (var stream = new FileStream(path, FileMode.Create))
@@ -63,7 +70,83 @@ namespace cms.ar.xarchitecture.de.Controllers
                 await values.FileToUpload.CopyToAsync(stream);
             }
 
-            return RedirectToAction("Files");
+            newCreator.Creator1 = values.creator;
+            newCreator.Programme = values.programme;
+
+            if (ModelState.IsValid)
+            {
+                _context.Creator.Add(newCreator);
+                await _context.SaveChangesAsync();
+            }
+
+            newAsset.Creator = getCreatorID(newCreator.Creator1);
+            newAsset.Course = getCourseID(values.programme, values.course);
+            newAsset.AssetName = values.assetName;
+            newAsset.FileUuid = filename; //with uuid
+            newAsset.ExternalLink = null;
+            newAsset.ThumbnailUuid = null;
+            newAsset.CreationDate = DateTime.Now;
+            newAsset.Deleted = 0;            
+
+            if (ModelState.IsValid)
+            {
+                _context.SceneAsset.Add(newAsset);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("About", "Home"); //prb put some nice "you're done" view here!
+            }
+
+            return RedirectToAction("About", "Home"); //prb to error or so...
+        }
+
+        private int? getCourseID(String programme, String course)
+        {
+            //dirty, huh?
+            String[] arr = course.Split(" ");
+            String term = arr[0];
+            String courseName = "";
+
+            for( int i = 1; i<arr.Length; i++)
+            {
+                courseName += " " + arr[i];
+            }
+
+            courseName = courseName.Trim();
+
+            var courses = from m in _context.Course select m;
+            courses = courses.Where(s => s.Course1.Contains(courseName));
+            courses = courses.Where(s => s.Term.Contains(term));
+            courses = courses.Where(s => s.Programme.Contains(programme));
+
+            List<Course> result = courses.ToList();
+
+            try
+            {
+                return result[0].CourseId;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        private int? getCreatorID(String creatorName)
+        {
+            int? ID;
+            Creator creator;
+
+            var creators = from m in _context.Creator select m;
+            creators = creators.Where(s => s.Creator1.Contains(creatorName));
+
+            List<Creator> result = creators.ToList();
+
+            try
+            {
+                return result[0].CreatorId;
+            }
+            catch
+            {
+                return 0;
+            }
         }
     }
 }
