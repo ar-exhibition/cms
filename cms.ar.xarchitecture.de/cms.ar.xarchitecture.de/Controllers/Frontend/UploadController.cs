@@ -9,6 +9,7 @@ using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Vlingo.UUID;
 using cms.ar.xarchitecture.de.cmsXARCH;
+using System.Collections;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -28,8 +29,18 @@ namespace cms.ar.xarchitecture.de.Controllers
         // GET: Upload/Create
         public IActionResult Create()
         {
-            ViewData["CourseName"] = new SelectList(_context.Course, "CourseId", "CourseName");
             ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme");
+
+            List<String> cv = new List<String>();
+            List<Course> cl = _context.Course.ToList();
+
+            foreach (Course element in cl)
+            {
+                cv.Add(new String(element.Term + " " + element.Course1));
+            }
+
+            Console.WriteLine(cv.ToList());
+            ViewData["CourseName"] = new SelectList(cv.ToList());
 
             return View();
         }
@@ -54,4 +65,5 @@ namespace cms.ar.xarchitecture.de.Controllers
             return RedirectToAction("Files");
         }
     }
+
 }
