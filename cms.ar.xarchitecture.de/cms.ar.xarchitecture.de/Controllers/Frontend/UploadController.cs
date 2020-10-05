@@ -131,9 +131,6 @@ namespace cms.ar.xarchitecture.de.Controllers
 
         private int? getCreatorID(String creatorName)
         {
-            int? ID;
-            Creator creator;
-
             var creators = from m in _context.Creator select m;
             creators = creators.Where(s => s.Creator1.Contains(creatorName));
 

@@ -1,6 +1,10 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+
+# fix system.drawing bug
+RUN apt-get update && apt-get install -y libgdiplus
+
 WORKDIR /app
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://*:8080
@@ -23,12 +27,14 @@ ENTRYPOINT ["dotnet", "cms.ar.xarchitecture.de.dll"]
 
 USER 1003:1004
 
+# environment variables (db connection, etc.)
 ENV DB_SERVER=127.0.0.1
 ENV DB_PORT=9000
 ENV DB_NAME=default
 ENV DB_USER=default
 ENV DB_PASSWORD=default
 
+# mount these volumes on the host machine
 VOLUME /app/content/assets
 VOLUME /app/content/worldmaps
 VOLUME /app/content/marker

@@ -61,6 +61,21 @@ namespace cms.ar.xarchitecture.de
 
             app.UseStaticFiles();
 
+            //experimental
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //        env.ContentRootPath),
+            //        RequestPath = "/"
+            //});
+
+            //app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //        env.ContentRootPath),
+            //    RequestPath = "/"
+            //});
+
             app.UseRouting();
             app.UseAuthorization();
 
