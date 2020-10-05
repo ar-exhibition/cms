@@ -199,7 +199,7 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         private string createQRCode(string sceneName)
         {
             string markerUUID = uuidCreator.GenerateGuid(sceneName + DateTime.Now).ToString();
-            string url = _host.HttpContext.Request.Host.Value + "/QRCode/Open?uuid=";
+            string url = _host.HttpContext.Request.Host.Value + "/Scenes/QRCode?uuid=";
             string content = url + markerUUID;
             QrCode qr = QrCode.EncodeText(content, QrCode.Ecc.Medium);
 

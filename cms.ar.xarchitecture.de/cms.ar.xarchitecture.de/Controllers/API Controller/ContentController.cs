@@ -78,6 +78,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 temp.name = element.AssetName;
                 temp.link = mapFilenameToDownloadLink(RessourceType.asset, element.FileUuid);
                 temp.thumbnail = mapFilenameToDownloadLink(RessourceType.thumbnail, element.ThumbnailUuid); //name of the thumbnail
+                temp.assetType = "3d"; //dirtyhack. implement a more permanent solution.
 
                 content.assets.Add(temp);
             }
