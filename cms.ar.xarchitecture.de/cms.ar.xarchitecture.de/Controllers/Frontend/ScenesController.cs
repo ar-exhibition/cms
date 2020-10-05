@@ -7,11 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using cms.ar.xarchitecture.de.cmsXARCH;
 using Microsoft.AspNetCore.Http;
-//using Net.Codecrete.QrCodeGenerator;
-using SkiaSharp;
-using SkiaSharp.QrCode.Image;
+using Net.Codecrete.QrCodeGenerator;
 using Vlingo.UUID;
-//using System.Drawing.Imaging;
+using System.Drawing.Imaging;
 using Org.BouncyCastle.Math.EC;
 using System.IO;
 using SkiaSharp.QrCode;
@@ -22,11 +20,14 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
     {
         private readonly cmsXARCHContext _context;
         private NameBasedGenerator uuidCreator;
+        private IHttpContextAccessor _host;
 
-        public ScenesController(cmsXARCHContext context)
+
+        public ScenesController(cmsXARCHContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             uuidCreator = new NameBasedGenerator(HashType.SHA1);
+            _host = httpContextAccessor;
         }
 
         // GET: Scenes
@@ -198,8 +199,9 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         private string createQRCode(string sceneName)
         {
             string markerUUID = uuidCreator.GenerateGuid(sceneName + DateTime.Now).ToString();
-
-            //QrCode qr = QrCode.EncodeText(markerUUID, QrCode.Ecc.Medium);
+            string url = _host.HttpContext.Request.Host.Value + "/QRCode/Open?uuid=";
+            string content = url + markerUUID;
+            QrCode qr = QrCode.EncodeText(content, QrCode.Ecc.Medium);
 
             string dir = Directory.GetCurrentDirectory();
             string filename = markerUUID + ".png";
@@ -208,15 +210,10 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
                 dir, "content", "marker",
                 filename);
 
-            SKColorSpace cs = new SKColorSpace();
-            var info = new SKImageInfo(1080, 1080, SKColorType.Rgba8888, SKAlphaType.Opaque, cs);
-
             using (var stream = new FileStream(path, FileMode.Create))
-            //using (var bitmap = qr.ToBitmap(40, 1))
+            using (var bitmap = qr.ToBitmap(40, 1))
             {
-                //bitmap.Save(stream, ImageFormat.Png);
-                var qrCode = new QrCode(filename, new Vector2Slim(1080, 1080), SKEncodedImageFormat.png);
-                qrCode.GenerateImage(stream, true ,ECCLevel.M);
+                bitmap.Save(stream, ImageFormat.Png);
             }
 
             return markerUUID;
