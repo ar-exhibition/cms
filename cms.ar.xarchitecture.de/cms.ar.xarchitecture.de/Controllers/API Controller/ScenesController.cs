@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using cms.ar.xarchitecture.de.Models.Wrapper;
 using cms.ar.xarchitecture.de.cmsXARCH;
+using System.IO;
 
 namespace cms.ar.xarchitecture.de.Controllers.API_Controller
 {
@@ -12,6 +13,14 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
     [ApiController]
     public class ScenesController : ControllerBase
     {
+
+        cmsXARCHContext _context;
+
+        ScenesController (cmsXARCHContext context)
+        {
+            _context = context;
+        }
+
         // GET: api/<ScenesController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -33,7 +42,25 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
             Scene newRecord = new Scene();
 
             newRecord.SceneName = values.name;
-            //continue here...
+
+            string filename = values.sceneFile.FileName;
+
+            string dir = Directory.GetCurrentDirectory();
+
+            var path = Path.Combine(
+                        dir, "content", "worldmaps",
+                        filename);
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                values.sceneFile.CopyToAsync(stream);
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Scene.Add(newRecord);
+                _context.SaveChangesAsync();
+            }
 
         }
 
