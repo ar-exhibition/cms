@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using cms.ar.xarchitecture.de.Models.Wrapper;
 using cms.ar.xarchitecture.de.cmsXARCH;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace cms.ar.xarchitecture.de.Controllers.API_Controller
 {
@@ -16,23 +17,26 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
 
         cmsXARCHContext _context;
 
-        ScenesController (cmsXARCHContext context)
+        public ScenesController (cmsXARCHContext context)
         {
             _context = context;
         }
 
         // GET: api/<ScenesController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<String> Get()
         {
-            return new string[] { "value1", "value2" };
+            JsonSerializer jsonSerializer = new JsonSerializer();
+            SceneSubmissionValues ssv = new SceneSubmissionValues { name = "test", sceneFile = null };
+            return JsonConvert.SerializeObject(ssv, Formatting.Indented);
+            //return new string[] { "value1", "value2" };
         }
 
         // GET api/<ScenesController>/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            return "value";
+            return "";
         }
 
         // POST api/<ScenesController>
