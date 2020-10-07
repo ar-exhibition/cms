@@ -7,6 +7,8 @@ using cms.ar.xarchitecture.de.Models.Wrapper;
 using cms.ar.xarchitecture.de.cmsXARCH;
 using System.IO;
 using Newtonsoft.Json;
+using System.Net.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace cms.ar.xarchitecture.de.Controllers.API_Controller
 {
@@ -41,23 +43,26 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
 
         // POST api/<ScenesController>
         [HttpPost]
-        public void Post(SceneSubmissionValues values)
+        public void Post(IFormCollection data)
         {
+
             Scene newRecord = new Scene();
+            newRecord.SceneName = data["SceneName"];
+            newRecord.FileUuid = data["FileUUID"];
 
-            newRecord.SceneName = values.name;
-
-            string filename = values.sceneFile.FileName;
-
-            string dir = Directory.GetCurrentDirectory();
-
-            var path = Path.Combine(
-                        dir, "content", "worldmaps",
-                        filename);
-
-            using (var stream = new FileStream(path, FileMode.Create))
+            try
             {
-                values.sceneFile.CopyToAsync(stream);
+                FormFile file = (FormFile)data.Files[0];
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "content", "worldmaps", newRecord.FileUuid);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    file.CopyToAsync(stream);
+                }
+            }
+            catch
+            {
+                Console.WriteLine("no file"); //put some meaningful http response here!
             }
 
             if (ModelState.IsValid)
@@ -65,7 +70,6 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
                 _context.Scene.Add(newRecord);
                 _context.SaveChangesAsync();
             }
-
         }
 
         // PUT api/<ScenesController>/5
