@@ -22,7 +22,7 @@ jobs:
 
       - name: docker build cms
         run: |
-          working-directory: cms.ar.xarchitecture.de
+        working-directory: ./cms.ar.xarchitecture.de
           docker build ./cms.ar.xarchitecture.de/cms.ar.xarchitecture.de -t ar-exhibition/cms:release
       - name: docker push image
         run: |
