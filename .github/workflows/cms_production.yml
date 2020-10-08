@@ -5,10 +5,10 @@ on:
     branches:
     - master
 
-defaults:
-  run:
-    shell: bash
-    working-directory: cms.ar.xarchitecture.de       
+#defaults:
+#  run:
+#    shell: bash
+#    working-directory: cms.ar.xarchitecture.de       
 
 jobs:
   build:
