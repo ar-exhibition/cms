@@ -13,6 +13,7 @@ using System.Drawing.Imaging;
 using Org.BouncyCastle.Math.EC;
 using System.IO;
 using SkiaSharp.QrCode;
+using cms.ar.xarchitecture.de.Helper;
 
 namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
@@ -90,7 +91,7 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
 
             if (values.FileToUpload == null || values.FileToUpload.Length == 0)
             {
-                newRecord.MarkerUuid = createQRCode(values.SceneName); //give back UUID
+                newRecord.MarkerUuid = MarkerCreator.createQRCode(values.SceneName, _host.HttpContext.Request.Host.Value); //give back UUID
             }
             else
             {
@@ -196,28 +197,28 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
             return "";
         }
 
-        private string createQRCode(string sceneName)
-        {
-            string markerUUID = uuidCreator.GenerateGuid(sceneName + DateTime.Now).ToString();
-            string url = _host.HttpContext.Request.Host.Value + "/Scenes/QRCode?uuid=";
-            string content = url + markerUUID;
-            QrCode qr = QrCode.EncodeText(content, QrCode.Ecc.Medium);
+        //private string createQRCode(string sceneName)
+        //{
+        //    string markerUUID = uuidCreator.GenerateGuid(sceneName + DateTime.Now).ToString();
+        //    string url = _host.HttpContext.Request.Host.Value + "/Scenes/QRCode?uuid=";
+        //    string content = url + markerUUID;
+        //    QrCode qr = QrCode.EncodeText(content, QrCode.Ecc.Medium);
 
-            string dir = Directory.GetCurrentDirectory();
-            string filename = markerUUID + ".png";
+        //    string dir = Directory.GetCurrentDirectory();
+        //    string filename = markerUUID + ".png";
 
-            var path = Path.Combine(
-                dir, "content", "marker",
-                filename);
+        //    var path = Path.Combine(
+        //        dir, "content", "marker",
+        //        filename);
 
-            using (var stream = new FileStream(path, FileMode.Create))
-            using (var bitmap = qr.ToBitmap(40, 1))
-            {
-                bitmap.Save(stream, ImageFormat.Png);
-            }
+        //    using (var stream = new FileStream(path, FileMode.Create))
+        //    using (var bitmap = qr.ToBitmap(40, 1))
+        //    {
+        //        bitmap.Save(stream, ImageFormat.Png);
+        //    }
 
-            return markerUUID;
-        }
+        //    return markerUUID;
+        //}
     }
 
     public class SceneSubmissionValues
