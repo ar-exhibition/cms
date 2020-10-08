@@ -11,7 +11,7 @@ ENV ASPNETCORE_URLS=http://*:8080
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["cms.ar.xarchitecture.de/cms.ar.xarchitecture.de.csproj", "cms.ar.xarchitecture.de/"]
+COPY ["./cms.ar.xarchitecture.de/cms.ar.xarchitecture.de.csproj", "cms.ar.xarchitecture.de/"]
 RUN dotnet restore "cms.ar.xarchitecture.de/cms.ar.xarchitecture.de.csproj"
 COPY . .
 WORKDIR "/src/cms.ar.xarchitecture.de"
