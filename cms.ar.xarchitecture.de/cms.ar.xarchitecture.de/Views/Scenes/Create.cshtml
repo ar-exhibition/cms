@@ -5,9 +5,24 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<h1>Scene Data</h1>
 
-<h4>Scene</h4>
+@*<h4>Scene</h4>*@
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Create">Create Scene</a>
+            </th>
+            <th>
+                <a asp-action="Index">View Scene List</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+</table>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -32,7 +47,7 @@
     </div>
 </div>
 
-<div>
+@*<div>
     <a asp-action="Index">Back to List</a>
-</div>
+</div>*@
 
