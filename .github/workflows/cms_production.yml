@@ -21,8 +21,9 @@ jobs:
           docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD
 
       - name: docker build cms
+        working-directory: ./cms.ar.xarchitecture.de
         run: |        
-          docker build ./cms.ar.xarchitecture.de/cms.ar.xarchitecture.de -t ar-exhibition/cms:release
+          docker build ./cms.ar.xarchitecture.de -t ar-exhibition/cms:release
       - name: docker push image
         run: |
           docker push ar-exhibition/cms:release
