@@ -48,6 +48,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         }
 
         [HttpPost]
+        [RequestSizeLimit(62_914_560)]
         public async Task<IActionResult> SubmitFile(AssetSubmissionValues values)
         {
             Creator newCreator = new Creator();
