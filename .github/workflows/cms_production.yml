@@ -7,7 +7,8 @@ on:
 
 defaults:
   run:
-    working-directory: cms.ar.xarchitecture.de
+    shell: bash
+    working-directory: cms.ar.xarchitecture.de       
 
 jobs:
   build:
@@ -25,9 +26,8 @@ jobs:
           docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD
 
       - name: docker build cms
-        run: |
-          ls -la        
-          docker build ./cms.ar.xarchitecture.de -t ar-exhibition/cms:release
+        run: |     
+          docker build -t ar-exhibition/cms:release -f ./cms.ar.xarchitecture.de/cms.ar.xarchitecture.de/dockerfile  .
       - name: docker push image
         run: |
           docker push ar-exhibition/cms:release
