@@ -28,7 +28,7 @@ jobs:
       - name: docker build cms
         run: |     
           ls -la
-          docker build -t ar-exhibition/cms:release .
+          docker build -t ar-exhibition/cms:release -f ./cms.ar.xarchitecture.de/dockerfile .
       - name: docker push image
         run: |
           docker push ar-exhibition/cms:release
