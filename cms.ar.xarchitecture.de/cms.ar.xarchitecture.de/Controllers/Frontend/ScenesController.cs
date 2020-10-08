@@ -23,7 +23,6 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         private NameBasedGenerator uuidCreator;
         private IHttpContextAccessor _host;
 
-
         public ScenesController(cmsXARCHContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
@@ -60,22 +59,6 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         {
             return View();
         }
-
-        //// POST: Scenes/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        //// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("SceneId,SceneName,FileUuid,MarkerUuid")] Scene scene)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(scene);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(scene);
-        //}
 
         // POST: Scenes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -196,29 +179,6 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         {
             return "";
         }
-
-        //private string createQRCode(string sceneName)
-        //{
-        //    string markerUUID = uuidCreator.GenerateGuid(sceneName + DateTime.Now).ToString();
-        //    string url = _host.HttpContext.Request.Host.Value + "/Scenes/QRCode?uuid=";
-        //    string content = url + markerUUID;
-        //    QrCode qr = QrCode.EncodeText(content, QrCode.Ecc.Medium);
-
-        //    string dir = Directory.GetCurrentDirectory();
-        //    string filename = markerUUID + ".png";
-
-        //    var path = Path.Combine(
-        //        dir, "content", "marker",
-        //        filename);
-
-        //    using (var stream = new FileStream(path, FileMode.Create))
-        //    using (var bitmap = qr.ToBitmap(40, 1))
-        //    {
-        //        bitmap.Save(stream, ImageFormat.Png);
-        //    }
-
-        //    return markerUUID;
-        //}
     }
 
     public class SceneSubmissionValues
