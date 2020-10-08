@@ -13,7 +13,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["cms.ar.xarchitecture.de.csproj", "cms.ar.xarchitecture.de/"]
 RUN dotnet restore "cms.ar.xarchitecture.de/cms.ar.xarchitecture.de.csproj"
-COPY . .
+COPY ./cms.ar.xarchitecture.de .
 WORKDIR "/src/cms.ar.xarchitecture.de"
 RUN dotnet build "cms.ar.xarchitecture.de.csproj" -c Release -o /app/build
 
