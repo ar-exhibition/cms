@@ -41,13 +41,22 @@ namespace cms.ar.xarchitecture.de.Controllers
 
         // POST api/<AnchorsController>
         [HttpPost]
-        public async Task<ActionResult> PostAnchors([FromBody] JsonElement body)
+        public async Task<ActionResult> Post([FromBody] JsonElement body)
         {
             AnchorList anchors = JsonSerializer.Deserialize<AnchorList>(body.GetRawText());
+            Anchor tmp;
 
             foreach (POSTAnchor element in anchors.anchors){
 
-                Anchor tmp = new Anchor();
+                bool newRecord = false;
+                tmp = _context.Anchor.Find(element.anchorId);
+
+                if(tmp == null)
+                {
+                    tmp = new Anchor();
+                    newRecord = true;
+                }
+
                 SceneAsset asset = _context.SceneAsset.Find(element.assetId);
 
                 tmp.AnchorId = element.anchorId;
@@ -55,11 +64,16 @@ namespace cms.ar.xarchitecture.de.Controllers
                 tmp.Scale = element.scale;
                 tmp.Asset = asset;
 
-                _context.Anchor.Add(tmp);
+                if (newRecord)
+                    _context.Anchor.Add(tmp);
+                else
+                    _context.Anchor.Update(tmp);
+
                 await _context.SaveChangesAsync();
+
+                tmp = null;
             }
 
-            //return CreatedAtAction("Get", new { id = anchors.AnchorId }, anchors);
             return CreatedAtAction("PostAnchors", anchors);
         }
 
