@@ -8,7 +8,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: cms.ar.xarchitecture.de       
+    working-directory: cms.ar.xarchitecture.de/cms.ar.xarchitecture.de       
 
 jobs:
   build:
@@ -28,7 +28,7 @@ jobs:
       - name: docker build cms
         run: |     
           ls -la
-          docker build -t ar-exhibition/cms:release -f ./cms.ar.xarchitecture.de/dockerfile .
+          docker build -t ar-exhibition/cms:release .
       - name: docker push image
         run: |
           docker push ar-exhibition/cms:release
