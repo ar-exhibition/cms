@@ -119,7 +119,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                     fullpath = controllerPath + "type=assets&file=" + filename;
                     break;
                 case (int)RessourceType.marker:
-                    fullpath = controllerPath + "type=marker&file=" + filename;
+                    fullpath = controllerPath + "type=marker&file=" + filename + ".png"; //dirty hack. put something more elaborate here
                     break;
                 case (int)RessourceType.thumbnail:
                     fullpath = controllerPath + "type=thumbnails&file=" + filename;
