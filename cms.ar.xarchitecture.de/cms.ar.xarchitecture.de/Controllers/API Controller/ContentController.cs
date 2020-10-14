@@ -110,22 +110,27 @@ namespace cms.ar.xarchitecture.de.Controllers
         }
         string mapFilenameToDownloadLink(RessourceType ressourceType, string filename)
         {
-            string controllerPath = prot + "://" + host + "/Download/Get?";
+            //string controllerPath = prot + "://" + host + "/Download/Get?";
+            string controllerPath = prot + "://" + host + "/content/";
             string fullpath = "";
 
             switch ((int)ressourceType)
             {
                 case (int)RessourceType.asset:
-                    fullpath = controllerPath + "type=assets&file=" + filename;
+                    //fullpath = controllerPath + "type=assets&file=" + filename;
+                    fullpath = controllerPath + "assets/" + filename;
                     break;
                 case (int)RessourceType.marker:
-                    fullpath = controllerPath + "type=marker&file=" + filename + ".png"; //dirty hack. put something more elaborate here
+                    //fullpath = controllerPath + "type=marker&file=" + filename + ".png"; //dirty hack. put something more elaborate here
+                    fullpath = controllerPath + "marker/" + filename + ".png"; //dirty hack. put something more elaborate here
                     break;
                 case (int)RessourceType.thumbnail:
-                    fullpath = controllerPath + "type=thumbnails&file=" + filename;
+                    //fullpath = controllerPath + "type=thumbnails&file=" + filename;
+                    fullpath = controllerPath + "thumbnails/" + filename;
                     break;
                 case (int)RessourceType.worldmap:
-                    fullpath = controllerPath + "type=worldmaps&file=" + filename;
+                    //fullpath = controllerPath + "type=worldmaps&file=" + filename;
+                    fullpath = controllerPath + "worldmaps/" + filename;
                     break;
                 default:
                     fullpath = "";

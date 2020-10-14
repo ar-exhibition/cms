@@ -16,6 +16,7 @@ using Renci.SshNet;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace cms.ar.xarchitecture.de
 {
@@ -37,6 +38,7 @@ namespace cms.ar.xarchitecture.de
             cmsConnectionOptions _options = new cmsConnectionOptions();
 
             services.AddControllersWithViews();
+            //services.AddDirectoryBrowser(); //dangerous. Only debug!
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddSingleton<IFileProvider>(new PhysicalFileProvider((Directory.GetCurrentDirectory())));
@@ -59,23 +61,32 @@ namespace cms.ar.xarchitecture.de
             }
             app.UseHttpsRedirection();
 
-            app.UseStaticFiles();
+            //app.UseStaticFiles();
 
             //experimental
-            //app.UseStaticFiles(new StaticFileOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //        env.ContentRootPath),
-            //        RequestPath = "/"
-            //});
+            var wrProvider = new PhysicalFileProvider(env.WebRootPath);
+            var ctProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "static"));
+
+            var compositeProvider = new CompositeFileProvider(wrProvider, ctProvider);
+
+            var extensionProvider = new FileExtensionContentTypeProvider();
+
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = compositeProvider,
+                RequestPath = "",
+                ContentTypeProvider = extensionProvider,
+                ServeUnknownFileTypes = true
+            });
 
             //app.UseDirectoryBrowser(new DirectoryBrowserOptions
             //{
-            //    FileProvider = new PhysicalFileProvider(
-            //        env.ContentRootPath),
-            //    RequestPath = "/"
+            //    FileProvider = compositeProvider,
+            //    RequestPath = ""
             //});
 
+             // -- end experimental
             app.UseRouting();
             app.UseAuthorization();
 
