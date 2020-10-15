@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -110,26 +111,21 @@ namespace cms.ar.xarchitecture.de.Controllers
         }
         string mapFilenameToDownloadLink(RessourceType ressourceType, string filename)
         {
-            //string controllerPath = prot + "://" + host + "/Download/Get?";
-            string controllerPath = prot + "://" + host + "/content/";
+            string controllerPath = prot + "://" + host + "/static/content/";
             string fullpath = "";
 
             switch ((int)ressourceType)
             {
                 case (int)RessourceType.asset:
-                    //fullpath = controllerPath + "type=assets&file=" + filename;
                     fullpath = controllerPath + "assets/" + filename;
                     break;
                 case (int)RessourceType.marker:
-                    //fullpath = controllerPath + "type=marker&file=" + filename + ".png"; //dirty hack. put something more elaborate here
-                    fullpath = controllerPath + "marker/" + filename + ".png"; //dirty hack. put something more elaborate here
+                    fullpath = controllerPath + "marker/" + getFullyQualifiedFilename(filename);
                     break;
                 case (int)RessourceType.thumbnail:
-                    //fullpath = controllerPath + "type=thumbnails&file=" + filename;
                     fullpath = controllerPath + "thumbnails/" + filename;
                     break;
                 case (int)RessourceType.worldmap:
-                    //fullpath = controllerPath + "type=worldmaps&file=" + filename;
                     fullpath = controllerPath + "worldmaps/" + filename;
                     break;
                 default:
@@ -137,6 +133,33 @@ namespace cms.ar.xarchitecture.de.Controllers
                     break;
             }
             return fullpath;
+        }
+
+        string getFullyQualifiedFilename(string filename)
+        {
+            try
+            {
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "static", "content", "marker");
+
+                String[] files = Directory.GetFiles(path);
+
+                foreach (String file in files)
+                {
+                    if (file.Contains(filename))
+                    {
+                        string[] tmp = file.Split(".");
+                        return filename + "." + tmp.Last();
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("whoops...");
+                filename = "notfound"; //put some default file here prb. Provides static link to non-existing scene or so
+            }
+
+
+            return filename + ".png"; //defined behaviour
         }
 
         string mapAssetType(int? ID)

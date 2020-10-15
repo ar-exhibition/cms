@@ -38,10 +38,7 @@ namespace cms.ar.xarchitecture.de
             cmsConnectionOptions _options = new cmsConnectionOptions();
 
             services.AddControllersWithViews();
-            //services.AddDirectoryBrowser(); //dangerous. Only debug!
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            services.AddSingleton<IFileProvider>(new PhysicalFileProvider((Directory.GetCurrentDirectory())));
 
             services.AddDbContext<cmsXARCHContext>(options => options.UseMySQL(_options.GetConnectionString()));
         }
@@ -61,9 +58,6 @@ namespace cms.ar.xarchitecture.de
             }
             app.UseHttpsRedirection();
 
-            //app.UseStaticFiles();
-
-            //experimental
             var wrProvider = new PhysicalFileProvider(env.WebRootPath);
             var ctProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "static"));
 
@@ -80,13 +74,6 @@ namespace cms.ar.xarchitecture.de
                 ServeUnknownFileTypes = true
             });
 
-            //app.UseDirectoryBrowser(new DirectoryBrowserOptions
-            //{
-            //    FileProvider = compositeProvider,
-            //    RequestPath = ""
-            //});
-
-             // -- end experimental
             app.UseRouting();
             app.UseAuthorization();
 

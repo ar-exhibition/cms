@@ -26,7 +26,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             if (file == null)
                 return Content("filename not present");
 
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "content", type, file);
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "static", "content", type, file);
 
             var memory = new MemoryStream();
             using (var stream = new FileStream(path, FileMode.Open))
