@@ -102,6 +102,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 temp.sceneId = element.SceneId;
                 temp.name = element.SceneName;
                 temp.worldMapLink = mapFilenameToDownloadLink(RessourceType.worldmap, element.FileUuid);
+                temp.worldMapUUID = element.FileUuid;
                 temp.marker = new marker(element.MarkerUuid, mapFilenameToDownloadLink(RessourceType.marker, element.MarkerUuid));
 
                 content.scenes.Add(temp);

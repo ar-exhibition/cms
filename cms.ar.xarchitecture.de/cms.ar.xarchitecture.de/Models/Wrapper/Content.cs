@@ -58,6 +58,7 @@ namespace cms.ar.xarchitecture.de.Models
         public int sceneId { get; set; }
         public string name { get; set; }
         public string worldMapLink { get; set; }
+        public string worldMapUUID { get; set; }
         public marker marker { get; set; }
     }
 
