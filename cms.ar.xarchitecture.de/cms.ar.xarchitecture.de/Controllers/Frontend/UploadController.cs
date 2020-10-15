@@ -49,7 +49,7 @@ namespace cms.ar.xarchitecture.de.Controllers
 
         [HttpPost]
         [RequestSizeLimit(62_914_560)]
-        public async Task<IActionResult> SubmitFile(AssetSubmissionValues values)
+        public async Task<IActionResult> UploadFile(AssetSubmissionValues values)
         {
             Creator newCreator = new Creator();
             SceneAsset newAsset = new SceneAsset();
@@ -59,6 +59,8 @@ namespace cms.ar.xarchitecture.de.Controllers
                 return Content("file not selected");
 
             string filename = uuidCreator.GenerateGuid(values.FileToUpload.FileName + DateTime.Now) + ".glb";
+            var thumbnailUUID = uuidCreator.GenerateGuid(values.tumbnailBase64 + DateTime.Now));
+            string thumbnailFilename = thumbnailUUID + ".png";
 
             string dir = Directory.GetCurrentDirectory();
 
@@ -85,7 +87,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             newAsset.AssetName = values.assetName;
             newAsset.FileUuid = filename; //with uuid
             newAsset.ExternalLink = null;
-            newAsset.ThumbnailUuid = null;
+            newAsset.ThumbnailUuid = Convert.ToString(thumbnailUUID);
             newAsset.CreationDate = DateTime.Now;
             newAsset.Deleted = 0;            
 
@@ -99,7 +101,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             return RedirectToAction("About", "Home"); //prb to error or so...
         }
 
-        private int? getCourseID(String programme, String course)
+            private int? getCourseID(String programme, String course)
         {
             //dirty, huh?
             String[] arr = course.Split(" ");
