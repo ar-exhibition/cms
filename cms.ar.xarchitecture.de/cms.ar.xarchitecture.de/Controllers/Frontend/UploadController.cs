@@ -63,7 +63,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             string dir = Directory.GetCurrentDirectory();
 
             var path = Path.Combine(
-                        dir, "content" ,"assets",
+                        dir, "static", "content" ,"assets",
                         filename);
 
             using (var stream = new FileStream(path, FileMode.Create))
