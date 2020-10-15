@@ -15,9 +15,11 @@
             padding: 20px;
             border-radius: 10px;
         }
+
         h1, h2 {
             margin: 0 2px;
         }
+
         h2 {
             font-weight: normal;
             margin-bottom: 10px;
@@ -25,7 +27,6 @@
     </style>
 </head>
 <body>
-    <model-viewer src="https://luziffer.ddnss.de/index.php/s/Ud46DcUDsfkjKNe/download" ar ar-modes="webxr scene-viewer quick-look"></model-viewer>
 </body>
 <script>
     fetch("http://luziffer.ddnss.de:8080/api/content").then(response => response.json()).then((data) => {
@@ -40,7 +41,7 @@
                 h2.textContent = asset.creator.name;
                 container.appendChild(h2);
                 const modelViewer = document.createElement("model-viewer");
-                modelViewer.src = asset.link.replace("http://luziffer.ddnss.de:8080/", "");
+                modelViewer.src = asset.link;
                 modelViewer.setAttribute("ar", "true");
                 container.appendChild(modelViewer);
                 document.body.appendChild(container);

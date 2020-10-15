@@ -27,13 +27,6 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
             _host = httpContextAccessor;
         }
 
-        //// GET: api/<ScenesController>
-        //[HttpGet]
-        //public async Task<String> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
         // GET api/<ScenesController>/5
         [HttpGet("{id}")]
         public string Get(int id)
@@ -47,6 +40,10 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
         {
 
             string id = data["SceneID"];
+            string sceneName = data["SceneName"];
+            string fileUUID = data["FileUUID"];
+            string markerUUID = data["MarkerUUID"];
+
             bool NoRecordExists = string.IsNullOrEmpty(id);
             Scene Record;
  
@@ -56,18 +53,23 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
             else
                 Record = _context.Scene.Find(Int32.Parse(id));
 
-            Record.SceneName = data["SceneName"];
-            Record.FileUuid = data["FileUUID"];
+
+            if (sceneName != null)
+                Record.SceneName = sceneName;
+
+            if (fileUUID != null)
+                Record.FileUuid = fileUUID;
 
             if (NoRecordExists)
                 Record.MarkerUuid = MarkerCreator.createQRCode(Record.SceneName, _host.HttpContext.Request.Host.Value);
             else
-                Record.MarkerUuid = data["MarkerUUID"];
+                if (markerUUID != null)
+                    Record.MarkerUuid = markerUUID;
 
             try
             {
                 FormFile file = (FormFile)data.Files[0];
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "content", "worldmaps", Record.FileUuid);
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "static", "content", "worldmaps", Record.FileUuid);
 
                 using (var stream = new FileStream(path, FileMode.Create)) //create or overwrite
                 {

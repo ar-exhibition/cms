@@ -23,7 +23,7 @@ RUN dotnet publish "cms.ar.xarchitecture.de.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "cms.ar.xarchitecture.de.dll"]
+ENTRYPOINT ["dotnet", "cms.ar.xarchitecture.de.dll"] 
 
 USER 1003:1004
 
@@ -35,7 +35,7 @@ ENV DB_USER=default
 ENV DB_PASSWORD=default
 
 # mount these volumes on the host machine
-VOLUME /app/content/assets
-VOLUME /app/content/worldmaps
-VOLUME /app/content/marker
-VOLUME /app/content/thumbnails
+VOLUME /app/static/content/assets
+VOLUME /app/static/content/worldmaps
+VOLUME /app/static/content/marker
+VOLUME /app/static/content/thumbnails

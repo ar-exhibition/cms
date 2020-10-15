@@ -4,18 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 using cms.ar.xarchitecture.de.cmsXARCH;
-using MySQL.Data.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Renci.SshNet;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace cms.ar.xarchitecture.de
 {
@@ -38,9 +35,7 @@ namespace cms.ar.xarchitecture.de
 
             services.AddControllersWithViews();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            services.AddSingleton<IFileProvider>(new PhysicalFileProvider((Directory.GetCurrentDirectory())));
-
+            services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
             services.AddDbContext<cmsXARCHContext>(options => options.UseMySQL(_options.GetConnectionString()));
         }
 
@@ -59,22 +54,21 @@ namespace cms.ar.xarchitecture.de
             }
             app.UseHttpsRedirection();
 
-            app.UseStaticFiles();
+            var wrProvider = new PhysicalFileProvider(env.WebRootPath);
+            var ctProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "static"));
 
-            //experimental
-            //app.UseStaticFiles(new StaticFileOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //        env.ContentRootPath),
-            //        RequestPath = "/"
-            //});
+            var compositeProvider = new CompositeFileProvider(wrProvider, ctProvider);
 
-            //app.UseDirectoryBrowser(new DirectoryBrowserOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //        env.ContentRootPath),
-            //    RequestPath = "/"
-            //});
+            var extensionProvider = new FileExtensionContentTypeProvider();
+
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = compositeProvider,
+                RequestPath = "",
+                ContentTypeProvider = extensionProvider,
+                ServeUnknownFileTypes = true
+            });
 
             app.UseRouting();
             app.UseAuthorization();

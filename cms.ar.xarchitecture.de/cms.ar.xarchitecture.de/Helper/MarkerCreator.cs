@@ -14,6 +14,7 @@ namespace cms.ar.xarchitecture.de.Helper
         public static string createQRCode(string sceneName, string host)
         {
             NameBasedGenerator uuidCreator = new NameBasedGenerator(HashType.SHA1);
+            ImageFormat imageFormat = ImageFormat.Png;
 
             string markerUUID = uuidCreator.GenerateGuid(sceneName + DateTime.Now).ToString();
             string url = host + "/QRCode/Open?uuid=";
@@ -21,16 +22,16 @@ namespace cms.ar.xarchitecture.de.Helper
             QrCode qr = QrCode.EncodeText(content, QrCode.Ecc.Medium);
 
             string dir = Directory.GetCurrentDirectory();
-            string filename = markerUUID + ".png";
+            string filename = markerUUID + "." + imageFormat.ToString();
 
             var path = Path.Combine(
-                dir, "content", "marker",
+                dir, "static", "content", "marker",
                 filename);
 
             using (var stream = new FileStream(path, FileMode.Create))
             using (var bitmap = qr.ToBitmap(40, 1))
             {
-                bitmap.Save(stream, ImageFormat.Png);
+                bitmap.Save(stream, imageFormat);
             }
 
             return markerUUID;
