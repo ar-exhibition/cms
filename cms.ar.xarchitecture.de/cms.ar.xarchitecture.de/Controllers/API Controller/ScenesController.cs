@@ -28,11 +28,11 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
         }
 
         // GET api/<ScenesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "";
-        }
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "hello there...";
+        //}
 
         // POST api/<ScenesController>
         [HttpPost]
@@ -93,16 +93,17 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
             return JsonConvert.SerializeObject(Record, Formatting.Indented);
         }
 
-        // PUT api/<ScenesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //// PUT api/<ScenesController>/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
-        // DELETE api/<ScenesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// DELETE api/<ScenesController>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //    Console.WriteLine("Hello there..");
+        //}
     }
 }
