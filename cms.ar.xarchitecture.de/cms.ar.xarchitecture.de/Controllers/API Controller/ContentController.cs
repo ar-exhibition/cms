@@ -57,7 +57,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         // DELETE api/<APIController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
-        {
+        {            
         }
 
         public async Task<String> getContent(cmsXARCHContext _context)
