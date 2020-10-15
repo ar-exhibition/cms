@@ -3,16 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using cms.ar.xarchitecture.de.cmsXARCH;
 using Microsoft.AspNetCore.Http;
-using Net.Codecrete.QrCodeGenerator;
 using Vlingo.UUID;
-using System.Drawing.Imaging;
-using Org.BouncyCastle.Math.EC;
-using System.IO;
-using SkiaSharp.QrCode;
 using cms.ar.xarchitecture.de.Helper;
 
 namespace cms.ar.xarchitecture.de.Controllers.Frontend
