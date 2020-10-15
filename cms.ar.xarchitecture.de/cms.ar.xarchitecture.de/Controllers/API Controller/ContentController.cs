@@ -111,7 +111,7 @@ namespace cms.ar.xarchitecture.de.Controllers
         }
         string mapFilenameToDownloadLink(RessourceType ressourceType, string filename)
         {
-            string controllerPath = prot + "://" + host + "/static/content/";
+            string controllerPath = prot + "://" + host + "/content/";
             string fullpath = "";
 
             switch ((int)ressourceType)

@@ -39,7 +39,7 @@ namespace cms.ar.xarchitecture.de
 
             services.AddControllersWithViews();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
+            services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
             services.AddDbContext<cmsXARCHContext>(options => options.UseMySQL(_options.GetConnectionString()));
         }
 
