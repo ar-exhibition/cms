@@ -5,13 +5,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
 <h1>Upload here</h1>
 
 <h4>SceneAsset</h4>
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="SubmitFile" method="post" enctype="multipart/form-data">
+        <form asp-action="UploadFile" method="post" enctype="multipart/form-data">
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -39,18 +40,69 @@
 
             <div class="form-group">
                 <label class="control-label">Select your model!</label>
-                <input asp-for="FileToUpload" type="file" class="btn btn-primary" />
+                <input asp-for="FileToUpload" id="fileButton" type="file" class="btn btn-primary" onchange="loadModel()" />
                 <span asp-validation-for="FileToUpload"></span>
             </div>
 
+            <input type="hidden" id="thumbnail" asp-for="tumbnailBase64" class="form-control" />
+
             <div class="form-group">
-                <input type="submit" value="Submit Model" class="btn btn-primary" />
+                <input id="submitBtn" type="submit" value="waiting..." class="btn btn-primary" onclick="submitThumbnail()" disabled="disabled" />
             </div>
 
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<div id="viewport" class="model-container"></div>
+
+<script>
+    function loadModel() {
+        var file = document.getElementById('fileButton').files[0];
+        const viewport = document.getElementById("viewport");
+        var modelViewer = document.getElementsByTagName("model-viewer")[0];
+
+        if (modelViewer == null) {
+            modelViewer = document.createElement("model-viewer");
+        }
+
+        modelViewer.setAttribute("auto-rotate", "true");
+        modelViewer.setAttribute("loading", "eager");
+        modelViewer.setAttribute("rotation-per-second", "90deg");
+
+        viewport.appendChild(modelViewer);
+
+        const reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            modelViewer.src = reader.result;
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+
+        modelViewer.addEventListener("load", enableSubmission());
+    }
+
+    function enableSubmission() {
+
+        document.getElementById("submitBtn").value = "Submit Model";
+        document.getElementById("submitBtn").disabled = false;
+    }
+
+    function submitThumbnail() {
+        //send api form data
+
+        var modelViewer = document.getElementsByTagName("model-viewer")[0];
+        var data = document.getElementById("thumbnail");
+        data.value = modelViewer.toDataURL();
+        //debugBase64(thumb);
+    }
+
+    function debugBase64(base64URL) {
+        var win = window.open();
+        win.document.write('<iframe src="' + base64URL + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
+    }
+
+</script>

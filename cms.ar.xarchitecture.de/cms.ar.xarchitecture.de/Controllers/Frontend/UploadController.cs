@@ -49,21 +49,24 @@ namespace cms.ar.xarchitecture.de.Controllers
 
         [HttpPost]
         [RequestSizeLimit(62_914_560)]
-        public async Task<IActionResult> SubmitFile(AssetSubmissionValues values)
+        public async Task<IActionResult> UploadFile(AssetSubmissionValues values)
         {
             Creator newCreator = new Creator();
             SceneAsset newAsset = new SceneAsset();
+            Thumbnail newThumbnail = new Thumbnail();
             List<Course> cl = _context.Course.ToList();
 
             if (values.FileToUpload == null || values.FileToUpload.Length == 0)
                 return Content("file not selected");
 
             string filename = uuidCreator.GenerateGuid(values.FileToUpload.FileName + DateTime.Now) + ".glb";
+            var thumbnailUUID = uuidCreator.GenerateGuid(values.tumbnailBase64 + DateTime.Now);
+            string thumbnailFilename = thumbnailUUID + ".png";
 
             string dir = Directory.GetCurrentDirectory();
 
             var path = Path.Combine(
-                        dir, "content" ,"assets",
+                        dir, "static", "content" ,"assets",
                         filename);
 
             using (var stream = new FileStream(path, FileMode.Create))
@@ -80,12 +83,34 @@ namespace cms.ar.xarchitecture.de.Controllers
                 await _context.SaveChangesAsync();
             }
 
+            newThumbnail.ThumbnailUuid = Convert.ToString(thumbnailUUID);
+
+            if (ModelState.IsValid)
+            {
+                _context.Thumbnail.Add(newThumbnail);
+                await _context.SaveChangesAsync();
+            }
+
+            var thumbPath = Path.Combine(
+            dir, "static", "content", "thumbnails",
+            thumbnailFilename);
+
+            String base64Str = values.tumbnailBase64;
+            base64Str = base64Str.Split(",")[1];
+            byte[] bytes = Convert.FromBase64String(base64Str);
+            
+
+            using (var stream = new FileStream(thumbPath, FileMode.Create))
+            {
+                await stream.WriteAsync(bytes);
+            }
+
             newAsset.Creator = getCreatorID(newCreator.Creator1);
             newAsset.Course = getCourseID(values.programme, values.course);
             newAsset.AssetName = values.assetName;
             newAsset.FileUuid = filename; //with uuid
             newAsset.ExternalLink = null;
-            newAsset.ThumbnailUuid = null;
+            newAsset.ThumbnailUuid = newThumbnail.ThumbnailUuid;
             newAsset.CreationDate = DateTime.Now;
             newAsset.Deleted = 0;            
 
@@ -99,7 +124,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             return RedirectToAction("About", "Home"); //prb to error or so...
         }
 
-        private int? getCourseID(String programme, String course)
+            private int? getCourseID(String programme, String course)
         {
             //dirty, huh?
             String[] arr = course.Split(" ");

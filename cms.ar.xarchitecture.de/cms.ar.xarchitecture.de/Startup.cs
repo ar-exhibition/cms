@@ -70,6 +70,12 @@ namespace cms.ar.xarchitecture.de
                 ServeUnknownFileTypes = true
             });
 
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();
+            }
+
             app.UseRouting();
             app.UseAuthorization();
 

@@ -13,6 +13,7 @@ namespace cms.ar.xarchitecture.de.Models.Wrapper
         public string programme { get; set; }
         public string course { get; set; }
         public string assetName { get; set; }
+        public string tumbnailBase64 { get; set; }
         public IFormFile FileToUpload { get; set; }
     }
 }
