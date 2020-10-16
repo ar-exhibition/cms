@@ -8,6 +8,8 @@ using cms.ar.xarchitecture.de.cmsXARCH;
 using Microsoft.AspNetCore.Http;
 using Vlingo.UUID;
 using cms.ar.xarchitecture.de.Helper;
+using System.IO;
+using cms.ar.xarchitecture.de.Models.Wrapper;
 
 namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
@@ -171,14 +173,29 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
 
         private string uploadToFilesystem(IFormFile file)
         {
-            return "";
+            string extension = Path.GetExtension(file.FileName);
+            string UUID = Convert.ToString(uuidCreator.GenerateGuid(file.FileName + DateTime.Now));
+            string filenameWithUUID = UUID + extension;
+
+            string dir = Directory.GetCurrentDirectory();
+
+            var path = Path.Combine(
+                        dir, "static", "content", "marker",
+                        filenameWithUUID);
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                file.CopyToAsync(stream);
+            }
+
+            return UUID;
         }
     }
 
-    public class SceneSubmissionValues
-    {
-        public string SceneName { get; set; }
-        public IFormFile FileToUpload { get; set; }
-    }
+    //public class SceneSubmissionValues
+    //{
+    //    public string SceneName { get; set; }
+    //    public IFormFile FileToUpload { get; set; }
+    //}
 
 }
