@@ -1,0 +1,36 @@
+name: Production CMS
+
+on:
+  push:
+    branches:
+    - master
+
+defaults:
+  run:
+    shell: bash
+    working-directory: cms.ar.xarchitecture.de   
+    
+env:
+  DOCKER_REGISTRY: ${{secrets.DOCKER_REGISTRY_URL}}
+  DOCKER_USER: ${{secrets.DOCKER_REGISTRY_USER}} 
+  DOCKER_PASSWORD: ${{secrets.DOCKER_REGISTRY_PASSWORD}}    
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: docker login
+        run: |
+          docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+      - name: docker build cms
+        run: |     
+          ls -la
+          docker build -f cms.ar.xarchitecture.de/Dockerfile -t $DOCKER_REGISTRY/cms:release .
+          
+      - name: docker push image
+        run: |
+          docker push $DOCKER_REGISTRY/cms:release

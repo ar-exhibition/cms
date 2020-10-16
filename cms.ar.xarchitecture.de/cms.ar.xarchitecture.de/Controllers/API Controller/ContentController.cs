@@ -79,7 +79,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 temp.name = element.AssetName;
                 temp.link = mapFilenameToDownloadLink(RessourceType.asset, element.FileUuid);
                 temp.thumbnail = mapFilenameToDownloadLink(RessourceType.thumbnail, element.ThumbnailUuid); //name of the thumbnail
-                temp.assetType = "3d"; //dirtyhack. implement a more permanent solution.
+                temp.assetType = mapAssetType((int) getAssetTypeFromFilename(element.FileUuid));
 
                 content.assets.Add(temp);
             }
@@ -102,6 +102,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 temp.sceneId = element.SceneId;
                 temp.name = element.SceneName;
                 temp.worldMapLink = mapFilenameToDownloadLink(RessourceType.worldmap, element.FileUuid);
+                temp.worldMapUUID = element.FileUuid;
                 temp.marker = new marker(element.MarkerUuid, mapFilenameToDownloadLink(RessourceType.marker, element.MarkerUuid));
 
                 content.scenes.Add(temp);
@@ -178,6 +179,19 @@ namespace cms.ar.xarchitecture.de.Controllers
                     return "light";
                 default:
                     return "";
+            }
+        }
+
+        AssetTypes getAssetTypeFromFilename(string filename) {
+            string extension = System.IO.Path.GetExtension(filename);
+            string[] imageExtensions = {".png", ".jpg", ".jpeg"};
+            string[] videoExtensions = {".mp4", ".mov"};
+            if (imageExtensions.Contains(extension)) {
+                return AssetTypes.image;
+            } else if (videoExtensions.Contains(extension)) {
+                return AssetTypes.video;
+            } else {
+                return AssetTypes.model;
             }
         }
 
