@@ -59,7 +59,8 @@ namespace cms.ar.xarchitecture.de.Controllers
             if (values.FileToUpload == null || values.FileToUpload.Length == 0)
                 return Content("file not selected");
 
-            string filename = uuidCreator.GenerateGuid(values.FileToUpload.FileName + DateTime.Now) + ".glb";
+            string extension = System.IO.Path.GetExtension(values.FileToUpload.FileName);
+            string filename = uuidCreator.GenerateGuid(values.FileToUpload.FileName + DateTime.Now) + extension;
             var thumbnailUUID = uuidCreator.GenerateGuid(values.tumbnailBase64 + DateTime.Now);
             string thumbnailFilename = thumbnailUUID + ".png";
 
