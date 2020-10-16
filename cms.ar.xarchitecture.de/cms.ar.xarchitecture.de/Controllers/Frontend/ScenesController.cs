@@ -74,7 +74,7 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
             }
             else
             {
-                newRecord.MarkerUuid = uploadToFilesystem(values.FileToUpload); //give back UUID
+                newRecord.MarkerUuid = await uploadToFilesystem(values.FileToUpload); //give back UUID
             }
 
             if (ModelState.IsValid)
@@ -171,7 +171,7 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
             return _context.Scene.Any(e => e.SceneId == id);
         }
 
-        private string uploadToFilesystem(IFormFile file)
+        private async Task<String> uploadToFilesystem(IFormFile file)
         {
             string extension = Path.GetExtension(file.FileName);
             string UUID = Convert.ToString(uuidCreator.GenerateGuid(file.FileName + DateTime.Now));
@@ -185,7 +185,7 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
 
             using (var stream = new FileStream(path, FileMode.Create))
             {
-                file.CopyToAsync(stream);
+                await file.CopyToAsync(stream);
             }
 
             return UUID;
