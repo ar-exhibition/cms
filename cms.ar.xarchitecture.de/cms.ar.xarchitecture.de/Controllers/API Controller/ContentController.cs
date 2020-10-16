@@ -123,7 +123,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                     fullpath = controllerPath + "marker/" + getFullyQualifiedFilename(filename);
                     break;
                 case (int)RessourceType.thumbnail:
-                    fullpath = controllerPath + "thumbnails/" + filename;
+                    fullpath = controllerPath + "thumbnails/" + filename + ".png"; //are always png
                     break;
                 case (int)RessourceType.worldmap:
                     fullpath = controllerPath + "worldmaps/" + filename;
