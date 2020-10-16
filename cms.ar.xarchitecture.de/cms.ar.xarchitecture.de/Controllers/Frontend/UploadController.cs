@@ -84,27 +84,33 @@ namespace cms.ar.xarchitecture.de.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            newThumbnail.ThumbnailUuid = Convert.ToString(thumbnailUUID);
 
-            if (ModelState.IsValid)
+            //create thumbnail only if gltf file
+            if(extension == ".glb" || extension == ".gltf")
             {
-                _context.Thumbnail.Add(newThumbnail);
-                await _context.SaveChangesAsync();
+                newThumbnail.ThumbnailUuid = Convert.ToString(thumbnailUUID);
+
+                if (ModelState.IsValid)
+                {
+                    _context.Thumbnail.Add(newThumbnail);
+                    await _context.SaveChangesAsync();
+                }
+
+                var thumbPath = Path.Combine(
+                dir, "static", "content", "thumbnails",
+                thumbnailFilename);
+
+                String base64Str = values.tumbnailBase64;
+                base64Str = base64Str.Split(",")[1];
+                byte[] bytes = Convert.FromBase64String(base64Str);
+
+
+                using (var stream = new FileStream(thumbPath, FileMode.Create))
+                {
+                    await stream.WriteAsync(bytes);
+                }
             }
 
-            var thumbPath = Path.Combine(
-            dir, "static", "content", "thumbnails",
-            thumbnailFilename);
-
-            String base64Str = values.tumbnailBase64;
-            base64Str = base64Str.Split(",")[1];
-            byte[] bytes = Convert.FromBase64String(base64Str);
-            
-
-            using (var stream = new FileStream(thumbPath, FileMode.Create))
-            {
-                await stream.WriteAsync(bytes);
-            }
 
             newAsset.Creator = getCreatorID(newCreator.Creator1);
             newAsset.Course = getCourseID(values.programme, values.course);
