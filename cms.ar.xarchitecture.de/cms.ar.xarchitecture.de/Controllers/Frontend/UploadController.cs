@@ -12,6 +12,7 @@ using cms.ar.xarchitecture.de.cmsXARCH;
 using System.Collections;
 using cms.ar.xarchitecture.de.Models.Wrapper;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -20,12 +21,15 @@ namespace cms.ar.xarchitecture.de.Controllers
         NameBasedGenerator uuidCreator;
         private readonly IFileProvider fileProvider;
         cmsXARCHContext _context;
+        private IMongoCollection<SceneAsset> _assetsCollection;
 
-        public UploadController(IFileProvider fileProvider, cmsXARCHContext context)
+        public UploadController(IFileProvider fileProvider, IMongoClient client)
         {
             this.fileProvider = fileProvider;
             uuidCreator = new NameBasedGenerator(HashType.SHA1);
-            _context = context;
+
+            var database = client.GetDatabase("cmsXARCH");
+            _assetsCollection = database.GetCollection<SceneAsset>("Assets");
         }
 
         // GET: Upload/Create

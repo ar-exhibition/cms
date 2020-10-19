@@ -13,6 +13,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.StaticFiles;
+using MongoDB.Driver;
 
 namespace cms.ar.xarchitecture.de
 {
@@ -36,7 +37,11 @@ namespace cms.ar.xarchitecture.de
             services.AddControllersWithViews();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
-            services.AddDbContext<cmsXARCHContext>(options => options.UseMySQL(_options.GetConnectionString()));
+
+            services.AddSingleton<IMongoClient, MongoClient>(s =>
+            {
+                return new MongoClient(_options.GetConnectionString());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -132,11 +137,12 @@ namespace cms.ar.xarchitecture.de
 
         public string GetConnectionString()
         {
-            return "server=" + ServerAdress + ";" 
-                + "port=" + Port + ";" 
-                + "user=" + User + ";" 
-                + "password=" + Password + ";" 
-                + "database=" + Database;
+            //return "server=" + ServerAdress + ";" 
+            //    + "port=" + Port + ";" 
+            //    + "user=" + User + ";" 
+            //    + "password=" + Password + ";" 
+            //    + "database=" + Database;
+            return "INSERT CONNECTION STRING HERE IN A SECURE WAY";
         }
     }
 }
