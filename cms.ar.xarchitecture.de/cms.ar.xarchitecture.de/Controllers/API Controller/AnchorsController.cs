@@ -11,6 +11,8 @@ using cms.ar.xarchitecture.de.Models.Wrapper;
 //using Newtonsoft.Json;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using MongoDB.Driver;
+using cms.ar.xarchitecture.de.Helper;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -19,10 +21,12 @@ namespace cms.ar.xarchitecture.de.Controllers
     public class AnchorsController : ControllerBase
     {
         private readonly cmsXARCHContext _context;
+        private IMongoCollection<Anchor> _anchorsCollection;
 
-        public AnchorsController(cmsXARCHContext context)
+        public AnchorsController(IMongoClient client)
         {
-            _context = context;
+            var database = client.GetDatabase(Backend.DatabaseName);
+            _anchorsCollection = database.GetCollection<Anchor>("Anchors");            
         }
 
         // GET: api/<AnchorsController>

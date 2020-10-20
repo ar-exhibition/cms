@@ -10,6 +10,8 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using cms.ar.xarchitecture.de.Helper;
+using Org.BouncyCastle.Asn1.X509;
+using MongoDB.Driver;
 
 namespace cms.ar.xarchitecture.de.Controllers.API_Controller
 {
@@ -18,12 +20,13 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
     public class ScenesController : ControllerBase
     {
 
-        cmsXARCHContext _context;
+        public IMongoCollection<Scene> _scenesCollection;
         private IHttpContextAccessor _host;
 
-        public ScenesController (cmsXARCHContext context, IHttpContextAccessor httpContextAccessor)
+        public ScenesController (IMongoClient client, IHttpContextAccessor httpContextAccessor)
         {
-            _context = context;
+            var database = client.GetDatabase(Backend.DatabaseName);
+            _scenesCollection = database.GetCollection<Scene>("Scenes");
             _host = httpContextAccessor;
         }
 
