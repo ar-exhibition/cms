@@ -20,8 +20,8 @@ namespace cms.ar.xarchitecture.de.Controllers
     [ApiController]
     public class AnchorsController : ControllerBase
     {
-        private readonly cmsXARCHContext _context;
         private IMongoCollection<Anchor> _anchorsCollection;
+        private IMongoCollection<Asset> _assetsCollection;
 
         public AnchorsController(IMongoClient client)
         {
@@ -30,67 +30,76 @@ namespace cms.ar.xarchitecture.de.Controllers
         }
 
         // GET: api/<AnchorsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        //[HttpGet]
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
 
         // GET api/<AnchorsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
         // POST api/<AnchorsController>
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] JsonElement body)
         {
-            AnchorList anchors = JsonSerializer.Deserialize<AnchorList>(body.GetRawText());
+            AnchorList Anchors = JsonSerializer.Deserialize<AnchorList>(body.GetRawText());
             Anchor tmp;
 
-            foreach (POSTAnchor element in anchors.anchors){
+            foreach (POSTAnchor element in Anchors.Anchors){
 
-                bool newRecord = false;
-                tmp = _context.Anchor.Find(element.anchorId);
+                bool newDocument = false;
 
-                if(tmp == null)
+                try
+                {
+                    //does this really throw an exception?!
+                    tmp = _anchorsCollection.Find(a => a.AnchorID.Equals(element.AnchorID)).FirstOrDefault();
+                }
+                catch
                 {
                     tmp = new Anchor();
-                    newRecord = true;
+                    newDocument = true;
                 }
 
-                SceneAsset asset = _context.SceneAsset.Find(element.assetId);
+                Asset asset = _assetsCollection.Find(a => a.AssetID.Equals(element.AssetID)).FirstOrDefault();
 
-                tmp.AnchorId = element.anchorId;
-                tmp.AssetId = element.assetId;
-                tmp.Scale = element.scale;
-                tmp.Asset = asset;
+                tmp.AnchorID = element.AnchorID;
+                tmp.AssetID = element.AssetID;
+                tmp.Scale = element.Scale;
 
-                if (newRecord)
-                    _context.Anchor.Add(tmp);
+                if (newDocument)
+                    _anchorsCollection.InsertOne(tmp);
                 else
-                    _context.Anchor.Update(tmp);
+                {
+                    //work in progress...
+                    var filter = Builders<Anchor>.Filter.Eq(a => a.AnchorID, tmp.AnchorID);
+                    var update = Builders<Anchor>.Update.Set
+                    _anchorsCollection.UpdateOne(filter, tmp);
+                }
 
-                await _context.SaveChangesAsync();
+
+                // await _context.SaveChangesAsync(); //is this still necessary with MonogoDB?
 
                 tmp = null;
             }
 
-            return CreatedAtAction("PostAnchors", anchors);
+            return CreatedAtAction("PostAnchors", Anchors);
         }
 
-        // PUT api/<AnchorsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //// PUT api/<AnchorsController>/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
-        // DELETE api/<AnchorsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// DELETE api/<AnchorsController>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

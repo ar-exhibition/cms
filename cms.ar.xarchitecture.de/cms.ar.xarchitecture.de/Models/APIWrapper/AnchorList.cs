@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,8 +13,8 @@ namespace cms.ar.xarchitecture.de.Models.Wrapper
 
     public class POSTAnchor
     {        
-        public string AnchorUUID { get; set; }
-        public string AssetID { get; set; }
+        public ObjectId AnchorID { get; set; }
+        public ObjectId AssetID { get; set; }
         public float? Scale { get; set; }
     }
 }
