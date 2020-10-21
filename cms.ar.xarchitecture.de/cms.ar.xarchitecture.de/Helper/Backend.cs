@@ -25,12 +25,11 @@ namespace cms.ar.xarchitecture.de.Helper
 
         static Backend()
         {
-            //define variables!
-            DatabaseHost = Environment.GetEnvironmentVariable("DB_SERVER");
-            DatabaseRemotePort = Environment.GetEnvironmentVariable("DB_PORT");
-            DatabaseName = Environment.GetEnvironmentVariable("DB_NAME");
-            DatabaseUser = Environment.GetEnvironmentVariable("DB_USER");
-            DatabasePassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
+            DatabaseHost = Environment.GetEnvironmentVariable("DATABASE_HOST");
+            DatabaseRemotePort = Environment.GetEnvironmentVariable("DATABASE_REMOTE_PORT");
+            DatabaseName = Environment.GetEnvironmentVariable("DATABASE_NAME");
+            DatabaseUser = Environment.GetEnvironmentVariable("DATABASE_USER");
+            DatabasePassword = Environment.GetEnvironmentVariable("DATABASE_PASSWORD");
 
             _localDirectoryRoot = Directory.GetCurrentDirectory();
 
@@ -69,15 +68,12 @@ namespace cms.ar.xarchitecture.de.Helper
                 case 2:
                     contentFolder = "marker";
                     break;
-
                 case 3:
                     contentFolder = "thumbnails";
                     break;
-
                 case 4:
                     contentFolder = "worldmaps";
                     break;
-
                 default:
                     contentFolder = "assets";
                     break;

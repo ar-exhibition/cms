@@ -11,7 +11,7 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
             Anchor = new HashSet<Anchor>();
         }
 
-        public ObjectId AssetId { get; set; }
+        public ObjectId AssetID { get; set; }
         public int? Creator { get; set; }
         public int? Course { get; set; }
         public string AssetName { get; set; }

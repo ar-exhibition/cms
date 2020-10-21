@@ -11,7 +11,7 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
             Asset = new HashSet<Asset>();
         }
 
-        public ObjectId CreatorId { get; set; }
+        public ObjectId CreatorID { get; set; }
         public string CreatorName { get; set; }
 
         public virtual ICollection<Asset> Asset { get; set; }

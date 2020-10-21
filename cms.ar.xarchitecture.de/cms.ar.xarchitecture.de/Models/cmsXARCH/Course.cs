@@ -10,7 +10,7 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
         {
             Asset = new HashSet<Asset>();
         }
-        public ObjectId CourseId { get; set; }
+        public ObjectId CourseID { get; set; }
         public string StudyProgramme { get; set; }
         public string CourseName { get; set; }
         public string Term { get; set; }

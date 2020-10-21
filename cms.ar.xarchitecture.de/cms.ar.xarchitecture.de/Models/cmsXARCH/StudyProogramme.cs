@@ -12,8 +12,8 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
             Creator = new HashSet<Creator>();
         }
 
-        public ObjectId ProgrammeId { get; set; }
-        public string Programme { get; set; }
+        public ObjectId ProgrammeID { get; set; }
+        public string ProgrammeName { get; set; }
 
         public virtual ICollection<Course> Course { get; set; }
         public virtual ICollection<Creator> Creator { get; set; }

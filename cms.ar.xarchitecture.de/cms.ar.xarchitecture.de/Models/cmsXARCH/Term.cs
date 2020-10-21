@@ -11,7 +11,7 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
             Course = new HashSet<Course>();
         }
 
-        public ObjectId TermId { get; set; }
+        public ObjectId TermID { get; set; }
         public string TermName { get; set; }
 
         public virtual ICollection<Course> Course { get; set; }

@@ -7,13 +7,13 @@ namespace cms.ar.xarchitecture.de.Models.Wrapper
 {
     public class AnchorList
     {
-        public POSTAnchor[] anchors { get; set; }
+        public POSTAnchor[] Anchors { get; set; }
     }
 
     public class POSTAnchor
-    {
-        public string anchorId { get; set; }
-        public int assetId { get; set; }
-        public float? scale { get; set; }
+    {        
+        public string AnchorUUID { get; set; }
+        public string AssetID { get; set; }
+        public float? Scale { get; set; }
     }
 }

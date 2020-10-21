@@ -6,7 +6,7 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
 {
     public partial class Anchor
     {
-        public ObjectId AnchorId { get; set; }
+        public ObjectId AnchorID { get; set; }
         public string AnchorUUID { get; set; }
         public int AssetId { get; set; }
         public float[] Transoform { get; set; }
