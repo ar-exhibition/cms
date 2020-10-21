@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 
 namespace cms.ar.xarchitecture.de.cmsXARCH
@@ -7,16 +8,14 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
     {
         public Course()
         {
-            SceneAsset = new HashSet<SceneAsset>();
+            Asset = new HashSet<Asset>();
         }
-
-        public int CourseId { get; set; }
-        public string Programme { get; set; }
-        public string Course1 { get; set; }
+        public ObjectId CourseId { get; set; }
+        public string StudyProgramme { get; set; }
+        public string CourseName { get; set; }
         public string Term { get; set; }
+        public string University { get; set; }
 
-        public virtual Studies ProgrammeNavigation { get; set; }
-        public virtual Term TermNavigation { get; set; }
-        public virtual ICollection<SceneAsset> SceneAsset { get; set; }
+        public virtual ICollection<Asset> Asset { get; set; }
     }
 }

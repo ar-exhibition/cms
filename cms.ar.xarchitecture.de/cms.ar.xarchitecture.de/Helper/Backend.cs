@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace cms.ar.xarchitecture.de.Helper
 {
@@ -17,14 +19,24 @@ namespace cms.ar.xarchitecture.de.Helper
         public static string DatabaseUser { get; set; }
         public static string DatabasePassword { get; set; }
 
+        private static string _localDirectoryRoot {get; set;}
+        private static string _localStaticRoot { get; set; }
+        private static string _localContentRoot { get; set; }
+
         static Backend()
         {
             //define variables!
-            DatabaseHost = Environment.GetEnvironmentVariable("");
-            DatabaseRemotePort = Environment.GetEnvironmentVariable("");
-            DatabaseName = Environment.GetEnvironmentVariable("");
-            DatabaseUser = Environment.GetEnvironmentVariable("");
-            DatabasePassword = Environment.GetEnvironmentVariable("");
+            DatabaseHost = Environment.GetEnvironmentVariable("DB_SERVER");
+            DatabaseRemotePort = Environment.GetEnvironmentVariable("DB_PORT");
+            DatabaseName = Environment.GetEnvironmentVariable("DB_NAME");
+            DatabaseUser = Environment.GetEnvironmentVariable("DB_USER");
+            DatabasePassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
+
+            _localDirectoryRoot = Directory.GetCurrentDirectory();
+
+            //probably find some nicer way to make the config. Like an XML or so
+            _localStaticRoot = "static";
+            _localContentRoot = "content";
         }     
         
         public static string GetDatabaseConnectionString()
@@ -36,10 +48,54 @@ namespace cms.ar.xarchitecture.de.Helper
                 + DatabaseRemotePort;
         }
         
-        public static void SaveToFilesystem(IFileInfo file)
-        { 
-            // put write to fs function here
-            //possibly overload for different parametres
+        public async static void SaveToFilesystem(IFormFile file, ContentType contentType)
+        {          
+            var path = Path.Combine(_mapContentTypeToFilePath(contentType), file.Name);
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
         }
+
+        private static string _mapContentTypeToFilePath(ContentType contentType)
+        {
+            string contentFolder = "";
+            switch ((int)contentType)
+            {
+                case 1:
+                    contentFolder = "assets";
+                    break;
+                case 2:
+                    contentFolder = "marker";
+                    break;
+
+                case 3:
+                    contentFolder = "thumbnails";
+                    break;
+
+                case 4:
+                    contentFolder = "worldmaps";
+                    break;
+
+                default:
+                    contentFolder = "assets";
+                    break;
+            }
+            return Path.Combine(_localDirectoryRoot,
+                                    _localStaticRoot,
+                                    _localContentRoot, 
+                                    contentFolder);
+        }
+
+        public enum ContentType
+        {
+            Asset,
+            Marker,
+            Thumbnail,
+            WorldMap
+        }
+
+
     }
 }
