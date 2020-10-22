@@ -78,15 +78,14 @@ namespace cms.ar.xarchitecture.de.Controllers
             //generate link on request time
             foreach (Asset asset in content.Assets)
             {
-                asset.GLTFLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Asset, preamble, asset.FileUUID);
-                asset.USDZLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Asset, preamble, asset.FileUUID);
-                asset.ThumbnailLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Thumbnail, preamble, asset.ThumbnailUUID);
+                asset.AssetLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Asset, preamble, asset.AssetFilename);
+                asset.ThumbnailLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Thumbnail, preamble, asset.ThumbnailFilename);
             }
 
             foreach (Scene scene in content.Scenes)
             {
-                scene.WorldMapFileLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.WorldMap, preamble, scene.WorldMapFileUUID);
-                scene.MarkerFileLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Marker, preamble, scene.MarkerFileUUID);
+                scene.WorldMapFileLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.WorldMap, preamble, scene.WorldMapFileName);
+                scene.MarkerFileLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Marker, preamble, scene.MarkerFileName);
             }
 
             return JsonConvert.SerializeObject(content, Formatting.Indented);

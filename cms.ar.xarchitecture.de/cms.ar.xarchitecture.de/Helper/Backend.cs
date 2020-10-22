@@ -23,7 +23,7 @@ namespace cms.ar.xarchitecture.de.Helper
         private static string _localStaticRoot { get; set; }
         private static string _localContentRoot { get; set; }
 
-        static Backend()
+        static Backend() //find way to inject stuff here
         {
             DatabaseHost = Environment.GetEnvironmentVariable("DATABASE_HOST");
             DatabaseRemotePort = Environment.GetEnvironmentVariable("DATABASE_REMOTE_PORT");
@@ -84,22 +84,25 @@ namespace cms.ar.xarchitecture.de.Helper
                                     contentFolder);
         }
 
-        public static string MapFilenameToDownloadLink(ContentType contentType, string preamble ,string UUID)
+        public static string MapFilenameToDownloadLink(ContentType contentType, string preamble, string filename)
         {
-            string fullpath = "";
+            string fullpath;
+            string controllerPath = preamble + "/" 
+                            + _localStaticRoot + "/" 
+                            + _localContentRoot + "/"; 
 
             switch ((int)contentType)
             {
-                case (int)RessourceType.asset:
+                case (int)ContentType.Asset:
                     fullpath = controllerPath + "assets/" + filename;
                     break;
-                case (int)RessourceType.marker:
-                    fullpath = controllerPath + "marker/" + getFullyQualifiedFilename(filename);
+                case (int)ContentType.Marker:
+                    fullpath = controllerPath + "marker/" + filename;
                     break;
-                case (int)RessourceType.thumbnail:
-                    fullpath = controllerPath + "thumbnails/" + filename + ".png"; //are always png
+                case (int)ContentType.Thumbnail:
+                    fullpath = controllerPath + "thumbnails/" + filename;
                     break;
-                case (int)RessourceType.worldmap:
+                case (int)ContentType.WorldMap:
                     fullpath = controllerPath + "worldmaps/" + filename;
                     break;
                 default:
@@ -107,33 +110,6 @@ namespace cms.ar.xarchitecture.de.Helper
                     break;
             }
             return fullpath;
-        }
-
-        private static string getFullyQualifiedFilename(string filename)
-        {
-            try
-            {
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "static", "content", "marker");
-
-                String[] files = Directory.GetFiles(path);
-
-                foreach (String file in files)
-                {
-                    if (file.Contains(filename))
-                    {
-                        string[] tmp = file.Split(".");
-                        return filename + "." + tmp.Last();
-                    }
-                }
-            }
-            catch
-            {
-                Console.WriteLine("whoops...");
-                filename = "notfound"; //put some default file here prb. Provides static link to non-existing scene or so
-            }
-
-
-            return filename + ".png"; //defined behaviour
         }
 
         private static string mapAssetType(int? ID)
@@ -155,9 +131,9 @@ namespace cms.ar.xarchitecture.de.Helper
             }
         }
 
-        public static AssetTypes getAssetTypeFromFilename(string filename)
+        public static AssetTypes getAssetTypeFromFilename(string filename) //solve this with mime type on upload!
         {
-            string extension = System.IO.Path.GetExtension(filename);
+            string extension = Path.GetExtension(filename);
             string[] imageExtensions = { ".png", ".jpg", ".jpeg" };
             string[] videoExtensions = { ".mp4", ".mov" };
             if (imageExtensions.Contains(extension))
@@ -186,12 +162,11 @@ namespace cms.ar.xarchitecture.de.Helper
 
         public enum AssetTypes
         {
-            GLTFmodel = 1,
-            USDZmodel = 2,
-            image = 3,
-            video = 4,
-            pdf = 5,
-            light = 6
+            model = 1,
+            image = 2,
+            video = 3,
+            pdf = 4,
+            light = 5
         }
     }
 }

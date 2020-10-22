@@ -45,21 +45,21 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
             Scene document = new Scene{
                 SceneID = ObjectId.Parse(data["SceneID"]),
                 SceneName = data["SceneName"],
-                WorldMapFileUUID = data["WorldMapFileUUID"],
-                MarkerFileUUID = data["MarkerFileUUID"],
+                WorldMapFileName = data["WorldMapFileName"],
+                MarkerFileName = data["MarkerFileName"],
                 DateChanged = DateTime.Now
             };
 
             if (document.SceneID.Equals(null))
-                document.MarkerFileUUID = MarkerCreator.createQRCode(document.SceneName, _host.HttpContext.Request.Host.Value);
+                document.MarkerFileName = MarkerCreator.createQRCode(document.SceneName, _host.HttpContext.Request.Host.Value);
 
             Backend.SaveToFilesystem(data.Files.FirstOrDefault(), Backend.ContentType.WorldMap);
 
             var filter = Builders<Scene>.Filter.Eq(s => s.SceneID, document.SceneID);
 
             var update = Builders<Scene>.Update.Set(s => s.SceneName, document.SceneName);
-            update = Builders<Scene>.Update.Set(s => s.WorldMapFileUUID, document.WorldMapFileUUID);
-            update = Builders<Scene>.Update.Set(s => s.MarkerFileUUID, document.MarkerFileUUID);
+            update = Builders<Scene>.Update.Set(s => s.WorldMapFileName, document.WorldMapFileName);
+            update = Builders<Scene>.Update.Set(s => s.MarkerFileName, document.MarkerFileName);
             update = Builders<Scene>.Update.Set(s => s.DateChanged, document.DateChanged);
 
             var options = new UpdateOptions();

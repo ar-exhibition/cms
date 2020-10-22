@@ -14,11 +14,10 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
         public ObjectId AssetID { get; set; }
         public string AssetName { get; set; }
         public string AssetType { get; set; }
-        public string FileUUID { get; set; }
-        public string GLTFLink { get; set; }
-        public string USDZLink { get; set; }
+        public string AssetFilename { get; set; }
+        public string AssetLink { get; set; }
         public string ExternalLink { get; set; }
-        public string ThumbnailUUID { get; set; }
+        public string ThumbnailFilename { get; set; }
         public string ThumbnailLink { get; set; }
         public DateTime? CreationDate { get; set; }
         public bool Deleted { get; set; }
