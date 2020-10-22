@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using cms.ar.xarchitecture.de.Helper;
 using Org.BouncyCastle.Asn1.X509;
 using MongoDB.Driver;
+using MongoDB.Bson;
 
 namespace cms.ar.xarchitecture.de.Controllers.API_Controller
 {
@@ -41,59 +42,32 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
         [HttpPost]
         public async Task<String> Post(IFormCollection data)
         {
+            Scene document = new Scene{
+                SceneID = ObjectId.Parse(data["SceneID"]),
+                SceneName = data["SceneName"],
+                WorldMapFileUUID = data["WorldMapFileUUID"],
+                MarkerFileUUID = data["MarkerFileUUID"],
+                DateChanged = DateTime.Now
+            };
 
-            string id = data["SceneID"];
-            string sceneName = data["SceneName"];
-            string fileUUID = data["FileUUID"];
-            string markerUUID = data["MarkerUUID"];
+            if (document.SceneID.Equals(null))
+                document.MarkerFileUUID = MarkerCreator.createQRCode(document.SceneName, _host.HttpContext.Request.Host.Value);
 
-            bool NoRecordExists = string.IsNullOrEmpty(id);
-            Scene Record;
- 
-            if (NoRecordExists)
-                Record = new Scene();
+            Backend.SaveToFilesystem(data.Files.FirstOrDefault(), Backend.ContentType.WorldMap);
 
-            else
-                Record = _context.Scene.Find(Int32.Parse(id));
+            var filter = Builders<Scene>.Filter.Eq(s => s.SceneID, document.SceneID);
 
+            var update = Builders<Scene>.Update.Set(s => s.SceneName, document.SceneName);
+            update = Builders<Scene>.Update.Set(s => s.WorldMapFileUUID, document.WorldMapFileUUID);
+            update = Builders<Scene>.Update.Set(s => s.MarkerFileUUID, document.MarkerFileUUID);
+            update = Builders<Scene>.Update.Set(s => s.DateChanged, document.DateChanged);
 
-            if (sceneName != null)
-                Record.SceneName = sceneName;
+            var options = new UpdateOptions();
+            options.IsUpsert = true;
 
-            if (fileUUID != null)
-                Record.FileUuid = fileUUID;
+            await _scenesCollection.UpdateOneAsync(filter, update, options);
 
-            if (NoRecordExists)
-                Record.MarkerUuid = MarkerCreator.createQRCode(Record.SceneName, _host.HttpContext.Request.Host.Value);
-            else
-                if (markerUUID != null)
-                    Record.MarkerUuid = markerUUID;
-
-            try
-            {
-                FormFile file = (FormFile)data.Files[0];
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "static", "content", "worldmaps", Record.FileUuid);
-
-                using (var stream = new FileStream(path, FileMode.Create)) //create or overwrite
-                {
-                    await file.CopyToAsync(stream);
-                }
-            }
-            catch
-            {
-                Console.WriteLine("no file"); //put some meaningful http response here!
-            }
-
-            if (ModelState.IsValid)
-            {
-                if (NoRecordExists)
-                    _context.Scene.Add(Record);
-                else
-                    _context.Scene.Update(Record);
-
-                await _context.SaveChangesAsync();
-            }
-            return JsonConvert.SerializeObject(Record, Formatting.Indented);
+            return JsonConvert.SerializeObject(document, Formatting.Indented);
         }
 
         //// PUT api/<ScenesController>/5
