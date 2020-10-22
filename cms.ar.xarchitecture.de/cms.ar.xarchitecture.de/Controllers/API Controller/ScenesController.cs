@@ -21,7 +21,7 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
     public class ScenesController : ControllerBase
     {
 
-        public IMongoCollection<Scene> _scenesCollection;
+        private IMongoCollection<Scene> _scenesCollection;
         private IHttpContextAccessor _host;
 
         public ScenesController (IMongoClient client, IHttpContextAccessor httpContextAccessor)

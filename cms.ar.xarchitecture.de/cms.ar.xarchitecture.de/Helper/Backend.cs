@@ -84,6 +84,98 @@ namespace cms.ar.xarchitecture.de.Helper
                                     contentFolder);
         }
 
+        public static string MapFilenameToDownloadLink(ContentType contentType, string preamble ,string UUID)
+        {
+            string fullpath = "";
+
+            switch ((int)contentType)
+            {
+                case (int)RessourceType.asset:
+                    fullpath = controllerPath + "assets/" + filename;
+                    break;
+                case (int)RessourceType.marker:
+                    fullpath = controllerPath + "marker/" + getFullyQualifiedFilename(filename);
+                    break;
+                case (int)RessourceType.thumbnail:
+                    fullpath = controllerPath + "thumbnails/" + filename + ".png"; //are always png
+                    break;
+                case (int)RessourceType.worldmap:
+                    fullpath = controllerPath + "worldmaps/" + filename;
+                    break;
+                default:
+                    fullpath = "";
+                    break;
+            }
+            return fullpath;
+        }
+
+        private static string getFullyQualifiedFilename(string filename)
+        {
+            try
+            {
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "static", "content", "marker");
+
+                String[] files = Directory.GetFiles(path);
+
+                foreach (String file in files)
+                {
+                    if (file.Contains(filename))
+                    {
+                        string[] tmp = file.Split(".");
+                        return filename + "." + tmp.Last();
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("whoops...");
+                filename = "notfound"; //put some default file here prb. Provides static link to non-existing scene or so
+            }
+
+
+            return filename + ".png"; //defined behaviour
+        }
+
+        private static string mapAssetType(int? ID)
+        {
+            switch (ID)
+            {
+                case (int)AssetTypes.model:
+                    return "3d";
+                case (int)AssetTypes.image:
+                    return "image";
+                case (int)AssetTypes.video:
+                    return "video";
+                case (int)AssetTypes.pdf:
+                    return "pdf";
+                case (int)AssetTypes.light:
+                    return "light";
+                default:
+                    return "";
+            }
+        }
+
+        public static AssetTypes getAssetTypeFromFilename(string filename)
+        {
+            string extension = System.IO.Path.GetExtension(filename);
+            string[] imageExtensions = { ".png", ".jpg", ".jpeg" };
+            string[] videoExtensions = { ".mp4", ".mov" };
+            if (imageExtensions.Contains(extension))
+            {
+                return AssetTypes.image;
+            }
+            else if (videoExtensions.Contains(extension))
+            {
+                return AssetTypes.video;
+            }
+            else
+            {
+                return AssetTypes.model;
+            }
+        }
+
+
+
         public enum ContentType
         {
             Asset,
@@ -92,6 +184,14 @@ namespace cms.ar.xarchitecture.de.Helper
             WorldMap
         }
 
-
+        public enum AssetTypes
+        {
+            GLTFmodel = 1,
+            USDZmodel = 2,
+            image = 3,
+            video = 4,
+            pdf = 5,
+            light = 6
+        }
     }
 }
