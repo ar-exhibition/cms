@@ -6,12 +6,7 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
 {
     public partial class Asset
     {
-        public Asset()
-        {
-            Anchor = new HashSet<Anchor>();
-        }
-
-        public ObjectId AssetID { get; set; }
+        public ObjectId _id { get; set; }
         public string AssetName { get; set; }
         public string AssetType { get; set; }
         public string AssetFilename { get; set; }
@@ -23,7 +18,5 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
         public bool Deleted { get; set; }
         public Creator Creator { get; set; }
         public Course Course { get; set; }
-
-        public virtual ICollection<Anchor> Anchor { get; set; }
     }
 }

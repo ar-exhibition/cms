@@ -6,23 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using cms.ar.xarchitecture.de.cmsXARCH;
+using MongoDB.Driver;
+using cms.ar.xarchitecture.de.Helper;
 
 namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
-    public class SceneAssetsController : Controller
+    public class AssetsController : Controller
     {
-        private readonly cmsXARCHContext _context;
+        private IMongoCollection<Asset> _assetsCollection;
 
-        public SceneAssetsController(cmsXARCHContext context)
+        public AssetsController(IMongoClient client)
         {
-            _context = context;
+            var database = client.GetDatabase(Backend.DatabaseName);
+            _assetsCollection = database.GetCollection<Asset>("Assets");
         }
 
         // GET: SceneAssets
         public async Task<IActionResult> Index()
         {
-            var cmsXARCHContext = _context.SceneAsset.Include(s => s.CourseNavigation).Include(s => s.CreatorNavigation).Include(s => s.ThumbnailUu);
-            return View(await cmsXARCHContext.ToListAsync());
+            //var cmsXARCHContext = _context.SceneAsset.Include(s => s.CourseNavigation).Include(s => s.CreatorNavigation).Include(s => s.ThumbnailUu);
+            return View(await _assetsCollection.Find(a => true).ToListAsync());
         }
 
         // GET: SceneAssets/Details/5

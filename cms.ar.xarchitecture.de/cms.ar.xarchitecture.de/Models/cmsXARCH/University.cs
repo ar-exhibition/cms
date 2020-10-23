@@ -9,14 +9,8 @@ namespace cms.ar.xarchitecture.de.Models.cmsXARCH
 {
     public class University
     {
-        public University()
-        {
-            StudyProogramme = new HashSet<StudyProogramme>();
-        }
-        public ObjectId UniversityID { get; set; }
+        public ObjectId _id { get; set; } 
         public string UniversityName { get; set; }
-
-        public virtual ICollection<StudyProogramme> StudyProogramme { get; set; }
-
+        public ObjectId[] StudyProgrammes { get; set; }
     }
 }
