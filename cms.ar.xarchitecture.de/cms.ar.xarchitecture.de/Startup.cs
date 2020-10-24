@@ -37,13 +37,6 @@ namespace cms.ar.xarchitecture.de
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
             services.AddDbContext<cmsXARCHContext>(options => options.UseMySQL(_options.GetConnectionString()));
-
-            //test
-            services.AddHttpsRedirection(options =>
-            {
-                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-                options.HttpsPort = 5001;
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
