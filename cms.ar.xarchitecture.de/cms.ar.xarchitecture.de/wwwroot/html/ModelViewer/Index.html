@@ -29,7 +29,7 @@
 <body>
 </body>
 <script>
-    fetch("http://luziffer.ddnss.de:8080/api/content").then(response => response.json()).then((data) => {
+    fetch("https://cms.hotpot.codes/api/content").then(response => response.json()).then((data) => {
         data.assets.forEach(asset => {
             if (asset.assetType != "light") {
                 const container = document.createElement("div");
