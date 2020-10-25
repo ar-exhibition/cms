@@ -1,9 +1,11 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 
 namespace cms.ar.xarchitecture.de.cmsXARCH
 {
+    [BsonDiscriminator("Course")]
     public partial class Course
     {
         public ObjectId _id { get; set; }

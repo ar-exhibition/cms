@@ -34,7 +34,7 @@ namespace cms.ar.xarchitecture.de
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 
-            services.AddSingleton<IMongoClient, MongoClient>(s =>
+            services.AddSingleton<IMongoClient, MongoClientBase>(s =>
             {
                 return new MongoClient(Backend.GetDatabaseConnectionString());
             });
