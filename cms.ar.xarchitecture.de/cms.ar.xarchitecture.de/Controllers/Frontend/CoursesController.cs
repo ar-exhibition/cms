@@ -25,7 +25,10 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         {
             var database = client.GetDatabase(Backend.DatabaseName);
             _courses = database.GetCollection<Course>("Courses");
-            // add collections here!
+            _studies = database.GetCollection<StudyProgramme>("StudyProgrammes");
+            _terms = database.GetCollection<Term>("Terms");
+            _unis = database.GetCollection<University>("Universities");
+            _assets = database.GetCollection<Asset>("Assets");
         }
 
         // GET: Courses

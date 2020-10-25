@@ -6,34 +6,39 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using cms.ar.xarchitecture.de.cmsXARCH;
+using MongoDB.Driver;
+using cms.ar.xarchitecture.de.Helper;
+using MongoDB.Bson;
 
 namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
     public class StudiesController : Controller
     {
-        private readonly cmsXARCHContext _context;
+        IMongoCollection<StudyProgramme> _studies;
 
-        public StudiesController(cmsXARCHContext context)
+        public StudiesController(IMongoClient client)
         {
-            _context = context;
+            var database = client.GetDatabase(Backend.DatabaseName);
+            _studies = database.GetCollection<StudyProgramme>("StudyProgrammes");
+            
         }
 
         // GET: Studies
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Studies.ToListAsync());
+            return View(await _studies.Find(s => true).ToListAsync());
         }
 
         // GET: Studies/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(ObjectId id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var studies = await _context.Studies
-                .FirstOrDefaultAsync(m => m.ProgrammeId == id);
+            var studies = await _studies.FindAsync(s => s._id == id);
+            
             if (studies == null)
             {
                 return NotFound();
@@ -53,26 +58,25 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProgrammeId,Programme")] StudyProogramme studies)
+        public async Task<IActionResult> Create([Bind("_id,ProgrammeName,University")] StudyProgramme studies)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(studies);
-                await _context.SaveChangesAsync();
+                await _studies.InsertOneAsync(studies);
                 return RedirectToAction(nameof(Index));
             }
             return View(studies);
         }
 
         // GET: Studies/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(ObjectId id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var studies = await _context.Studies.FindAsync(id);
+            var studies = await _studies.FindAsync(s => s._id == id);
             if (studies == null)
             {
                 return NotFound();
@@ -85,9 +89,9 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProgrammeId,Programme")] StudyProogramme studies)
+        public async Task<IActionResult> Edit(ObjectId id, [Bind("_id,ProgrammeName,University")] StudyProgramme studies)
         {
-            if (id != studies.ProgrammeId)
+            if (id != studies._id)
             {
                 return NotFound();
             }
@@ -96,19 +100,12 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
             {
                 try
                 {
-                    _context.Update(studies);
-                    await _context.SaveChangesAsync();
+                    await _studies.UpdateOneAsync(s => s._id == id, studies.ToBsonDocument());
+                    
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (MongoException e)
                 {
-                    if (!StudiesExists(studies.ProgrammeId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound(e.Message);
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -116,15 +113,15 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         }
 
         // GET: Studies/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(ObjectId id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var studies = await _context.Studies
-                .FirstOrDefaultAsync(m => m.ProgrammeId == id);
+            var studies = await _studies.FindAsync(s => s._id == id);
+
             if (studies == null)
             {
                 return NotFound();
@@ -136,17 +133,16 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // POST: Studies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(ObjectId id)
         {
-            var studies = await _context.Studies.FindAsync(id);
-            _context.Studies.Remove(studies);
-            await _context.SaveChangesAsync();
+            var studies = await _studies.DeleteOneAsync(s => s._id == id);
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StudiesExists(int id)
-        {
-            return _context.Studies.Any(e => e.ProgrammeId == id);
-        }
+        //private bool StudiesExists(int id)
+        //{
+        //    return _context.Studies.Any(e => e.ProgrammeId == id);
+        //}
     }
 }

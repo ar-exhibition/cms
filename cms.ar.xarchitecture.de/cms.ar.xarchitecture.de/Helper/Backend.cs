@@ -47,7 +47,7 @@ namespace cms.ar.xarchitecture.de.Helper
                 + DatabaseRemotePort;
         }
         
-        public async static void SaveToFilesystem(IFormFile file, ContentType contentType)
+        public static async Task SaveToFilesystem(IFormFile file, ContentType contentType)
         {          
             var path = Path.Combine(_mapContentTypeToFilePath(contentType), file.Name);
 

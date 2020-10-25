@@ -8,6 +8,7 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
     {
         public ObjectId _id { get; set; }
         public string ProgrammeName { get; set; }
+        public string University { get; set; }
         public ObjectId[] Courses { get; set; }
 
     }

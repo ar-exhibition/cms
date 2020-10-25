@@ -102,9 +102,9 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ObjectId id, [Bind("AssetId,Creator,Course,AssetName,FileUuid,ExternalLink,ThumbnailUuid,CreationDate,Deleted")] Asset sceneAsset)
+        public async Task<IActionResult> Edit(ObjectId id, [Bind("AssetId,Creator,Course,AssetName,FileUuid,ExternalLink,ThumbnailUuid,CreationDate,Deleted")] Asset asset)
         {
-            if (id != sceneAsset._id)
+            if (id != asset._id)
             {
                 return NotFound();
             }
@@ -113,7 +113,7 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
             {
                 try
                 {
-                    await _assetsCollection.UpdateOneAsync(r => r._id == id, sceneAsset.ToBsonDocument());
+                    await _assetsCollection.UpdateOneAsync(r => r._id == id, asset.ToBsonDocument());
                 }
                 catch (MongoException e) 
                 {
@@ -123,7 +123,7 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
             }
             ViewData["Course"] = new SelectList(_courseCollection.AsQueryable());
             ViewData["Creator"] = new SelectList(_creatorsCollection.AsQueryable());
-            return View(sceneAsset);
+            return View(asset);
         }
 
         // GET: SceneAssets/Delete/5
