@@ -12,26 +12,32 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Course1)
+            @Html.DisplayNameFor(model => model.CourseName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Course1)
+            @Html.DisplayFor(model => model.CourseName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProgrammeNavigation)
+            @Html.DisplayNameFor(model => model.UniversityNavigation.UniversityName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProgrammeNavigation.Programme)
+            @Html.DisplayFor(model => model.UniversityNavigation.UniversityName)
+        </dd>        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ProgrammeNavigation.ProgrammeName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ProgrammeNavigation.ProgrammeName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TermNavigation)
+            @Html.DisplayNameFor(model => model.TermNavigation.TermName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TermNavigation.Term1)
+            @Html.DisplayFor(model => model.TermNavigation.TermName)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.CourseId">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model._id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

@@ -1,18 +1,14 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 
 namespace cms.ar.xarchitecture.de.cmsXARCH
 {
     public partial class Term
     {
-        public Term()
-        {
-            Course = new HashSet<Course>();
-        }
+        public ObjectId _id { get; set; }
+        public string TermName { get; set; }
+        public ObjectId[] Courses { get; set; }
 
-        public int TermId { get; set; }
-        public string Term1 { get; set; }
-
-        public virtual ICollection<Course> Course { get; set; }
     }
 }

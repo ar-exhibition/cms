@@ -1,4 +1,4 @@
-﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsXARCH.SceneAsset>
+﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsXARCH.Asset>
 
 @{
     ViewData["Title"] = "Index";
@@ -17,7 +17,7 @@
                 @Html.DisplayNameFor(model => model.AssetName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FileUuid)
+                @Html.DisplayNameFor(model => model.AssetFilename)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ExternalLink)
@@ -29,13 +29,7 @@
                 @Html.DisplayNameFor(model => model.Deleted)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CourseNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatorNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ThumbnailUu)
+                @Html.DisplayNameFor(model => model.ThumbnailFilename)
             </th>
             <th></th>
         </tr>
@@ -47,7 +41,7 @@
                 @Html.DisplayFor(modelItem => item.AssetName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FileUuid)
+                @Html.DisplayFor(modelItem => item.AssetFilename)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ExternalLink)
@@ -59,18 +53,12 @@
                 @Html.DisplayFor(modelItem => item.Deleted)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CourseNavigation.CourseId)
+                @Html.DisplayFor(modelItem => item.ThumbnailFilename)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatorNavigation.CreatorId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ThumbnailUu.ThumbnailUuid)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.AssetId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AssetId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AssetId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item._id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item._id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item._id">Delete</a>
             </td>
         </tr>
 }
