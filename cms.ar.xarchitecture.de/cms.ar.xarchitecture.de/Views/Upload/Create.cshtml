@@ -40,64 +40,211 @@
 
             <div class="form-group">
                 <label class="control-label">Select your model!</label>
-                <input asp-for="AssetFile" id="fileButton" type="file" class="btn btn-primary" onchange="loadModel()" />
-                <span asp-validation-for="AssetFile"></span>
+
+                <input asp-for="FileToUpload" id="fileButton" type="file" class="btn btn-primary" onchange="fileInputChanged(event)" />
+                <span asp-validation-for="FileToUpload"></span>
             </div>
 
-            <input type="hidden" id="thumbnail" asp-for="ThumbnailBase64" class="form-control" />
+            <div class="form-group" id="model-container" style="display: none;">
+                <p style="display: none;" id="loading-model">Loading Model...</p>
+                <div id="model-viewer"></div>
+                <button type="button" onclick="grabThumbnail()" style="display: none;" id="thumbnail-screenshot" class="btn btn-primary">Take screenshot for thumbnail</button>
+            </div>
+            
+            <div class="form-group" id="video-container" style="display: none;">
+                <p style="display: none;" id="loading-video">Loading Video...</p>
+                <div id="video-viewer"></div>
+                <button type="button" onclick="grabVideoThumbnail()" id="thumbnail-video" class="btn btn-primary">Take screenshot for thumbnail</button>
+            </div>
+
+            <div class="form-group thumbnail-container" style="display: none;">
+                <span>Thumbnail:</span>
+                <img id="thumbnail-image" alt="">
+            </div>
+
+            <input type="hidden" id="thumbnail" asp-for="tumbnailBase64" class="form-control" />
 
             <div class="form-group">
-                <input id="submitBtn" type="submit" value="waiting..." class="btn btn-primary" onclick="submitThumbnail()" disabled="disabled" />
+                <input id="submitBtn" type="submit" value="waiting..." class="btn btn-primary" disabled="disabled" />
             </div>
+
 
         </form>
     </div>
 </div>
 
-<div id="viewport" class="model-container"></div>
 
 <script>
-    function loadModel() {
-        var file = document.getElementById('fileButton').files[0];
-        const viewport = document.getElementById("viewport");
-        var modelViewer = document.getElementsByTagName("model-viewer")[0];
+    function fileInputChanged(event) {
 
-        if (modelViewer == null) {
-            modelViewer = document.createElement("model-viewer");
+        if (!event || !event.target || !event.target.files || event.target.files.length === 0) {
+            return;
         }
 
-        modelViewer.setAttribute("auto-rotate", "true");
-        modelViewer.setAttribute("loading", "eager");
-        modelViewer.setAttribute("rotation-per-second", "90deg");
+        disableSubmission();
+        disableScreenshot();
 
-        viewport.appendChild(modelViewer);
+        const name = event.target.files[0].name;
+        const lastDot = name.lastIndexOf('.');
+
+        const fileName = name.substring(0, lastDot);
+        const ext = name.substring(lastDot + 1);
+
+        
+        if (ext == "glb" || ext == "gltf") {
+            showModelViewer();
+            hideVideoViewer();
+            loadModel();
+        } else if (ext == "mp4" || ext == "mov") {
+            hideModelViewer();
+            showVideoViewer();
+            loadVideo();
+        } else if (ext == "png" || ext == "jpg" || ext == "jpeg") {
+            hideModelViewer();
+            hideVideoViewer();
+            grabImageTumbnail();
+            enableSubmission()
+        } else {
+            return;
+        }
+    
+    }
+
+    function grabImageTumbnail() {
+        var file = document.getElementById('fileButton').files[0];
+        var fileURL = URL.createObjectURL(file)
+        document.getElementsByClassName("thumbnail-container")[0].style.display = "block";
+        var data = document.getElementById("thumbnail");
+        data.value = fileURL;
+        document.getElementById("thumbnail-image").src = data.value;
+    }
+
+    function showModelViewer() {
+        document.getElementById("model-container").style.display = "block";
+    }
+    function hideModelViewer() {
+        document.getElementById("model-container").style.display = "none";
+    }
+
+    function loadModel() {
+        document.getElementById("loading-model").style.display = "block";
+        var file = document.getElementById('fileButton').files[0];
+        const modelViewer = document.getElementById("model-viewer");
+        var modelViewerEl = document.getElementsByTagName("model-viewer")[0];
+
+        if (modelViewerEl == null) {
+            modelViewerEl = document.createElement("model-viewer");
+        }
+
+        modelViewerEl.setAttribute("auto-rotate", "true");
+        modelViewerEl.setAttribute("auto-rotate-delay", 6000);
+        modelViewerEl.setAttribute("camera-controls", "true");
+        modelViewerEl.setAttribute("loading", "eager");
+        modelViewerEl.setAttribute("rotation-per-second", "50deg");
+
+        modelViewer.appendChild(modelViewerEl);
 
         const reader = new FileReader();
 
         reader.addEventListener("load", function () {
-            modelViewer.src = reader.result;
+            modelViewerEl.src = reader.result;
         }, false);
 
         if (file) {
             reader.readAsDataURL(file);
         }
 
-        modelViewer.addEventListener("load", enableSubmission());
+        modelViewerEl.addEventListener("model-visibility", (evt) => {
+            if (event.detail.visible) {
+                document.getElementById("loading-model").style.display = "none";
+                enableScreenshot()
+            }
+        });
+    }
+
+    function showVideoViewer() {
+        document.getElementById("video-container").style.display = "block";
+    }
+    function hideVideoViewer() {
+        document.getElementById("video-container").style.display = "none";
+    }
+
+    function loadVideo() {
+        document.getElementById("loading-video").style.display = "block";
+        var file = document.getElementById('fileButton').files[0];
+        var fileURL = URL.createObjectURL(file)
+        const videoViewer = document.getElementById("video-viewer");
+        var videoEl = document.getElementsByTagName("video")[0];
+
+         if (videoEl == null) {
+            videoEl = document.createElement("video");
+        }
+
+        videoEl.addEventListener('loadeddata', () => {
+            document.getElementById("loading-video").style.display = "none";
+            videoEl.currentTime = videoEl.duration / 2;
+            enableScreenshot();
+        }, false);
+
+        videoEl.setAttribute("src", fileURL);
+        videoEl.setAttribute("controls", "true");
+
+        videoViewer.appendChild(videoEl);
+
+    }
+
+    function enableScreenshot() {
+        document.getElementById("thumbnail-screenshot").style.display = "block";
+        document.getElementsByClassName("thumbnail-container")[0].style.display = "block";
+        document.getElementById("submitBtn").value = "waiting for thumbnail..";
+    }
+    function disableScreenshot() {
+        document.getElementById("thumbnail-screenshot").style.display = "none";
+        document.getElementsByClassName("thumbnail-container")[0].style.display = "none";
+        document.getElementById("submitBtn").value = "waiting..";
+
+        var data = document.getElementById("thumbnail");
+        data.value = "";
+        document.getElementById("thumbnail-image").src = data.value;
     }
 
     function enableSubmission() {
-
         document.getElementById("submitBtn").value = "Submit Model";
         document.getElementById("submitBtn").disabled = false;
     }
 
-    function submitThumbnail() {
+    function disableSubmission() {
+        document.getElementById("submitBtn").value = "waiting..";
+        document.getElementById("submitBtn").disabled = true;
+    }
+
+    function grabThumbnail() {
         //send api form data
 
         var modelViewer = document.getElementsByTagName("model-viewer")[0];
         var data = document.getElementById("thumbnail");
         data.value = modelViewer.toDataURL();
+        document.getElementById("thumbnail-image").src = data.value;
+        enableSubmission()
         //debugBase64(thumb);
+    }
+
+    function grabVideoThumbnail() {
+        var videoEl = document.getElementsByTagName("video")[0];
+        var data = document.getElementById("thumbnail");
+        
+    
+        var canvas = document.createElement('canvas');
+        canvas.width = 640;
+        canvas.height = 480;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+
+        var dataURI = canvas.toDataURL('image/jpeg')
+        data.value = dataURI;
+        document.getElementById("thumbnail-image").src = data.value;
+
+        enableSubmission()
     }
 
     function debugBase64(base64URL) {
