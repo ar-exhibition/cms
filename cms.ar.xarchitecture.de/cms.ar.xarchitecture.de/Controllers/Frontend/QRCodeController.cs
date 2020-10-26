@@ -4,16 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using cms.ar.xarchitecture.de.cmsXARCH;
+using MongoDB.Driver;
+using cms.ar.xarchitecture.de.Helper;
+using Microsoft.EntityFrameworkCore;
 
 namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
     public class QRCodeController : Controller
     {
-        private readonly cmsXARCHContext _context;
+        IMongoCollection<Scene> _scenes;
 
-        public QRCodeController(cmsXARCHContext context)
+        public QRCodeController(IMongoClient client)
         {
-            _context = context;
+            var database = client.GetDatabase(Backend.DatabaseName);
+            _scenes = database.GetCollection<Scene>("Scenes");
 
         }
 
@@ -24,19 +28,20 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
                 return NotFound();
             }
 
-            var scenes = from m in _context.Scene select m;
-            scenes = scenes.Where(s => s.MarkerUuid.Contains(uuid));
-            List<Scene> result = scenes.ToList();
+            Scene scene = await _scenes.AsQueryable().Where(s => s.MarkerFileName.Contains(uuid)).FirstOrDefaultAsync();
 
-            string sceneName = result[0].SceneName;
+            if(scene == default)
+            {
+                return NotFound();
+            }
 
             ViewData["uuid"] = uuid;
-            ViewData["scene"] = sceneName;
+            ViewData["scene"] = scene.SceneName;
 
             return View();
         }
 
-        public async Task<IActionResult> getHome()
+        public IActionResult getHome()
         {
             return RedirectToAction("About", "Home");
         }

@@ -43,19 +43,19 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
         public async Task<String> Post(IFormCollection data)
         {
             Scene document = new Scene{
-                SceneID = ObjectId.Parse(data["SceneID"]),
+                _id = ObjectId.Parse(data["SceneID"]),
                 SceneName = data["SceneName"],
                 WorldMapFileName = data["WorldMapFileName"],
                 MarkerFileName = data["MarkerFileName"],
                 DateChanged = DateTime.Now
             };
 
-            if (document.SceneID.Equals(null))
+            if (document._id.Equals(null))
                 document.MarkerFileName = MarkerCreator.createQRCode(document.SceneName, _host.HttpContext.Request.Host.Value);
 
-            Backend.SaveToFilesystem(data.Files.FirstOrDefault(), Backend.ContentType.WorldMap);
+            await Backend.SaveToFilesystem(data.Files.FirstOrDefault(), Backend.ContentType.WorldMap);
 
-            var filter = Builders<Scene>.Filter.Eq(s => s.SceneID, document.SceneID);
+            var filter = Builders<Scene>.Filter.Eq(s => s._id, document._id);
 
             var update = Builders<Scene>.Update.Set(s => s.SceneName, document.SceneName);
             update = Builders<Scene>.Update.Set(s => s.WorldMapFileName, document.WorldMapFileName);

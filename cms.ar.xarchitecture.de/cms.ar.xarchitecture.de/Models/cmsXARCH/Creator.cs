@@ -8,6 +8,6 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
     {
         public ObjectId _id { get; set; }
         public string CreatorName { get; set; }
-        public ObjectId[] Assets { get; set; }
+        public List<ObjectId> Assets { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace cms.ar.xarchitecture.de.Controllers
     public class AnchorsController : ControllerBase
     {
         private IMongoCollection<Anchor> _anchorsCollection;
-        private IMongoCollection<Asset> _assetsCollection;
+        //private IMongoCollection<Asset> _assetsCollection;
 
         public AnchorsController(IMongoClient client)
         {
@@ -50,12 +50,11 @@ namespace cms.ar.xarchitecture.de.Controllers
         public async Task<ActionResult> Post([FromBody] JsonElement body)
         {
             List<Anchor> Anchors = JsonSerializer.Deserialize<List<Anchor>>(body.GetRawText());
-            Anchor tmp;
 
             foreach (Anchor anchor in Anchors){
 
                 //work in progress...
-                var filter = Builders<Anchor>.Filter.Eq(a => a.AnchorID, anchor.AnchorID);
+                var filter = Builders<Anchor>.Filter.Eq(a => a._id, anchor._id);
                 var update = Builders<Anchor>.Update.Set(s => s.Scale, anchor.Scale);
 
                 var options = new UpdateOptions();

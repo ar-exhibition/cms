@@ -16,7 +16,7 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
         public string ThumbnailLink { get; set; }
         public DateTime? CreationDate { get; set; }
         public bool Deleted { get; set; }
-        public Creator Creator { get; set; }
+        public ObjectId Creator { get; set; }
         public Course Course { get; set; }
     }
 }

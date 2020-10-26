@@ -14,7 +14,7 @@ namespace cms.ar.xarchitecture.de.Models.Wrapper
         public string Course { get; set; }
         public string University { get; set; }
         public string AssetName { get; set; }
-        public string TumbnailBase64 { get; set; }
+        public string ThumbnailBase64 { get; set; }
         public IFormFile AssetFile { get; set; }
     }
 }

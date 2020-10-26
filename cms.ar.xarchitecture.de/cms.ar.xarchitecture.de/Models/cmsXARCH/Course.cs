@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using cms.ar.xarchitecture.de.Models.cmsXARCH;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,12 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
         public string Term { get; set; }
         public string University { get; set; }
         public ObjectId[] Assets { get; set; }
+
+        [BsonIgnore]
+        public virtual StudyProgramme ProgrammeNavigation { get; set; }
+        [BsonIgnore]
+        public virtual Term TermNavigation { get; set; }
+        [BsonIgnore]
+        public virtual University UniversityNavigation { get; set; }
     }
 }
