@@ -45,8 +45,8 @@ namespace cms.ar.xarchitecture.de.Controllers
         // GET: Upload/Create
         public IActionResult Create()
         { 
-            ViewData["University"] = new SelectList(_unis.AsQueryable().Where(u => true));
-            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable().Where(u => true));                      
+            ViewData["University"] = new SelectList(_unis.AsQueryable().Select(u => u.UniversityName).ToList());
+            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable().Select(s => s.ProgrammeName).ToList());                      
 
             //combine term and course in a single string
             List<String> cv = new List<String>();

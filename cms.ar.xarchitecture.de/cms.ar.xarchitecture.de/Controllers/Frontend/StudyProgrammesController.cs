@@ -12,11 +12,11 @@ using MongoDB.Bson;
 
 namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
-    public class StudiesController : Controller
+    public class StudyProgrammesController : Controller
     {
         IMongoCollection<StudyProgramme> _studies;
 
-        public StudiesController(IMongoClient client)
+        public StudyProgrammesController(IMongoClient client)
         {
             var database = client.GetDatabase(Backend.DatabaseName);
             _studies = database.GetCollection<StudyProgramme>("StudyProgrammes");

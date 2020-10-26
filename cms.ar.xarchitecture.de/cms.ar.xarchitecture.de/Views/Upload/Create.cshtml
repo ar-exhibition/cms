@@ -23,13 +23,18 @@
             </div>
 
             <div class="form-group">
+                <label asp-for="University" class="control-label"></label>
+                <select asp-for="University" class="form-control" asp-items="ViewBag.University"></select>
+            </div>
+
+            <div class="form-group">
                 <label asp-for="StudyProgramme" class="control-label"></label>
                 <select asp-for="StudyProgramme" class="form-control" asp-items="ViewBag.StudyProgramme"></select>
             </div>
 
             <div class="form-group">
                 <label asp-for="Course" class="control-label"></label>
-                <select asp-for="Course" class="form-control" asp-items="ViewBag.Course"></select>
+                <select asp-for="Course" class="form-control" asp-items="ViewBag.CourseName"></select>
             </div>
 
             <div class="form-group">
@@ -41,8 +46,8 @@
             <div class="form-group">
                 <label class="control-label">Select your model!</label>
 
-                <input asp-for="FileToUpload" id="fileButton" type="file" class="btn btn-primary" onchange="fileInputChanged(event)" />
-                <span asp-validation-for="FileToUpload"></span>
+                <input asp-for="AssetFile" id="fileButton" type="file" class="btn btn-primary" onchange="fileInputChanged(event)" />
+                <span asp-validation-for="AssetFile"></span>
             </div>
 
             <div class="form-group" id="model-container" style="display: none;">
@@ -50,7 +55,7 @@
                 <div id="model-viewer"></div>
                 <button type="button" onclick="grabThumbnail()" style="display: none;" id="thumbnail-screenshot" class="btn btn-primary">Take screenshot for thumbnail</button>
             </div>
-            
+
             <div class="form-group" id="video-container" style="display: none;">
                 <p style="display: none;" id="loading-video">Loading Video...</p>
                 <div id="video-viewer"></div>
@@ -62,7 +67,7 @@
                 <img id="thumbnail-image" alt="">
             </div>
 
-            <input type="hidden" id="thumbnail" asp-for="tumbnailBase64" class="form-control" />
+            <input type="hidden" id="thumbnail" asp-for="ThumbnailBase64" class="form-control" />
 
             <div class="form-group">
                 <input id="submitBtn" type="submit" value="waiting..." class="btn btn-primary" disabled="disabled" />
