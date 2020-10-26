@@ -44,17 +44,28 @@
                 <span asp-validation-for="FileToUpload"></span>
             </div>
 
+            <div class="form-group">
+                <div id="viewport" class="model-container"></div>
+                <button type="button" onclick="grabThumbnail()" style="display: none;" id="thumbnail-screenshot" class="btn btn-primary">Take screenshot for thumbnail</button>
+            </div>
+
+            <div class="form-group thumbnail-container" style="display: none;">
+                <span>Thumbnail:</span>
+                <img id="thumbnail-image" alt="">
+            </div>
+
             <input type="hidden" id="thumbnail" asp-for="tumbnailBase64" class="form-control" />
 
+
             <div class="form-group">
-                <input id="submitBtn" type="submit" value="waiting..." class="btn btn-primary" onclick="submitThumbnail()" disabled="disabled" />
+                <input id="submitBtn" type="submit" value="waiting..." class="btn btn-primary" disabled="disabled" />
             </div>
+
 
         </form>
     </div>
 </div>
 
-<div id="viewport" class="model-container"></div>
 
 <script>
     function loadModel() {
@@ -67,8 +78,10 @@
         }
 
         modelViewer.setAttribute("auto-rotate", "true");
+        modelViewer.setAttribute("auto-rotate-delay", 6000);
+        modelViewer.setAttribute("camera-controls", "true");
         modelViewer.setAttribute("loading", "eager");
-        modelViewer.setAttribute("rotation-per-second", "90deg");
+        modelViewer.setAttribute("rotation-per-second", "50deg");
 
         viewport.appendChild(modelViewer);
 
@@ -82,7 +95,13 @@
             reader.readAsDataURL(file);
         }
 
-        modelViewer.addEventListener("load", enableSubmission());
+        modelViewer.addEventListener("load", enableScreenshot());
+    }
+
+    function enableScreenshot() {
+        document.getElementById("thumbnail-screenshot").style.display = "block";
+        document.getElementsByClassName("thumbnail-container")[0].style.display = "block";
+        document.getElementById("submitBtn").value = "waiting for thumbnail..";
     }
 
     function enableSubmission() {
@@ -91,12 +110,14 @@
         document.getElementById("submitBtn").disabled = false;
     }
 
-    function submitThumbnail() {
+    function grabThumbnail() {
         //send api form data
 
         var modelViewer = document.getElementsByTagName("model-viewer")[0];
         var data = document.getElementById("thumbnail");
         data.value = modelViewer.toDataURL();
+        document.getElementById("thumbnail-image").src = data.value;
+        enableSubmission()
         //debugBase64(thumb);
     }
 
