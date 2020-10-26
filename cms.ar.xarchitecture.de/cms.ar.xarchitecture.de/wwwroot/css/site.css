@@ -74,3 +74,11 @@ model-viewer {
   width: 500px;
   height: 300px;
 }
+
+.form-group video {
+  max-width: 100%;
+}
+
+img#thumbnail-image {
+  max-width: 100%;
+}
