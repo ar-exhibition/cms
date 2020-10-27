@@ -29,7 +29,7 @@
 <body>
 </body>
 <script>
-    fetch("https://cms.hotpot.codes/api/content").then(response => response.json()).then((data) => {
+    fetch("/api/content").then(response => response.json()).then((data) => {
         data.assets.forEach(asset => {
             if (asset.assetType != "light") {
                 const container = document.createElement("div");
@@ -42,6 +42,9 @@
                 container.appendChild(h2);
                 const modelViewer = document.createElement("model-viewer");
                 modelViewer.src = asset.link;
+                if (asset.linkUSDZ != null) {
+                    modelViewer.setAttribute("ios-src", asset.linkUSDZ);
+                }
                 modelViewer.setAttribute("ar", "true");
                 container.appendChild(modelViewer);
                 document.body.appendChild(container);
