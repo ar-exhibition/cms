@@ -12,6 +12,9 @@ using cms.ar.xarchitecture.de.cmsXARCH;
 using System.Collections;
 using cms.ar.xarchitecture.de.Models.Wrapper;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
+using System.Text.Json;
+using System.Text;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -20,6 +23,8 @@ namespace cms.ar.xarchitecture.de.Controllers
         NameBasedGenerator uuidCreator;
         private readonly IFileProvider fileProvider;
         cmsXARCHContext _context;
+
+        private HttpClient client = new HttpClient();
 
         public UploadController(IFileProvider fileProvider, cmsXARCHContext context)
         {
@@ -84,6 +89,16 @@ namespace cms.ar.xarchitecture.de.Controllers
                 await _context.SaveChangesAsync();
             }
 
+            // prepare body for convert request
+            var formValues = new Dictionary<string, string> {
+                { "filename", filename }
+            };
+
+            // create json string from dictionary
+            var content = new StringContent(JsonSerializer.Serialize(formValues), Encoding.UTF8, "application/json");
+
+            // post to converter service
+            client.PostAsync("http://gltf-to-usdz-service:3000/local-convert", content);
 
             //create thumbnail only if gltf file
             if(extension == ".glb" || extension == ".gltf")
