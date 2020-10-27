@@ -16,6 +16,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using cms.ar.xarchitecture.de.Models.cmsXARCH;
 using MongoDB.Bson;
+using cms.ar.xarchitecture.de.Helper;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -67,10 +68,12 @@ namespace cms.ar.xarchitecture.de.Controllers
         [RequestSizeLimit(62_914_560)]
         public async Task<IActionResult> UploadFile(AssetSubmissionValues values)
         {
+            string[] splitUserInputCourse = splitCourse(values.Course);
 
-            Course course = await _courses.AsQueryable().Where(c => c.CourseName == values.Course).FirstAsync();
+            //Course course = await _courses.AsQueryable().Where(c => c.CourseName.Contains(values.Course) && c.Term.Contains(values.Course)).FirstAsync();
+            Course course = await _courses.AsQueryable().Where(c => c.CourseName.Equals(splitUserInputCourse[1])).FirstAsync();
             Asset newAsset = new Asset();
-            newAsset._id = new MongoDB.Bson.ObjectId();
+            newAsset._id = new ObjectId();
 
             if (values.AssetFile == null || values.AssetFile.Length == 0)
                 return Content("file not selected");
@@ -97,14 +100,8 @@ namespace cms.ar.xarchitecture.de.Controllers
                 FirstOrDefaultAsync();
 
             if (creator == default)
-                creator = new Creator { CreatorName = values.Creator };
-
-            creator.Assets.Add(newAsset._id);
-            
-            creator.CreatorName = values.Creator;
-
-            if (ModelState.IsValid)
             {
+                creator = new Creator { _id = new ObjectId(), CreatorName = values.Creator, Assets = new List<ObjectId>() };
                 await _creators.InsertOneAsync(creator);
             }
 
@@ -127,49 +124,40 @@ namespace cms.ar.xarchitecture.de.Controllers
             newAsset.Course = course;
             newAsset.AssetName = values.AssetName;
             newAsset.AssetFilename = filename; //with uuid
+            newAsset.AssetType = Backend.getAssetTypeFromFilename(filename);
             newAsset.ExternalLink = null;
-            newAsset.ThumbnailFilename = Convert.ToString(thumbnailUUID);
+            newAsset.ThumbnailFilename = Convert.ToString(thumbnailUUID) + ".png";
             newAsset.CreationDate = DateTime.Now;
             newAsset.Deleted = false;            
 
             if (ModelState.IsValid)
-            {
                 await _assets.InsertOneAsync(newAsset);
-                return RedirectToAction("About", "Home"); //prb put some nice "you're done" view here!
-            }
+
+            //add the new asset to the creators asset property
+            creator.Assets.Add(newAsset._id);
+            var update = Builders<Creator>.Update.Set(s => s.Assets, creator.Assets);
+            var options = new UpdateOptions();
+            options.IsUpsert = true;
+            await _creators.UpdateOneAsync(c => c._id == creator._id, update, options);
 
             return RedirectToAction("About", "Home"); //prb to error or so...
         }
 
-        //private int? getCourseID(String programme, String course)
-        //{
-        //    //dirty, huh?
-        //    String[] arr = course.Split(" ");
-        //    String term = arr[0];
-        //    String courseName = "";
+        private string[] splitCourse(string value)
+        {
+            //dirty, huh?
+            String[] arr = value.Split(" ");
+            String term = arr[0];
+            String courseName = "";
 
-        //    for( int i = 1; i<arr.Length; i++)
-        //    {
-        //        courseName += " " + arr[i];
-        //    }
+            for (int i = 1; i < arr.Length; i++)
+            {
+                courseName += " " + arr[i];
+            }
 
-        //    courseName = courseName.Trim();
+            courseName = courseName.Trim();
 
-        //    var courses = from m in _context.Course select m;
-        //    courses = courses.Where(s => s.Course1.Contains(courseName));
-        //    courses = courses.Where(s => s.Term.Contains(term));
-        //    courses = courses.Where(s => s.Programme.Contains(programme));
-
-        //    List<Course> result = courses.ToList();
-
-        //    try
-        //    {
-        //        return result[0].CourseId;
-        //    }
-        //    catch
-        //    {
-        //        return 0;
-        //    }
-        //}
+            return new string[] { term, courseName};
+        }
     }
 }

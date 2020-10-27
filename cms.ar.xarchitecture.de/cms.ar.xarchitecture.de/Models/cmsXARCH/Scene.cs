@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 
@@ -6,6 +7,7 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
 {
     public partial class Scene
     {
+        [BsonId]
         public ObjectId _id { get; set; }
         public string SceneName { get; set; }
         public string WorldMapFileName { get; set; }

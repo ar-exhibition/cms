@@ -58,9 +58,9 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // GET: Courses/Create
         public IActionResult Create()
         {
-            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable());
-            ViewData["Term"] = new SelectList(_terms.AsQueryable());
-            ViewData["University"] = new SelectList(_unis.AsQueryable());
+            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable().Select(s => s.ProgrammeName));
+            ViewData["Term"] = new SelectList(_terms.AsQueryable().Select(t => t.TermName));
+            ViewData["University"] = new SelectList(_unis.AsQueryable().Select(u => u.UniversityName));
             return View();
         }
 
@@ -76,9 +76,9 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
                 await _courses.InsertOneAsync(course);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable());
-            ViewData["Term"] = new SelectList(_terms.AsQueryable());
-            ViewData["University"] = new SelectList(_unis.AsQueryable());
+            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable().Select(s => s.ProgrammeName));
+            ViewData["Term"] = new SelectList(_terms.AsQueryable().Select(t => t.TermName));
+            ViewData["University"] = new SelectList(_unis.AsQueryable().Select(u => u.UniversityName));
             return View(course);
         }
 
@@ -96,9 +96,9 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
             {
                 return NotFound();
             }
-            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable());
-            ViewData["Term"] = new SelectList(_terms.AsQueryable());
-            ViewData["University"] = new SelectList(_unis.AsQueryable());
+            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable().Select(s => s.ProgrammeName));
+            ViewData["Term"] = new SelectList(_terms.AsQueryable().Select(t => t.TermName));
+            ViewData["University"] = new SelectList(_unis.AsQueryable().Select(u => u.UniversityName));
             return View(course);
         }
 
@@ -126,9 +126,9 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable());
-            ViewData["Term"] = new SelectList(_terms.AsQueryable());
-            ViewData["University"] = new SelectList(_unis.AsQueryable());
+            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable().Select(s => s.ProgrammeName));
+            ViewData["Term"] = new SelectList(_terms.AsQueryable().Select(t => t.TermName));
+            ViewData["University"] = new SelectList(_unis.AsQueryable().Select(u => u.UniversityName));
             return View(course);
         }
 

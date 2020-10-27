@@ -131,22 +131,22 @@ namespace cms.ar.xarchitecture.de.Helper
             }
         }
 
-        public static AssetTypes getAssetTypeFromFilename(string filename) //solve this with mime type on upload!
+        public static string getAssetTypeFromFilename(string filename) //solve this with mime type on upload!
         {
             string extension = Path.GetExtension(filename);
             string[] imageExtensions = { ".png", ".jpg", ".jpeg" };
             string[] videoExtensions = { ".mp4", ".mov" };
             if (imageExtensions.Contains(extension))
             {
-                return AssetTypes.image;
+                return mapAssetType((int)AssetTypes.image);
             }
             else if (videoExtensions.Contains(extension))
             {
-                return AssetTypes.video;
+                return mapAssetType((int)AssetTypes.video);
             }
             else
             {
-                return AssetTypes.model;
+                return mapAssetType((int)AssetTypes.model);
             }
         }
 

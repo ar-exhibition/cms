@@ -9,6 +9,7 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
     [BsonDiscriminator("Course")]
     public partial class Course
     {
+        [BsonId]
         public ObjectId _id { get; set; }
         public string CourseName { get; set; }
         public string StudyProgramme { get; set; }
