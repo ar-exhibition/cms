@@ -78,6 +78,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                 temp.course = new course(element.Course, _context);
                 temp.name = element.AssetName;
                 temp.link = mapFilenameToDownloadLink(RessourceType.asset, element.FileUuid);
+                temp.linkUSDZ = mapFilenameToUSDZDownloadLink(RessourceType.asset, element.FileUuid);
                 temp.thumbnail = mapFilenameToDownloadLink(RessourceType.thumbnail, element.ThumbnailUuid); //name of the thumbnail
                 temp.assetType = mapAssetType((int) getAssetTypeFromFilename(element.FileUuid));
 
@@ -131,6 +132,30 @@ namespace cms.ar.xarchitecture.de.Controllers
                     break;
                 default:
                     fullpath = "";
+                    break;
+            }
+            return fullpath;
+        }
+        string mapFilenameToUSDZDownloadLink(RessourceType ressourceType, string filename)
+        {
+            string controllerPath = prot + "://" + host + "/content/";
+            string fullpath = null;
+
+            switch ((int)ressourceType)
+            {
+                case (int)RessourceType.asset:
+                    string usdzName = null;
+                    if (filename.EndsWith(".glb")) {
+                        usdzName = filename.Replace(".glb", ".usdz");
+                    } else if (filename.EndsWith(".gltf")) {
+                        usdzName = filename.Replace(".gltf", ".usdz");
+                    }
+                    if (usdzName != null && System.IO.File.Exists("/app/static/content/assets/" + usdzName)) {
+                        fullpath = controllerPath + "assets/" + usdzName;;
+                    }
+                    break;
+                default:
+                    fullpath = null;
                     break;
             }
             return fullpath;

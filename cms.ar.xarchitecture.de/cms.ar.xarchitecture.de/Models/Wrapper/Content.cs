@@ -36,6 +36,7 @@ namespace cms.ar.xarchitecture.de.Models
         public course course { get; set; }
         public string name { get; set; }
         public string link { get; set; }
+        public string linkUSDZ { get; set; }
         public string thumbnail { get; set; }
     }
 
