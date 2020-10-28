@@ -108,7 +108,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             foreach (AssetWrapper asset in content.Assets)
             {
                 asset.AssetLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Asset, preamble, asset.AssetFilename);
-                asset.AssetLinkUSDZ = Backend.MapFilenameToDownloadLinkUSDZ(Backend.ContentType.Asset, preamble, asset.AssetFilename);
+                asset.AssetLinkUSDZ = Backend.MapFilenameToUSDZDownloadLink(Backend.ContentType.Asset, preamble, asset.AssetFilename);
                 asset.ThumbnailLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Thumbnail, preamble, asset.ThumbnailFilename);
             }
 

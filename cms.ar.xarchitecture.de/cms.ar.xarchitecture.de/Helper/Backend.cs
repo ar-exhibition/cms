@@ -114,7 +114,7 @@ namespace cms.ar.xarchitecture.de.Helper
 
         public static string MapFilenameToUSDZDownloadLink(ContentType contentType, string preamble, string filename)
         {
-            string fullpath;
+            string fullpath = null;
             string controllerPath = preamble + "/" 
                             + _localStaticRoot + "/" 
                             + _localContentRoot + "/"; 
