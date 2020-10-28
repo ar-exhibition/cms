@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Asset Showcase";
+}
+
+<style>
+    #asset-showcase-container .container {
+        font-family: sans-serif;
+        max-width: 98%;
+        margin: 60px auto;
+        background: #f4f4f4;
+        padding: 30px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    @@media (max-width: 768px) {
+        #asset-showcase-container .container {
+            flex-direction: column;
+        }
+    }
+
+    #asset-showcase-container h1, #asset-showcase-container h2 {
+        margin: 0 2px;
+    }
+
+    #asset-showcase-container h1 {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    #asset-showcase-container h2 {
+        font-size: 1.5rem;
+    }
+
+    #asset-showcase-container h2 {
+        font-weight: normal;
+        margin-bottom: 10px;
+    }
+
+    #asset-showcase-container model-viewer {
+        width: 100%;
+        flex-grow: 1;
+    }
+
+    #asset-showcase-container .text-container {
+        margin-right: 30px;
+        min-width: 30%;
+    }
+
+    @@media (max-width: 768px) {
+        #asset-showcase-container .text-container {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+<div class="text-center">
+    <h1 class="display-4">Asset Showcase</h1>
+    <p>Have a look at all uploaded assets.</p>
+</div>
+<div id="asset-showcase-container">
+
+</div>
+
+<script>
+    fetch("/api/content").then(response => response.json()).then((data) => {
+        data.assets.forEach(asset => {
+            if (asset.assetType != "light") {
+                const container = document.createElement("div");
+                container.classList.add("container");
+
+                const textContainer = document.createElement("div");
+                textContainer.classList.add("text-container");
+                const h1 = document.createElement("h1");
+                h1.textContent = asset.name;
+                textContainer.appendChild(h1);
+                const h2 = document.createElement("h2");
+                h2.textContent = asset.creator.name;
+                textContainer.appendChild(h2);
+
+                container.appendChild(textContainer);
+
+                const modelViewer = document.createElement("model-viewer");
+                modelViewer.src = toRelativeURL(asset.link);
+                modelViewer.setAttribute("ar", "true");
+                modelViewer.setAttribute("camera-controls", "true");
+                container.appendChild(modelViewer);
+                document.getElementById("asset-showcase-container").appendChild(container);
+            }
+        });
+    });
+    function toRelativeURL(url) {
+        return "/" + url.replace(/^(?:\/\/|[^/]+)*\//, '');
+    }
+</script>
