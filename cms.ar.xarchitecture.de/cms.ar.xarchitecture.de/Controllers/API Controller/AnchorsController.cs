@@ -11,6 +11,10 @@ using cms.ar.xarchitecture.de.Models.Wrapper;
 //using Newtonsoft.Json;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using MongoDB.Driver;
+using cms.ar.xarchitecture.de.Helper;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -18,75 +22,82 @@ namespace cms.ar.xarchitecture.de.Controllers
     [ApiController]
     public class AnchorsController : ControllerBase
     {
-        private readonly cmsXARCHContext _context;
+        private IMongoCollection<Anchor> _anchorsCollection;
+        //private IMongoCollection<Asset> _assetsCollection;
 
-        public AnchorsController(cmsXARCHContext context)
+        public AnchorsController(IMongoClient client)
         {
-            _context = context;
+            var database = client.GetDatabase(Backend.DatabaseName);
+            _anchorsCollection = database.GetCollection<Anchor>("Anchors");            
         }
 
         // GET: api/<AnchorsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        //[HttpGet]
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
 
         // GET api/<AnchorsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
         // POST api/<AnchorsController>
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] JsonElement body)
         {
-            AnchorList anchors = JsonSerializer.Deserialize<AnchorList>(body.GetRawText());
-            Anchor tmp;
+            AnchorList anchorList = JsonSerializer.Deserialize<AnchorList>(body.GetRawText());
+            List<JSONAnchor> jSONAnchors = anchorList.anchors.ToList();
 
-            foreach (POSTAnchor element in anchors.anchors){
+            // define operator for this
+            foreach (JSONAnchor anchor in jSONAnchors)
+            {
+                Anchor parsedAnchor;
 
-                bool newRecord = false;
-                tmp = _context.Anchor.Find(element.anchorId);
-
-                if(tmp == null)
+                try
                 {
-                    tmp = new Anchor();
-                    newRecord = true;
+                    parsedAnchor = _anchorsCollection.Find(a => a._id == ObjectId.Parse(anchor._id)).FirstOrDefault();
                 }
 
-                SceneAsset asset = _context.SceneAsset.Find(element.assetId);
+                catch (Exception e)
+                {
+                    parsedAnchor = new Anchor();
+                    parsedAnchor._id = new ObjectId();
+                }
 
-                tmp.AnchorId = element.anchorId;
-                tmp.AssetId = element.assetId;
-                tmp.Scale = element.scale;
-                tmp.Asset = asset;
+                parsedAnchor.AnchorID = anchor.AnchorID;
+                parsedAnchor.AssetID = ObjectId.Parse(anchor.AssetID);
+                parsedAnchor.SceneID = ObjectId.Parse(anchor.SceneID);
+                parsedAnchor.Transform = anchor.Transform;
+                parsedAnchor.Rotation = anchor.Rotation;
+                parsedAnchor.Scale = anchor.Scale;
 
-                if (newRecord)
-                    _context.Anchor.Add(tmp);
+                if(parsedAnchor._id == default)
+                {
+                    await _anchorsCollection.InsertOneAsync(parsedAnchor);
+                }
                 else
-                    _context.Anchor.Update(tmp);
-
-                await _context.SaveChangesAsync();
-
-                tmp = null;
+                {
+                    await _anchorsCollection.ReplaceOneAsync(a => a._id == parsedAnchor._id, parsedAnchor, new ReplaceOptions { IsUpsert = true });
+                }
             }
 
-            return CreatedAtAction("PostAnchors", anchors);
+            return CreatedAtAction("PostAnchors", jSONAnchors);
         }
 
-        // PUT api/<AnchorsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //// PUT api/<AnchorsController>/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
-        // DELETE api/<AnchorsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// DELETE api/<AnchorsController>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }
