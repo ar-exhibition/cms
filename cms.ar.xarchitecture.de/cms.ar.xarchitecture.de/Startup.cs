@@ -106,8 +106,8 @@ namespace cms.ar.xarchitecture.de
                     pattern: "{controller=Courses}/{action=Index}/{id?}");
 
                 endpoints.MapControllerRoute(
-                    name: "Model Viewer",
-                    pattern: "{controller=ModelViewer}/{action=Index}");
+                    name: "Asset Showcase",
+                    pattern: "{controller=AssetShowcase}/{action=Index}");
                     
             });
         }
