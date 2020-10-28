@@ -84,6 +84,9 @@
                 container.appendChild(textContainer);
 
                 const modelViewer = document.createElement("model-viewer");
+                if (asset.AssetLinkUSDZ != null) {
+                    modelViewer.setAttribute("ios-src", toRelativeURL(asset.AssetLinkUSDZ));
+                }
                 modelViewer.src = toRelativeURL(asset.AssetLink);
                 modelViewer.setAttribute("ar", "true");
                 modelViewer.setAttribute("camera-controls", "true");

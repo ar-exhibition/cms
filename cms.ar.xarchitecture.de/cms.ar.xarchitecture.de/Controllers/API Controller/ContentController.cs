@@ -84,6 +84,7 @@ namespace cms.ar.xarchitecture.de.Controllers
                     AssetType = asset.AssetType,
                     AssetFilename = asset.AssetFilename,
                     AssetLink = asset.AssetLink,
+                    AssetLinkUSDZ = asset.AssetLink,
                     ExternalLink = asset.ExternalLink,
                     ThumbnailFilename = asset.ThumbnailFilename,
                     ThumbnailLink = asset.ThumbnailLink,
@@ -104,9 +105,10 @@ namespace cms.ar.xarchitecture.de.Controllers
             };
 
             //generate link on request time
-            foreach (Asset asset in content.Assets)
+            foreach (AssetWrapper asset in content.Assets)
             {
                 asset.AssetLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Asset, preamble, asset.AssetFilename);
+                asset.AssetLinkUSDZ = Backend.MapFilenameToUSDZDownloadLink(Backend.ContentType.Asset, preamble, asset.AssetFilename);
                 asset.ThumbnailLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Thumbnail, preamble, asset.ThumbnailFilename);
             }
 

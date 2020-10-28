@@ -27,5 +27,6 @@ namespace cms.ar.xarchitecture.de.Models
     {
         public new Creator Creator { get; set; }
         public new Course Course { get; set; }
+        public string AssetLinkUSDZ { get; set; }
     }
 }

@@ -112,6 +112,35 @@ namespace cms.ar.xarchitecture.de.Helper
             return fullpath;
         }
 
+        public static string MapFilenameToUSDZDownloadLink(ContentType contentType, string preamble, string filename)
+        {
+            string fullpath = null;
+            string controllerPath = preamble + "/" 
+                            + _localStaticRoot + "/" 
+                            + _localContentRoot + "/"; 
+
+            switch ((int)contentType)
+            {
+                case (int)ContentType.Asset:
+                    string usdzName = null;
+                    // replace glb or gltf with usdz
+                    if (filename.EndsWith(".glb")) {
+                        usdzName = filename.Replace(".glb", ".usdz");
+                    } else if (filename.EndsWith(".gltf")) {
+                        usdzName = filename.Replace(".gltf", ".usdz");
+                    }
+                    // check if usdz file exists
+                    if (usdzName != null && System.IO.File.Exists("/app/static/content/assets/" + usdzName)) {
+                        fullpath = controllerPath + "assets/" + usdzName;;
+                    }
+                    break;
+                default:
+                    fullpath = null;
+                    break;
+            }
+            return fullpath;
+        }
+
         private static string mapAssetType(int? ID)
         {
             switch (ID)

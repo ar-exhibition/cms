@@ -12,11 +12,15 @@ using cms.ar.xarchitecture.de.cmsXARCH;
 using System.Collections;
 using cms.ar.xarchitecture.de.Models.Wrapper;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
+using System.Text.Json;
+using System.Text;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using cms.ar.xarchitecture.de.Models.cmsXARCH;
 using MongoDB.Bson;
 using cms.ar.xarchitecture.de.Helper;
+
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -29,6 +33,8 @@ namespace cms.ar.xarchitecture.de.Controllers
         private IMongoCollection<Course> _courses;
         private IMongoCollection<StudyProgramme> _studies;
         private IMongoCollection<Creator> _creators;
+
+        private HttpClient client = new HttpClient();
 
         public UploadController(IFileProvider fileProvider, IMongoClient client)
         {
@@ -94,10 +100,21 @@ namespace cms.ar.xarchitecture.de.Controllers
                 await values.AssetFile.CopyToAsync(stream);
             }
 
+            // prepare body for convert request
+            var formValues = new Dictionary<string, string> {
+                { "filename", filename }
+            };
 
+            // create json string from dictionary
+            var content = new StringContent(JsonSerializer.Serialize(formValues), Encoding.UTF8, "application/json");
+
+            // post to converter service
+            client.PostAsync("http://gltf-to-usdz-service:3000/local-convert", content);
+            
             Creator creator = await _creators.AsQueryable().
                 Where(c => c.CreatorName == values.Creator).
                 FirstOrDefaultAsync();
+
 
             if (creator == default)
             {
