@@ -56,7 +56,7 @@ namespace cms.ar.xarchitecture.de
             app.UseHttpsRedirection();
 
             var wrProvider = new PhysicalFileProvider(env.WebRootPath);
-            var ctProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "static"));
+            var ctProvider = new PhysicalFileProvider(env.ContentRootPath);
 
             var compositeProvider = new CompositeFileProvider(wrProvider, ctProvider);
 
