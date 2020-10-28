@@ -193,7 +193,7 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
                 await file.CopyToAsync(stream);
             }
 
-            return UUID;
+            return filenameWithUUID;
         }
     }
 

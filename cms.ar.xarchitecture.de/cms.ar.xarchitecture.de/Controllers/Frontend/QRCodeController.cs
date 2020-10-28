@@ -28,7 +28,7 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
                 return NotFound();
             }
 
-            Scene scene = await _scenes.AsQueryable().Where(s => s.MarkerFileName.Contains(uuid)).FirstOrDefaultAsync();
+            Scene scene = _scenes.AsQueryable().FirstOrDefault(s => s.MarkerFileName.Contains(uuid));
 
             if(scene == default)
             {
