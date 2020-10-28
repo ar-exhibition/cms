@@ -48,8 +48,8 @@ namespace cms.ar.xarchitecture.de.Helper
         }
         
         public static async Task SaveToFilesystem(IFormFile file, ContentType contentType)
-        {          
-            var path = Path.Combine(_mapContentTypeToFilePath(contentType), file.Name);
+        {
+            string path = Path.Combine(_mapContentTypeToFilePath(contentType), file.FileName);
 
             using (var stream = new FileStream(path, FileMode.Create))
             {
@@ -62,16 +62,16 @@ namespace cms.ar.xarchitecture.de.Helper
             string contentFolder = "";
             switch ((int)contentType)
             {
-                case 1:
+                case 0:
                     contentFolder = "assets";
                     break;
-                case 2:
+                case 1:
                     contentFolder = "marker";
                     break;
-                case 3:
+                case 2:
                     contentFolder = "thumbnails";
                     break;
-                case 4:
+                case 3:
                     contentFolder = "worldmaps";
                     break;
                 default:

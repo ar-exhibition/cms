@@ -13,6 +13,7 @@ using cms.ar.xarchitecture.de.Helper;
 using Org.BouncyCastle.Asn1.X509;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using System.Web.WebPages;
 
 namespace cms.ar.xarchitecture.de.Controllers.API_Controller
 {
@@ -22,12 +23,14 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
     {
 
         private IMongoCollection<Scene> _scenesCollection;
+        private IMongoCollection<Asset> _assets;
         private IHttpContextAccessor _host;
 
         public ScenesController (IMongoClient client, IHttpContextAccessor httpContextAccessor)
         {
             var database = client.GetDatabase(Backend.DatabaseName);
             _scenesCollection = database.GetCollection<Scene>("Scenes");
+            _assets = database.GetCollection<Asset>("Assets");
             _host = httpContextAccessor;
         }
 
@@ -42,32 +45,44 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
         [HttpPost]
         public async Task<String> Post(IFormCollection data)
         {
-            Scene document = new Scene{
-                _id = ObjectId.Parse(data["SceneID"]),
-                SceneName = data["SceneName"],
-                WorldMapFileName = data["WorldMapFileName"],
-                MarkerFileName = data["MarkerFileName"],
-                DateChanged = DateTime.Now
-            };
+            Scene scene;
 
-            if (document._id.Equals(null))
-                document.MarkerFileName = MarkerCreator.createQRCode(document.SceneName, _host.HttpContext.Request.Host.Value);
+            try
+            {
+                scene = _scenesCollection.Find(a => a._id == ObjectId.Parse(data["_id"])).FirstOrDefault();
 
-            await Backend.SaveToFilesystem(data.Files.FirstOrDefault(), Backend.ContentType.WorldMap);
 
-            var filter = Builders<Scene>.Filter.Eq(s => s._id, document._id);
+                if (!data["SceneName"].ToString().IsEmpty())
+                    scene.SceneName = data["SceneName"].ToString();
 
-            var update = Builders<Scene>.Update.Set(s => s.SceneName, document.SceneName);
-            update = Builders<Scene>.Update.Set(s => s.WorldMapFileName, document.WorldMapFileName);
-            update = Builders<Scene>.Update.Set(s => s.MarkerFileName, document.MarkerFileName);
-            update = Builders<Scene>.Update.Set(s => s.DateChanged, document.DateChanged);
+                if (!data["WorldMapFileName"].ToString().IsEmpty())
+                    scene.WorldMapFileName = data["WorldMapFileName"].ToString();
 
-            var options = new UpdateOptions();
-            options.IsUpsert = true;
+            }
+            catch (Exception e)
+            {
+                scene = new Scene();
+                scene._id = new ObjectId();
+                scene.SceneName = data["SceneName"];
+                scene.WorldMapFileName = data["WorldMapFileName"];
+                scene.MarkerFileName = MarkerCreator.createQRCode(scene.SceneName, _host.HttpContext.Request.Host.Value);
+                scene.WorldMapFileLink = default;
+                scene.MarkerFileLink = default;
+                scene.DateChanged = DateTime.Now;
+                scene.Assets = default;
+            }
 
-            await _scenesCollection.UpdateOneAsync(filter, update, options);
+            if(data.Files.Count > 0)
+            {
+                await Backend.SaveToFilesystem(data.Files.FirstOrDefault(), Backend.ContentType.WorldMap);
+            }
 
-            return JsonConvert.SerializeObject(document, Formatting.Indented);
+            if (scene._id == default)
+                await _scenesCollection.InsertOneAsync(scene);
+            else
+                await _scenesCollection.ReplaceOneAsync(s => s._id == scene._id, scene, new ReplaceOptions { IsUpsert = true });
+
+            return JsonConvert.SerializeObject(scene, Formatting.Indented);
         }
 
         //// PUT api/<ScenesController>/5

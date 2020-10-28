@@ -15,6 +15,6 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
         public string MarkerFileName { get; set; }
         public string MarkerFileLink { get; set; }
         public DateTime DateChanged { get; set; }
-        public ObjectId[] Assets { get; set; }
+        public List<ObjectId> Assets { get; set; }
     }
 }
