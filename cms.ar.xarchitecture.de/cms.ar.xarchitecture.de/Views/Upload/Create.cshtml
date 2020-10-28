@@ -117,11 +117,17 @@
 
     function grabImageTumbnail() {
         var file = document.getElementById('fileButton').files[0];
-        var fileURL = URL.createObjectURL(file)
-        document.getElementsByClassName("thumbnail-container")[0].style.display = "block";
-        var data = document.getElementById("thumbnail");
-        data.value = fileURL;
-        document.getElementById("thumbnail-image").src = data.value;
+
+        var fileReader = new FileReader();
+        
+        fileReader.addEventListener("load", function(e) {
+            document.getElementsByClassName("thumbnail-container")[0].style.display = "block";
+            var data = document.getElementById("thumbnail");
+            data.value = e.target.result;
+            document.getElementById("thumbnail-image").src = data.value;
+        }); 
+    
+        fileReader.readAsDataURL(file);
     }
 
     function showModelViewer() {
