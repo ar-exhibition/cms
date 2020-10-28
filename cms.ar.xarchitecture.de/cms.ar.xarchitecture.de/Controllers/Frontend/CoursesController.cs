@@ -71,6 +71,8 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("_id,CourseName,StudyProgramme,Term,University")] Course course)
         {
+            course.Assets = new List<ObjectId>();
+
             if (ModelState.IsValid)
             {
                 await _courses.InsertOneAsync(course);

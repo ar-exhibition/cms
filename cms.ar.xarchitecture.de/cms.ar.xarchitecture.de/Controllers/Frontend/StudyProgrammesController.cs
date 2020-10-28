@@ -60,6 +60,8 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("_id,ProgrammeName,University")] StudyProgramme studies)
         {
+            studies.Courses = new List<ObjectId>();
+
             if (ModelState.IsValid)
             {
                 await _studies.InsertOneAsync(studies);

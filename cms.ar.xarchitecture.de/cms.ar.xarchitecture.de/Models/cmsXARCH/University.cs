@@ -13,6 +13,6 @@ namespace cms.ar.xarchitecture.de.Models.cmsXARCH
         [BsonId]
         public ObjectId _id { get; set; } 
         public string UniversityName { get; set; }
-        public ObjectId[] StudyProgrammes { get; set; }
+        public List<ObjectId> StudyProgrammes { get; set; }
     }
 }

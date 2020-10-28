@@ -15,7 +15,7 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
         public string StudyProgramme { get; set; }
         public string Term { get; set; }
         public string University { get; set; }
-        public ObjectId[] Assets { get; set; }
+        public List<ObjectId> Assets { get; set; }
 
         [BsonIgnore]
         public virtual StudyProgramme ProgrammeNavigation { get; set; }

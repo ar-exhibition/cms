@@ -31,6 +31,26 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         {
             //var cmsXARCHContext = _context.SceneAsset.Include(s => s.CourseNavigation).Include(s => s.CreatorNavigation).Include(s => s.ThumbnailUu);
             return View(await _assetsCollection.Find(a => true).ToListAsync());
+
+            //List<Asset> assetsView = (List<Asset>)(from asset in _assetsCollection.AsQueryable()
+            //                                select new
+            //                                {
+            //                                    asset.AssetName,
+            //                                    asset.AssetFilename,
+            //                                    asset.ExternalLink,
+            //                                    asset.CreationDate,
+            //                                    asset.Deleted,
+            //                                    asset.ThumbnailFilename
+            //                                });
+
+            //return View(await _assetsCollection.AsQueryable()
+            //    .Select(new {AssetName =  })
+            //    .ToListAsync());
+
+            //select new { HomeTeam = fixture.HomeTeam, AwayTeam = fixture.AwayTeam };
+
+            //return View(assetsView);
+
         }
 
         // GET: SceneAssets/Details/5

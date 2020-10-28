@@ -121,7 +121,7 @@ namespace cms.ar.xarchitecture.de.Controllers
             // ...
 
             newAsset.Creator = creator._id;
-            newAsset.Course = course;
+            newAsset.Course = course._id;
             newAsset.AssetName = values.AssetName;
             newAsset.AssetFilename = filename; //with uuid
             newAsset.AssetType = Backend.getAssetTypeFromFilename(filename);
@@ -135,12 +135,19 @@ namespace cms.ar.xarchitecture.de.Controllers
 
             //add the new asset to the creators asset property
             creator.Assets.Add(newAsset._id);
-            var update = Builders<Creator>.Update.Set(s => s.Assets, creator.Assets);
-            var options = new UpdateOptions();
-            options.IsUpsert = true;
-            await _creators.UpdateOneAsync(c => c._id == creator._id, update, options);
+            var crUpdate = Builders<Creator>.Update.Set(s => s.Assets, creator.Assets);
+            var crOptions = new UpdateOptions();
+            crOptions.IsUpsert = true;
+            await _creators.UpdateOneAsync(c => c._id == creator._id, crUpdate, crOptions);
 
-            return RedirectToAction("About", "Home"); //prb to error or so...
+            //add the new asset to the courses asset property
+            course.Assets.Add(newAsset._id);
+            var coUpdate = Builders<Course>.Update.Set(s => s.Assets, course.Assets);
+            var coOptions = new UpdateOptions();
+            coOptions.IsUpsert = true;
+            await _courses.UpdateOneAsync(c => c._id == course._id, coUpdate, coOptions);
+
+            return RedirectToAction("About", "Home");
         }
 
         private string[] splitCourse(string value)

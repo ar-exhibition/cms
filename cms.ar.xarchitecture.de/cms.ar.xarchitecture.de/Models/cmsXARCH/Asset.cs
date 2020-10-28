@@ -19,6 +19,6 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
         public DateTime? CreationDate { get; set; }
         public bool Deleted { get; set; }
         public ObjectId Creator { get; set; }
-        public Course Course { get; set; }
+        public ObjectId  Course { get; set; }
     }
 }

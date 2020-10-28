@@ -12,7 +12,7 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
         public ObjectId _id { get; set; }
         public string ProgrammeName { get; set; }
         public string University { get; set; }
-        public ObjectId[] Courses { get; set; }
+        public List<ObjectId> Courses { get; set; }
 
         [BsonIgnore]
         public virtual University UniversityNavigation { get; set; }
