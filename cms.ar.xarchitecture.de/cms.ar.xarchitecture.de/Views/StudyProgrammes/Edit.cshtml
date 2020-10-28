@@ -1,4 +1,4 @@
-﻿@model cms.ar.xarchitecture.de.cmsXARCH.Studies
+﻿@model cms.ar.xarchitecture.de.cmsXARCH.StudyProgramme
 
 @{
     ViewData["Title"] = "Edit";
@@ -13,11 +13,11 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ProgrammeId" />
+            <input type="hidden" asp-for="_id" />
             <div class="form-group">
-                <label asp-for="Programme" class="control-label"></label>
-                <input asp-for="Programme" class="form-control" />
-                <span asp-validation-for="Programme" class="text-danger"></span>
+                <label asp-for="ProgrammeName" class="control-label"></label>
+                <input asp-for="ProgrammeName" class="form-control" />
+                <span asp-validation-for="ProgrammeName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

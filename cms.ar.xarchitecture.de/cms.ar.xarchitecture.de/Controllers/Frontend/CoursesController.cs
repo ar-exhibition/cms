@@ -6,37 +6,47 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using cms.ar.xarchitecture.de.cmsXARCH;
+using MongoDB.Driver;
+using MongoDB.Bson;
+using cms.ar.xarchitecture.de.Models.cmsXARCH;
+using cms.ar.xarchitecture.de.Helper;
 
 namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
     public class CoursesController : Controller
     {
-        private readonly cmsXARCHContext _context;
+        IMongoCollection<Course> _courses;
+        IMongoCollection<StudyProgramme> _studies;
+        IMongoCollection<Term> _terms;
+        IMongoCollection<University> _unis;
+        IMongoCollection<Asset> _assets;
 
-        public CoursesController(cmsXARCHContext context)
+        public CoursesController(IMongoClient client)
         {
-            _context = context;
+            var database = client.GetDatabase(Backend.DatabaseName);
+            _courses = database.GetCollection<Course>("Courses");
+            _studies = database.GetCollection<StudyProgramme>("StudyProgrammes");
+            _terms = database.GetCollection<Term>("Terms");
+            _unis = database.GetCollection<University>("Universities");
+            _assets = database.GetCollection<Asset>("Assets");
         }
 
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            var cmsXARCHContext = _context.Course.Include(c => c.ProgrammeNavigation).Include(c => c.TermNavigation);
-            return View(await cmsXARCHContext.ToListAsync());
+            //var cmsXARCHContext = _context.Course.Include(c => c.ProgrammeNavigation).Include(c => c.TermNavigation);
+            return View(await _courses.Find(a => true).ToListAsync());
         }
 
         // GET: Courses/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(ObjectId id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var course = await _context.Course
-                .Include(c => c.ProgrammeNavigation)
-                .Include(c => c.TermNavigation)
-                .FirstOrDefaultAsync(m => m.CourseId == id);
+            var course = await _courses.FindAsync(c => c._id == id);
             if (course == null)
             {
                 return NotFound();
@@ -48,8 +58,9 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // GET: Courses/Create
         public IActionResult Create()
         {
-            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme");
-            ViewData["Term"] = new SelectList(_context.Term, "Term1", "Term1");
+            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable().Select(s => s.ProgrammeName));
+            ViewData["Term"] = new SelectList(_terms.AsQueryable().Select(t => t.TermName));
+            ViewData["University"] = new SelectList(_unis.AsQueryable().Select(u => u.UniversityName));
             return View();
         }
 
@@ -58,34 +69,38 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseId,Programme,Course1,Term")] Course course)
+        public async Task<IActionResult> Create([Bind("_id,CourseName,StudyProgramme,Term,University")] Course course)
         {
+            course.Assets = new List<ObjectId>();
+
             if (ModelState.IsValid)
             {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
+                await _courses.InsertOneAsync(course);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", course.Programme);
-            ViewData["Term"] = new SelectList(_context.Term, "Term1", "Term1", course.Term);
+            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable().Select(s => s.ProgrammeName));
+            ViewData["Term"] = new SelectList(_terms.AsQueryable().Select(t => t.TermName));
+            ViewData["University"] = new SelectList(_unis.AsQueryable().Select(u => u.UniversityName));
             return View(course);
         }
 
         // GET: Courses/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(ObjectId id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var course = await _context.Course.FindAsync(id);
+            var course = await _courses.FindAsync(c => c._id == id);
+
             if (course == null)
             {
                 return NotFound();
             }
-            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", course.Programme);
-            ViewData["Term"] = new SelectList(_context.Term, "Term1", "Term1", course.Term);
+            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable().Select(s => s.ProgrammeName));
+            ViewData["Term"] = new SelectList(_terms.AsQueryable().Select(t => t.TermName));
+            ViewData["University"] = new SelectList(_unis.AsQueryable().Select(u => u.UniversityName));
             return View(course);
         }
 
@@ -94,9 +109,9 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CourseId,Programme,Course1,Term")] Course course)
+        public async Task<IActionResult> Edit(ObjectId id, [Bind("CourseId,Programme,Course1,Term")] Course course)
         {
-            if (id != course.CourseId)
+            if (id != course._id)
             {
                 return NotFound();
             }
@@ -105,39 +120,32 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
             {
                 try
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    await _courses.UpdateOneAsync(c => c._id == id, course.ToBsonDocument());
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (MongoException e)
                 {
-                    if (!CourseExists(course.CourseId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound(e.Message);
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme", course.Programme);
-            ViewData["Term"] = new SelectList(_context.Term, "Term1", "Term1", course.Term);
+            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable().Select(s => s.ProgrammeName));
+            ViewData["Term"] = new SelectList(_terms.AsQueryable().Select(t => t.TermName));
+            ViewData["University"] = new SelectList(_unis.AsQueryable().Select(u => u.UniversityName));
             return View(course);
         }
 
         // GET: Courses/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(ObjectId id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var course = await _context.Course
-                .Include(c => c.ProgrammeNavigation)
-                .Include(c => c.TermNavigation)
-                .FirstOrDefaultAsync(m => m.CourseId == id);
+            var course = await _courses.FindAsync(a => a._id == id);
+            //.Include(c => c.ProgrammeNavigation)
+            //.Include(c => c.TermNavigation)
+            //.FirstOrDefaultAsync(m => m.CourseId == id);
             if (course == null)
             {
                 return NotFound();
@@ -149,17 +157,17 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(ObjectId id)
         {
-            var course = await _context.Course.FindAsync(id);
-            _context.Course.Remove(course);
-            await _context.SaveChangesAsync();
+            var course = await _courses.DeleteOneAsync(c => c._id == id);
+            //_context.Course.Remove(course);
+            //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CourseExists(int id)
-        {
-            return _context.Course.Any(e => e.CourseId == id);
-        }
+        //private bool CourseExists(ObjectId id)
+        //{
+        //    return _courses.Find(c => true);
+        //}
     }
 }

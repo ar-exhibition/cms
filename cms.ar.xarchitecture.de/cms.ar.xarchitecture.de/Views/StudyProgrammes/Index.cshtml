@@ -1,4 +1,4 @@
-﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsXARCH.Scene>
+﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsXARCH.StudyProgramme>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,28 +14,21 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.SceneName)
+                @Html.DisplayNameFor(model => model.ProgrammeName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.WorldMapFileName)
+                @Html.DisplayNameFor(model => model.UniversityNavigation)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MarkerFileName)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.SceneName)
+                @Html.DisplayFor(modelItem => item.ProgrammeName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.WorldMapFileName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MarkerFileName)
+                @Html.DisplayFor(modelItem => item.UniversityNavigation.UniversityName)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item._id">Edit</a> |

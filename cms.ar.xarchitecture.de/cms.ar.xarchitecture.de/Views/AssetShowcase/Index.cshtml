@@ -29,6 +29,7 @@
         font-size: 2rem;
         font-weight: bold;
     }
+
     #asset-showcase-container h2 {
         font-size: 1.5rem;
     }
@@ -37,14 +38,17 @@
         font-weight: normal;
         margin-bottom: 10px;
     }
+
     #asset-showcase-container model-viewer {
         width: 100%;
         flex-grow: 1;
     }
+
     #asset-showcase-container .text-container {
         margin-right: 30px;
         min-width: 30%;
     }
+
     @@media (max-width: 768px) {
         #asset-showcase-container .text-container {
             margin-right: 0;
@@ -63,27 +67,27 @@
 
 <script>
     fetch("/api/content").then(response => response.json()).then((data) => {
-        data.assets.forEach(asset => {
-            if (asset.assetType != "light") {
+        data.Assets.forEach(asset => {
+            if (asset.AssetType != "light") {
                 const container = document.createElement("div");
                 container.classList.add("container");
 
                 const textContainer = document.createElement("div");
                 textContainer.classList.add("text-container");
                 const h1 = document.createElement("h1");
-                h1.textContent = asset.name;
+                h1.textContent = asset.AssetName;
                 textContainer.appendChild(h1);
                 const h2 = document.createElement("h2");
-                h2.textContent = asset.creator.name;
+                h2.textContent = asset.Creator.CreatorName;
                 textContainer.appendChild(h2);
 
                 container.appendChild(textContainer);
 
                 const modelViewer = document.createElement("model-viewer");
-                modelViewer.src = toRelativeURL(asset.link);
-                if (asset.linkUSDZ != null) {
-                    modelViewer.setAttribute("ios-src", toRelativeURL(asset.linkUSDZ));
+                if (asset.AssetLinkUSDZ != null) {
+                    modelViewer.setAttribute("ios-src", toRelativeURL(asset.AssetLinkUSDZ));
                 }
+                modelViewer.src = toRelativeURL(asset.AssetLink);
                 modelViewer.setAttribute("ar", "true");
                 modelViewer.setAttribute("camera-controls", "true");
                 container.appendChild(modelViewer);
