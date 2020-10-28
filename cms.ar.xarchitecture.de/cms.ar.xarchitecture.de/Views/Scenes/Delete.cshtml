@@ -19,21 +19,21 @@
             @Html.DisplayFor(model => model.SceneName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FileUuid)
+            @Html.DisplayNameFor(model => model.WorldMapFileName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FileUuid)
+            @Html.DisplayFor(model => model.WorldMapFileName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MarkerUuid)
+            @Html.DisplayNameFor(model => model.MarkerFileName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MarkerUuid)
+            @Html.DisplayFor(model => model.MarkerFileName)
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="SceneId" />
+        <input type="hidden" asp-for="_id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

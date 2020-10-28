@@ -10,6 +10,10 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using cms.ar.xarchitecture.de.Helper;
+using Org.BouncyCastle.Asn1.X509;
+using MongoDB.Driver;
+using MongoDB.Bson;
+using System.Web.WebPages;
 
 namespace cms.ar.xarchitecture.de.Controllers.API_Controller
 {
@@ -18,12 +22,15 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
     public class ScenesController : ControllerBase
     {
 
-        cmsXARCHContext _context;
+        private IMongoCollection<Scene> _scenesCollection;
+        private IMongoCollection<Asset> _assets;
         private IHttpContextAccessor _host;
 
-        public ScenesController (cmsXARCHContext context, IHttpContextAccessor httpContextAccessor)
+        public ScenesController (IMongoClient client, IHttpContextAccessor httpContextAccessor)
         {
-            _context = context;
+            var database = client.GetDatabase(Backend.DatabaseName);
+            _scenesCollection = database.GetCollection<Scene>("Scenes");
+            _assets = database.GetCollection<Asset>("Assets");
             _host = httpContextAccessor;
         }
 
@@ -38,59 +45,44 @@ namespace cms.ar.xarchitecture.de.Controllers.API_Controller
         [HttpPost]
         public async Task<String> Post(IFormCollection data)
         {
-
-            string id = data["SceneID"];
-            string sceneName = data["SceneName"];
-            string fileUUID = data["FileUUID"];
-            string markerUUID = data["MarkerUUID"];
-
-            bool NoRecordExists = string.IsNullOrEmpty(id);
-            Scene Record;
- 
-            if (NoRecordExists)
-                Record = new Scene();
-
-            else
-                Record = _context.Scene.Find(Int32.Parse(id));
-
-
-            if (sceneName != null)
-                Record.SceneName = sceneName;
-
-            if (fileUUID != null)
-                Record.FileUuid = fileUUID;
-
-            if (NoRecordExists)
-                Record.MarkerUuid = MarkerCreator.createQRCode(Record.SceneName, _host.HttpContext.Request.Host.Value);
-            else
-                if (markerUUID != null)
-                    Record.MarkerUuid = markerUUID;
+            Scene scene;
 
             try
             {
-                FormFile file = (FormFile)data.Files[0];
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "static", "content", "worldmaps", Record.FileUuid);
+                scene = _scenesCollection.Find(a => a._id == ObjectId.Parse(data["_id"])).FirstOrDefault();
 
-                using (var stream = new FileStream(path, FileMode.Create)) //create or overwrite
-                {
-                    await file.CopyToAsync(stream);
-                }
+
+                if (!data["SceneName"].ToString().IsEmpty())
+                    scene.SceneName = data["SceneName"].ToString();
+
+                if (!data["WorldMapFileName"].ToString().IsEmpty())
+                    scene.WorldMapFileName = data["WorldMapFileName"].ToString();
+
             }
-            catch
+            catch (Exception e)
             {
-                Console.WriteLine("no file"); //put some meaningful http response here!
+                scene = new Scene();
+                scene._id = new ObjectId();
+                scene.SceneName = data["SceneName"];
+                scene.WorldMapFileName = data["WorldMapFileName"];
+                scene.MarkerFileName = MarkerCreator.createQRCode(scene.SceneName, _host.HttpContext.Request.Host.Value);
+                scene.WorldMapFileLink = default;
+                scene.MarkerFileLink = default;
+                scene.DateChanged = DateTime.Now;
+                scene.Assets = default;
             }
 
-            if (ModelState.IsValid)
+            if(data.Files.Count > 0)
             {
-                if (NoRecordExists)
-                    _context.Scene.Add(Record);
-                else
-                    _context.Scene.Update(Record);
-
-                await _context.SaveChangesAsync();
+                await Backend.SaveToFilesystem(data.Files.FirstOrDefault(), Backend.ContentType.WorldMap);
             }
-            return JsonConvert.SerializeObject(Record, Formatting.Indented);
+
+            if (scene._id == default)
+                await _scenesCollection.InsertOneAsync(scene);
+            else
+                await _scenesCollection.ReplaceOneAsync(s => s._id == scene._id, scene, new ReplaceOptions { IsUpsert = true });
+
+            return JsonConvert.SerializeObject(scene, Formatting.Indented);
         }
 
         //// PUT api/<ScenesController>/5

@@ -9,19 +9,20 @@ using System.IO;
 
 namespace cms.ar.xarchitecture.de.Controllers.Frontend
 {
-    public class AssetShowcaseController : Controller
+    public class ModelViewerController : Controller
     {
         IWebHostEnvironment _hostingEnvironment;
 
-        public AssetShowcaseController(IWebHostEnvironment hostingEnvironment)
+        public ModelViewerController(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }
 
-        // GET: AssetShowcaseController
-        public IActionResult Index()
+        // GET: ModelViewerController
+        public ActionResult Index()
         {
-            return View();
+            string path = Path.Combine(_hostingEnvironment.WebRootPath, "html", "ModelViewer", "Index.html");
+            return PhysicalFile(path, "text/html");
         }
     }
 }

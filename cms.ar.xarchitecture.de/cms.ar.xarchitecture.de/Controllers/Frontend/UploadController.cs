@@ -12,6 +12,11 @@ using cms.ar.xarchitecture.de.cmsXARCH;
 using System.Collections;
 using cms.ar.xarchitecture.de.Models.Wrapper;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+using cms.ar.xarchitecture.de.Models.cmsXARCH;
+using MongoDB.Bson;
+using cms.ar.xarchitecture.de.Helper;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -19,29 +24,41 @@ namespace cms.ar.xarchitecture.de.Controllers
     {
         NameBasedGenerator uuidCreator;
         private readonly IFileProvider fileProvider;
-        cmsXARCHContext _context;
+        private IMongoCollection<Asset> _assets;
+        private IMongoCollection<University> _unis;
+        private IMongoCollection<Course> _courses;
+        private IMongoCollection<StudyProgramme> _studies;
+        private IMongoCollection<Creator> _creators;
 
-        public UploadController(IFileProvider fileProvider, cmsXARCHContext context)
+        public UploadController(IFileProvider fileProvider, IMongoClient client)
         {
             this.fileProvider = fileProvider;
             uuidCreator = new NameBasedGenerator(HashType.SHA1);
-            _context = context;
+
+            var database = client.GetDatabase("cmsXARCH");
+            _assets = database.GetCollection<Asset>("Assets");
+            _unis = database.GetCollection<University>("Universities");
+            _courses = database.GetCollection<Course>("Courses");
+            _studies = database.GetCollection<StudyProgramme>("StudyProgrammes");
+            _creators = database.GetCollection<Creator>("Creators");
         }
 
         // GET: Upload/Create
         public IActionResult Create()
-        {
-            ViewData["Programme"] = new SelectList(_context.Studies, "Programme", "Programme");
+        { 
+            ViewData["University"] = new SelectList(_unis.AsQueryable().Select(u => u.UniversityName).ToList());
+            ViewData["StudyProgramme"] = new SelectList(_studies.AsQueryable().Select(s => s.ProgrammeName).ToList());                      
 
+            //combine term and course in a single string
             List<String> cv = new List<String>();
-            List<Course> cl = _context.Course.ToList();
+            var cl = _courses.AsQueryable().Where(c => true).ToList();
 
-            foreach (Course element in cl)
+            foreach (Course course in cl)
             {
-                cv.Add(new String(element.Term + " " + element.Course1));
+                cv.Add(new String(course.Term + " " + course.CourseName));
             }
 
-            Console.WriteLine(cv.ToList());
+            //Console.WriteLine(cv.ToList());
             ViewData["CourseName"] = new SelectList(cv.ToList());
 
             return View();
@@ -51,17 +68,19 @@ namespace cms.ar.xarchitecture.de.Controllers
         [RequestSizeLimit(62_914_560)]
         public async Task<IActionResult> UploadFile(AssetSubmissionValues values)
         {
-            Creator newCreator = new Creator();
-            SceneAsset newAsset = new SceneAsset();
-            Thumbnail newThumbnail = new Thumbnail();
-            List<Course> cl = _context.Course.ToList();
+            string[] splitUserInputCourse = splitCourse(values.Course);
 
-            if (values.FileToUpload == null || values.FileToUpload.Length == 0)
+            //Course course = await _courses.AsQueryable().Where(c => c.CourseName.Contains(values.Course) && c.Term.Contains(values.Course)).FirstAsync();
+            Course course = await _courses.AsQueryable().Where(c => c.CourseName.Equals(splitUserInputCourse[1])).FirstAsync();
+            Asset newAsset = new Asset();
+            newAsset._id = new ObjectId();
+
+            if (values.AssetFile == null || values.AssetFile.Length == 0)
                 return Content("file not selected");
 
-            string extension = System.IO.Path.GetExtension(values.FileToUpload.FileName);
-            string filename = uuidCreator.GenerateGuid(values.FileToUpload.FileName + DateTime.Now) + extension;
-            var thumbnailUUID = uuidCreator.GenerateGuid(values.tumbnailBase64 + DateTime.Now);
+            string extension = Path.GetExtension(values.AssetFile.FileName);
+            string filename = uuidCreator.GenerateGuid(values.AssetFile.FileName + DateTime.Now) + extension;
+            var thumbnailUUID = uuidCreator.GenerateGuid(values.ThumbnailBase64 + DateTime.Now);
             string thumbnailFilename = thumbnailUUID + ".png";
 
             string dir = Directory.GetCurrentDirectory();
@@ -72,111 +91,80 @@ namespace cms.ar.xarchitecture.de.Controllers
 
             using (var stream = new FileStream(path, FileMode.Create))
             {
-                await values.FileToUpload.CopyToAsync(stream);
+                await values.AssetFile.CopyToAsync(stream);
             }
 
-            newCreator.Creator1 = values.creator;
-            newCreator.Programme = values.programme;
 
-            if (ModelState.IsValid)
+            Creator creator = await _creators.AsQueryable().
+                Where(c => c.CreatorName == values.Creator).
+                FirstOrDefaultAsync();
+
+            if (creator == default)
             {
-                _context.Creator.Add(newCreator);
-                await _context.SaveChangesAsync();
+                creator = new Creator { _id = new ObjectId(), CreatorName = values.Creator, Assets = new List<ObjectId>() };
+                await _creators.InsertOneAsync(creator);
             }
 
+            //integrate into backend functionality
+            var thumbPath = Path.Combine(
+            dir, "static", "content", "thumbnails",
+            thumbnailFilename);
 
-            //create thumbnail only if gltf file
-            if(extension == ".glb" || extension == ".gltf")
+            String base64Str = values.ThumbnailBase64;
+            base64Str = base64Str.Split(",")[1];
+            byte[] bytes = Convert.FromBase64String(base64Str);
+
+            using (var stream = new FileStream(thumbPath, FileMode.Create))
             {
-                newThumbnail.ThumbnailUuid = Convert.ToString(thumbnailUUID);
-
-                if (ModelState.IsValid)
-                {
-                    _context.Thumbnail.Add(newThumbnail);
-                    await _context.SaveChangesAsync();
-                }
-
-                var thumbPath = Path.Combine(
-                dir, "static", "content", "thumbnails",
-                thumbnailFilename);
-
-                String base64Str = values.tumbnailBase64;
-                base64Str = base64Str.Split(",")[1];
-                byte[] bytes = Convert.FromBase64String(base64Str);
-
-
-                using (var stream = new FileStream(thumbPath, FileMode.Create))
-                {
-                    await stream.WriteAsync(bytes);
-                }
+                await stream.WriteAsync(bytes);
             }
+            // ...
 
-
-            newAsset.Creator = getCreatorID(newCreator.Creator1);
-            newAsset.Course = getCourseID(values.programme, values.course);
-            newAsset.AssetName = values.assetName;
-            newAsset.FileUuid = filename; //with uuid
+            newAsset.Creator = creator._id;
+            newAsset.Course = course._id;
+            newAsset.AssetName = values.AssetName;
+            newAsset.AssetFilename = filename; //with uuid
+            newAsset.AssetType = Backend.getAssetTypeFromFilename(filename);
             newAsset.ExternalLink = null;
-            newAsset.ThumbnailUuid = newThumbnail.ThumbnailUuid;
+            newAsset.ThumbnailFilename = Convert.ToString(thumbnailUUID) + ".png";
             newAsset.CreationDate = DateTime.Now;
-            newAsset.Deleted = 0;            
+            newAsset.Deleted = false;            
 
             if (ModelState.IsValid)
-            {
-                _context.SceneAsset.Add(newAsset);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("About", "Home"); //prb put some nice "you're done" view here!
-            }
+                await _assets.InsertOneAsync(newAsset);
 
-            return RedirectToAction("About", "Home"); //prb to error or so...
+            //add the new asset to the creators asset property
+            creator.Assets.Add(newAsset._id);
+            var crUpdate = Builders<Creator>.Update.Set(s => s.Assets, creator.Assets);
+            var crOptions = new UpdateOptions();
+            crOptions.IsUpsert = true;
+            await _creators.UpdateOneAsync(c => c._id == creator._id, crUpdate, crOptions);
+
+            //add the new asset to the courses asset property
+            course.Assets.Add(newAsset._id);
+            var coUpdate = Builders<Course>.Update.Set(s => s.Assets, course.Assets);
+            var coOptions = new UpdateOptions();
+            coOptions.IsUpsert = true;
+            await _courses.UpdateOneAsync(c => c._id == course._id, coUpdate, coOptions);
+
+            return RedirectToAction("About", "Home");
         }
 
-            private int? getCourseID(String programme, String course)
+        private string[] splitCourse(string value)
         {
             //dirty, huh?
-            String[] arr = course.Split(" ");
+            String[] arr = value.Split(" ");
             String term = arr[0];
             String courseName = "";
 
-            for( int i = 1; i<arr.Length; i++)
+            for (int i = 1; i < arr.Length; i++)
             {
                 courseName += " " + arr[i];
             }
 
             courseName = courseName.Trim();
 
-            var courses = from m in _context.Course select m;
-            courses = courses.Where(s => s.Course1.Contains(courseName));
-            courses = courses.Where(s => s.Term.Contains(term));
-            courses = courses.Where(s => s.Programme.Contains(programme));
-
-            List<Course> result = courses.ToList();
-
-            try
-            {
-                return result[0].CourseId;
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        private int? getCreatorID(String creatorName)
-        {
-            var creators = from m in _context.Creator select m;
-            creators = creators.Where(s => s.Creator1.Contains(creatorName));
-
-            List<Creator> result = creators.ToList();
-
-            try
-            {
-                return result[0].CreatorId;
-            }
-            catch
-            {
-                return 0;
-            }
+            return new string[] { term, courseName};
         }
     }
 }

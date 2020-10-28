@@ -12,15 +12,15 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "DB_USER": "root",
-        "DB_NAME": "cmsXARCH",
-        "DB_PORT": "3306",
-        "DB_PASSWORD": "vdh",
-        "DB_SERVER": "luziffer.ddnss.de",
+        "DATABASE_HOST": "luziffer.ddnss.de",
+        "DATABASE_PASSWORD": "SELo9X38Lv",
+        "DATABASE_REMOTE_PORT": "27017",
         "THUMBS": "D:\\_P2\\content\\thumbnails",
         "WORLDMAPS": "D:\\_P2\\content\\worldmaps",
+        "DATABASE_NAME": "cmsXARCH",
         "MARKER": "D:\\_P2\\content\\marker",
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "DATABASE_USER": "root",
         "ASSETS": "D:\\_P2\\content\\assets"
       }
     },
