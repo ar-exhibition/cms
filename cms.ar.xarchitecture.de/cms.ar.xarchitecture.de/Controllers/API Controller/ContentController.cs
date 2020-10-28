@@ -68,9 +68,37 @@ namespace cms.ar.xarchitecture.de.Controllers
         {
             string preamble = prot + "://" + host; //this data is only known on cotroller level. A little dirty, sry :-(
 
+            List<Asset> rawAssets = await _database.GetCollection<Asset>("Assets").Find(f => true).ToListAsync();
+            IMongoCollection<Creator> creators = _database.GetCollection<Creator>("Creators");
+            IMongoCollection<Course> courses = _database.GetCollection<Course>("Courses");
+
+            List <AssetWrapper> assets = new List<AssetWrapper>();
+
+            //create operator for this!
+            foreach(Asset asset in rawAssets)
+            {
+                AssetWrapper wrappedAsset = new AssetWrapper
+                {
+                    _id = asset._id,
+                    AssetName = asset.AssetName,
+                    AssetType = asset.AssetType,
+                    AssetFilename = asset.AssetFilename,
+                    AssetLink = asset.AssetLink,
+                    ExternalLink = asset.ExternalLink,
+                    ThumbnailFilename = asset.ThumbnailFilename,
+                    ThumbnailLink = asset.ThumbnailLink,
+                    CreationDate = asset.CreationDate,
+                    Deleted = asset.Deleted,
+                    Creator = creators.AsQueryable().FirstOrDefault(c => c._id == asset.Creator),
+                    Course = courses.AsQueryable().FirstOrDefault(co => co._id == asset.Course)
+                };
+
+                assets.Add(wrappedAsset);
+            }
+
             Content content = new Content
             {
-                Assets = await _database.GetCollection<Asset>("Assets").Find(f => true).ToListAsync(),
+                Assets = assets,
                 Anchors = await _database.GetCollection<Anchor>("Anchors").Find(f => true).ToListAsync(),
                 Scenes = await _database.GetCollection<Scene>("Scenes").Find(f => true).ToListAsync()
             };

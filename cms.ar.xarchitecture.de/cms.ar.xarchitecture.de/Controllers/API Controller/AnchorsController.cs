@@ -49,21 +49,43 @@ namespace cms.ar.xarchitecture.de.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] JsonElement body)
         {
-            List<Anchor> Anchors = JsonSerializer.Deserialize<List<Anchor>>(body.GetRawText());
+            AnchorList anchorList = JsonSerializer.Deserialize<AnchorList>(body.GetRawText());
+            List<JSONAnchor> jSONAnchors = anchorList.anchors.ToList();
 
-            foreach (Anchor anchor in Anchors){
+            // define operator for this
+            foreach (JSONAnchor anchor in jSONAnchors)
+            {
+                Anchor parsedAnchor;
 
-                //work in progress...
-                var filter = Builders<Anchor>.Filter.Eq(a => a._id, anchor._id);
-                var update = Builders<Anchor>.Update.Set(s => s.Scale, anchor.Scale);
+                try
+                {
+                    parsedAnchor = _anchorsCollection.Find(a => a._id == ObjectId.Parse(anchor._id)).FirstOrDefault();
+                }
 
-                var options = new UpdateOptions();
-                options.IsUpsert = true;
+                catch (Exception e)
+                {
+                    parsedAnchor = new Anchor();
+                    parsedAnchor._id = new ObjectId();
+                }
 
-                await _anchorsCollection.UpdateOneAsync(filter, update, options);
+                parsedAnchor.AnchorID = anchor.AnchorID;
+                parsedAnchor.AssetID = ObjectId.Parse(anchor.AssetID);
+                parsedAnchor.SceneID = ObjectId.Parse(anchor.SceneID);
+                parsedAnchor.Transform = anchor.Transform;
+                parsedAnchor.Rotation = anchor.Rotation;
+                parsedAnchor.Scale = anchor.Scale;
+
+                if(parsedAnchor._id == default)
+                {
+                    await _anchorsCollection.InsertOneAsync(parsedAnchor);
+                }
+                else
+                {
+                    await _anchorsCollection.ReplaceOneAsync(a => a._id == parsedAnchor._id, parsedAnchor, new ReplaceOptions { IsUpsert = true });
+                }
             }
 
-            return CreatedAtAction("PostAnchors", Anchors);
+            return CreatedAtAction("PostAnchors", jSONAnchors);
         }
 
         //// PUT api/<AnchorsController>/5

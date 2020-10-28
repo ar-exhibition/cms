@@ -11,15 +11,21 @@ namespace cms.ar.xarchitecture.de.Models
 {
     public class Content
     {
-        public List<Asset> Assets;
+        public List<AssetWrapper> Assets;
         public List<Anchor> Anchors;
         public List<Scene> Scenes;
 
         public Content()
         {
-            Assets = new List<Asset>();
+            Assets = new List<AssetWrapper>();
             Anchors = new List<Anchor>();
             Scenes = new List<Scene>();
         }
+    }
+
+    public class AssetWrapper : Asset
+    {
+        public new Creator Creator { get; set; }
+        public new Course Course { get; set; }
     }
 }
