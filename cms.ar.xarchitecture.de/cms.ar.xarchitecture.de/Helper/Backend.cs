@@ -19,6 +19,9 @@ namespace cms.ar.xarchitecture.de.Helper
         public static string DatabaseUser { get; set; }
         public static string DatabasePassword { get; set; }
 
+        public static string USDZHost { get; set; }
+        public static string USDZPort { get; set; }
+
         private static string _localDirectoryRoot {get; set;}
         private static string _localStaticRoot { get; set; }
         private static string _localContentRoot { get; set; }
@@ -30,6 +33,9 @@ namespace cms.ar.xarchitecture.de.Helper
             DatabaseName = Environment.GetEnvironmentVariable("DATABASE_NAME");
             DatabaseUser = Environment.GetEnvironmentVariable("DATABASE_USER");
             DatabasePassword = Environment.GetEnvironmentVariable("DATABASE_PASSWORD");
+
+            USDZHost = Environment.GetEnvironmentVariable("USDZ_CONVERTER_HOST");
+            USDZPort = Environment.GetEnvironmentVariable("USDZ_CONVERTER_PORT");
 
             _localDirectoryRoot = Directory.GetCurrentDirectory();
 

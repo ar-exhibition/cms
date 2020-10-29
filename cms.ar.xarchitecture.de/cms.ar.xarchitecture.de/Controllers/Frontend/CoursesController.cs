@@ -39,14 +39,17 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         }
 
         // GET: Courses/Details/5
-        public async Task<IActionResult> Details(ObjectId id)
+        public async Task<IActionResult> Details(string pid)
         {
+            ObjectId id = ObjectId.Parse(pid);
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var course = await _courses.FindAsync(c => c._id == id);
+            Course course = _courses.Find(s => s._id == id).FirstOrDefault();
+
             if (course == null)
             {
                 return NotFound();
@@ -85,14 +88,16 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         }
 
         // GET: Courses/Edit/5
-        public async Task<IActionResult> Edit(ObjectId id)
+        public async Task<IActionResult> Edit(string pid)
         {
+            ObjectId id = ObjectId.Parse(pid);
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var course = await _courses.FindAsync(c => c._id == id);
+            Course course = _courses.Find(s => s._id == id).FirstOrDefault();
 
             if (course == null)
             {
@@ -109,8 +114,10 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ObjectId id, [Bind("CourseId,Programme,Course1,Term")] Course course)
+        public async Task<IActionResult> Edit(string pid, [Bind("CourseId,Programme,Course1,Term")] Course course)
         {
+            ObjectId id = ObjectId.Parse(pid);
+
             if (id != course._id)
             {
                 return NotFound();
@@ -142,7 +149,7 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
                 return NotFound();
             }
 
-            var course = await _courses.FindAsync(a => a._id == id);
+            Course course = _courses.Find(s => s._id == id).FirstOrDefault();
             //.Include(c => c.ProgrammeNavigation)
             //.Include(c => c.TermNavigation)
             //.FirstOrDefaultAsync(m => m.CourseId == id);
@@ -157,8 +164,10 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(ObjectId id)
+        public async Task<IActionResult> DeleteConfirmed(string pid)
         {
+            ObjectId id = ObjectId.Parse(pid);
+
             var course = await _courses.DeleteOneAsync(c => c._id == id);
             //_context.Course.Remove(course);
             //await _context.SaveChangesAsync();

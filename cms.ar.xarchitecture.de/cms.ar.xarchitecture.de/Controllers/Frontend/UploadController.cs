@@ -109,12 +109,14 @@ namespace cms.ar.xarchitecture.de.Controllers
             var content = new StringContent(JsonSerializer.Serialize(formValues), Encoding.UTF8, "application/json");
 
             // post to converter service
-            client.PostAsync("http://gltf-to-usdz-service:3000/local-convert", content);
+            string usdzConnectionString = "http://" +
+                Backend.USDZHost + ":" +
+                Backend.USDZPort + "/local-convert";
+            client.PostAsync(usdzConnectionString, content);
             
             Creator creator = await _creators.AsQueryable().
                 Where(c => c.CreatorName == values.Creator).
                 FirstOrDefaultAsync();
-
 
             if (creator == default)
             {

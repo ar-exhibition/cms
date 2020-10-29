@@ -34,6 +34,9 @@ ENV DATABASE_NAME=default
 ENV DATABASE_USER=default
 ENV DATABASE_PASSWORD=default
 
+ENV USDZ_CONVERTER_HOST=default
+ENV USDZ_CONVERTER_PORT=9000
+
 # mount these volumes on the host machine
 VOLUME /app/static/content/assets
 VOLUME /app/static/content/worldmaps
