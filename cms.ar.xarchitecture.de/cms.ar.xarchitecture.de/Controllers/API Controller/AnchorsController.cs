@@ -15,6 +15,7 @@ using MongoDB.Driver;
 using cms.ar.xarchitecture.de.Helper;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
+using System.Net;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -94,10 +95,15 @@ namespace cms.ar.xarchitecture.de.Controllers
         //{
         //}
 
-        //// DELETE api/<AnchorsController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // DELETE api/<AnchorsController>/5
+        [HttpDelete("{pid}")]
+        public IActionResult Delete(string pid)
+        {
+            ObjectId id = ObjectId.Parse(pid);
+
+            _anchorsCollection.DeleteOneAsync(s => s._id == id);
+
+            return Ok();
+        }
     }
 }
