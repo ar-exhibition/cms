@@ -68,16 +68,18 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         }
 
         // GET: Scenes/Details/5
-        public async Task<IActionResult> Details(ObjectId id)
+        public async Task<IActionResult> Details(string id)
         {
+            ObjectId _id = ObjectId.Parse(id);
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var scene = await _scenes.FindAsync(s => s._id == id);
+            Scene scene = _scenes.Find(s => s._id == _id).FirstOrDefault();
 
-            if (scene == null)
+            if (scene == default)
             {
                 return NotFound();
             }
@@ -130,8 +132,10 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         }
 
         // GET: Scenes/Edit/5
-        public async Task<IActionResult> Edit(ObjectId id)
+        public async Task<IActionResult> Edit(string pid)
         {
+            ObjectId id = ObjectId.Parse(pid);
+
             if (id == null)
             {
                 return NotFound();
@@ -150,8 +154,10 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ObjectId id, [Bind("SceneId,SceneName,FileUuid,MarkerUuid")] Scene scene)
+        public async Task<IActionResult> Edit(String pid, [Bind("SceneId,SceneName,FileUuid,MarkerUuid")] Scene scene)
         {
+            ObjectId id = ObjectId.Parse(pid);
+
             if (id != scene._id)
             {
                 return NotFound();
@@ -174,14 +180,16 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         }
 
         // GET: Scenes/Delete/5
-        public async Task<IActionResult> Delete(ObjectId id)
+        public async Task<IActionResult> Delete(string id)
         {
+            ObjectId _id = ObjectId.Parse(id);
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var scene = await _scenes.FindAsync(s => s._id == id);
+            Scene scene = _scenes.Find(s => s._id == _id).FirstOrDefault();
 
             if (scene == null)
             {
@@ -194,9 +202,10 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // POST: Scenes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(ObjectId id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var scene = await _scenes.DeleteOneAsync(s => s._id == id);
+            ObjectId _id = ObjectId.Parse(id);
+            var scene = await _scenes.DeleteOneAsync(s => s._id == _id);
             return RedirectToAction(nameof(Index));
         }
 
