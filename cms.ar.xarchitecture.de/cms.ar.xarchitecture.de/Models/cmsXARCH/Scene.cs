@@ -17,4 +17,13 @@ namespace cms.ar.xarchitecture.de.cmsXARCH
         public DateTime DateChanged { get; set; }
         public List<ObjectId> Assets { get; set; }
     }
+
+    public class SceneView
+    {
+        public ObjectId _id { get; set; }
+        public string SceneName { get; set; }
+        public string MarkerFileName { get; set; }
+        public string MarkerFileLink { get; set; }
+        public DateTime DateChanged { get; set; }
+    }
 }

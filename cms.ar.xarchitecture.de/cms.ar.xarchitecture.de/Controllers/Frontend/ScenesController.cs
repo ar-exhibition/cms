@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using cms.ar.xarchitecture.de.cmsXARCH;
 using Microsoft.AspNetCore.Http;
 using Vlingo.UUID;
@@ -22,6 +21,9 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
 
         private IMongoCollection<Scene> _scenes;
 
+        private string host;
+        private string prot;
+
         public ScenesController(IHttpContextAccessor httpContextAccessor, IMongoClient client)
         {
             var database = client.GetDatabase(Backend.DatabaseName);
@@ -30,25 +32,54 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
 
             uuidCreator = new NameBasedGenerator(HashType.SHA1);
             _host = httpContextAccessor;
+
+            host = httpContextAccessor.HttpContext.Request.Host.Value;
+            prot = httpContextAccessor.HttpContext.Request.Scheme;
         }
 
         // GET: Scenes
         public async Task<IActionResult> Index()
         {
-            return View(await _scenes.FindAsync(s => true));
+            string preamble = prot + "://" + host;
+
+            List<Scene> scenes = await _scenes.AsQueryable().ToListAsync();
+            List<SceneView> views = new List<SceneView>();
+
+            foreach(Scene scene in scenes)
+            {
+                SceneView newView = new SceneView
+                {
+                    _id = scene._id,
+                    SceneName = scene.SceneName,
+                    MarkerFileName = scene.MarkerFileName,
+                    MarkerFileLink = default,
+                    DateChanged = scene.DateChanged
+                };
+
+                string link = Backend.MapFilenameToDownloadLink(Backend.ContentType.Marker, preamble, scene.MarkerFileName);
+                string downloadItem = "<a href='" + link + "'>" + scene.MarkerFileName + "</a>";
+
+                newView.MarkerFileLink = downloadItem;
+
+                views.Add(newView);
+            }
+
+            return View(views);
         }
 
         // GET: Scenes/Details/5
-        public async Task<IActionResult> Details(ObjectId id)
+        public async Task<IActionResult> Details(string id)
         {
+            ObjectId _id = ObjectId.Parse(id);
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var scene = await _scenes.FindAsync(s => s._id == id);
+            Scene scene = _scenes.Find(s => s._id == _id).FirstOrDefault();
 
-            if (scene == null)
+            if (scene == default)
             {
                 return NotFound();
             }
@@ -101,8 +132,10 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         }
 
         // GET: Scenes/Edit/5
-        public async Task<IActionResult> Edit(ObjectId id)
+        public async Task<IActionResult> Edit(string pid)
         {
+            ObjectId id = ObjectId.Parse(pid);
+
             if (id == null)
             {
                 return NotFound();
@@ -121,8 +154,10 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ObjectId id, [Bind("SceneId,SceneName,FileUuid,MarkerUuid")] Scene scene)
+        public async Task<IActionResult> Edit(String pid, [Bind("SceneId,SceneName,FileUuid,MarkerUuid")] Scene scene)
         {
+            ObjectId id = ObjectId.Parse(pid);
+
             if (id != scene._id)
             {
                 return NotFound();
@@ -145,14 +180,16 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         }
 
         // GET: Scenes/Delete/5
-        public async Task<IActionResult> Delete(ObjectId id)
+        public async Task<IActionResult> Delete(string id)
         {
+            ObjectId _id = ObjectId.Parse(id);
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var scene = await _scenes.FindAsync(s => s._id == id);
+            Scene scene = _scenes.Find(s => s._id == _id).FirstOrDefault();
 
             if (scene == null)
             {
@@ -165,9 +202,10 @@ namespace cms.ar.xarchitecture.de.Controllers.Frontend
         // POST: Scenes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(ObjectId id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var scene = await _scenes.DeleteOneAsync(s => s._id == id);
+            ObjectId _id = ObjectId.Parse(id);
+            var scene = await _scenes.DeleteOneAsync(s => s._id == _id);
             return RedirectToAction(nameof(Index));
         }
 
