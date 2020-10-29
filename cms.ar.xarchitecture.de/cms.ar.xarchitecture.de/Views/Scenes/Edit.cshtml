@@ -13,21 +13,21 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="SceneId" />
+            <input type="hidden" asp-for="_id" />
             <div class="form-group">
                 <label asp-for="SceneName" class="control-label"></label>
                 <input asp-for="SceneName" class="form-control" />
                 <span asp-validation-for="SceneName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FileUuid" class="control-label"></label>
-                <input asp-for="FileUuid" class="form-control" />
-                <span asp-validation-for="FileUuid" class="text-danger"></span>
+                <label asp-for="WorldMapFileName" class="control-label"></label>
+                <input asp-for="WorldMapFileName" class="form-control" />
+                <span asp-validation-for="WorldMapFileName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MarkerUuid" class="control-label"></label>
-                <input asp-for="MarkerUuid" class="form-control" />
-                <span asp-validation-for="MarkerUuid" class="text-danger"></span>
+                <label asp-for="MarkerFileName" class="control-label"></label>
+                <input asp-for="MarkerFileName" class="form-control" />
+                <span asp-validation-for="MarkerFileName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

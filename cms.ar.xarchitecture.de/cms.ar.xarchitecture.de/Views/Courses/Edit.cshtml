@@ -13,16 +13,21 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="CourseId" />
+            <input type="hidden" asp-for="_id" />
             <div class="form-group">
-                <label asp-for="Programme" class="control-label"></label>
-                <select asp-for="Programme" class="form-control" asp-items="ViewBag.Programme"></select>
-                <span asp-validation-for="Programme" class="text-danger"></span>
+                <label asp-for="CourseName" class="control-label"></label>
+                <input asp-for="CourseName" class="form-control" />
+                <span asp-validation-for="CourseName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Course1" class="control-label"></label>
-                <input asp-for="Course1" class="form-control" />
-                <span asp-validation-for="Course1" class="text-danger"></span>
+                <label asp-for="University" class="control-label"></label>
+                <select asp-for="University" class="form-control" asp-items="ViewBag.University"></select>
+                <span asp-validation-for="University" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudyProgramme" class="control-label"></label>
+                <select asp-for="StudyProgramme" class="form-control" asp-items="ViewBag.StudyProgramme"></select>
+                <span asp-validation-for="StudyProgramme" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Term" class="control-label"></label>

@@ -10,6 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using MongoDB.Driver;
+using cms.ar.xarchitecture.de.Helper;
+using MongoDB.Bson;
 
 namespace cms.ar.xarchitecture.de.Controllers
 {
@@ -17,199 +20,105 @@ namespace cms.ar.xarchitecture.de.Controllers
     [ApiController]
     public class ContentController : ControllerBase
     {
-        private readonly cmsXARCHContext _context;
-        string host;
-        string prot;
+        private IMongoDatabase _database;
+        private string host;
+        private string prot;
 
-        public ContentController(cmsXARCHContext context, IHttpContextAccessor httpContextAccessor)
+        public ContentController(IMongoClient client, IHttpContextAccessor httpContextAccessor)
         {
-            _context = context;
+            _database = client.GetDatabase(Backend.DatabaseName);
+
             host = httpContextAccessor.HttpContext.Request.Host.Value;
             prot = httpContextAccessor.HttpContext.Request.Scheme;
         }
 
-        // GET: api/Content
+        //GET: api/Content
         [HttpGet]
         public async Task<String> Get()
         {
-            return await getContent(_context);
+            return await getContent();
         }
 
-        // GET api/<APIController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        //// GET api/<APIController>/5
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
+
+        //// POST api/<APIController>
+        //[HttpPost]
+        //public void Post([FromBody] string value)
+        //{
+        //}
+
+        //// PUT api/<APIController>/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
+
+        //// DELETE api/<APIController>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{            
+        //}
+
+        public async Task<String> getContent()
         {
-            return "value";
-        }
+            string preamble = prot + "://" + host; //this data is only known on cotroller level. A little dirty, sry :-(
 
-        // POST api/<APIController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+            List<Asset> rawAssets = await _database.GetCollection<Asset>("Assets").Find(f => true).ToListAsync();
+            IMongoCollection<Creator> creators = _database.GetCollection<Creator>("Creators");
+            IMongoCollection<Course> courses = _database.GetCollection<Course>("Courses");
 
-        // PUT api/<APIController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            List <AssetWrapper> assets = new List<AssetWrapper>();
 
-        // DELETE api/<APIController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {            
-        }
-
-        public async Task<String> getContent(cmsXARCHContext _context)
-        {
-
-            Content content = new Content();
-
-            IEnumerable<SceneAsset> _assets = await _context.SceneAsset.ToListAsync();
-            IEnumerable<Anchor> _anchors = await _context.Anchor.ToListAsync();
-            IEnumerable<Scene> _scenes = await _context.Scene.ToListAsync();
-
-            foreach (SceneAsset element in _assets)
+            //create operator for this!
+            foreach(Asset asset in rawAssets)
             {
-                sceneassets temp = new sceneassets();
+                AssetWrapper wrappedAsset = new AssetWrapper
+                {
+                    _id = asset._id,
+                    AssetName = asset.AssetName,
+                    AssetType = asset.AssetType,
+                    AssetFilename = asset.AssetFilename,
+                    AssetLink = asset.AssetLink,
+                    AssetLinkUSDZ = asset.AssetLink,
+                    ExternalLink = asset.ExternalLink,
+                    ThumbnailFilename = asset.ThumbnailFilename,
+                    ThumbnailLink = asset.ThumbnailLink,
+                    CreationDate = asset.CreationDate,
+                    Deleted = asset.Deleted,
+                    Creator = creators.AsQueryable().FirstOrDefault(c => c._id == asset.Creator),
+                    Course = courses.AsQueryable().FirstOrDefault(co => co._id == asset.Course)
+                };
 
-                temp.assetId = element.AssetId;
-                temp.creator = new creator(element.Creator, _context);
-                temp.course = new course(element.Course, _context);
-                temp.name = element.AssetName;
-                temp.link = mapFilenameToDownloadLink(RessourceType.asset, element.FileUuid);
-                temp.thumbnail = mapFilenameToDownloadLink(RessourceType.thumbnail, element.ThumbnailUuid); //name of the thumbnail
-                temp.assetType = mapAssetType((int) getAssetTypeFromFilename(element.FileUuid));
-
-                content.assets.Add(temp);
+                assets.Add(wrappedAsset);
             }
 
-            foreach (Anchor element in _anchors)
+            Content content = new Content
             {
-                anchors temp = new anchors();
+                Assets = assets,
+                Anchors = await _database.GetCollection<Anchor>("Anchors").Find(f => true).ToListAsync(),
+                Scenes = await _database.GetCollection<Scene>("Scenes").Find(f => true).ToListAsync()
+            };
 
-                temp.anchorId = element.AnchorId;
-                temp.assetId = element.AssetId;
-                temp.scale = element.Scale;
-
-                content.anchors.Add(temp);
+            //generate link on request time
+            foreach (AssetWrapper asset in content.Assets)
+            {
+                asset.AssetLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Asset, preamble, asset.AssetFilename);
+                asset.AssetLinkUSDZ = Backend.MapFilenameToUSDZDownloadLink(Backend.ContentType.Asset, preamble, asset.AssetFilename);
+                asset.ThumbnailLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Thumbnail, preamble, asset.ThumbnailFilename);
             }
 
-            foreach (Scene element in _scenes)
+            foreach (Scene scene in content.Scenes)
             {
-                scenes temp = new scenes();
-
-                temp.sceneId = element.SceneId;
-                temp.name = element.SceneName;
-                temp.worldMapLink = mapFilenameToDownloadLink(RessourceType.worldmap, element.FileUuid);
-                temp.worldMapUUID = element.FileUuid;
-                temp.marker = new marker(element.MarkerUuid, mapFilenameToDownloadLink(RessourceType.marker, element.MarkerUuid));
-
-                content.scenes.Add(temp);
+                scene.WorldMapFileLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.WorldMap, preamble, scene.WorldMapFileName);
+                scene.MarkerFileLink = Backend.MapFilenameToDownloadLink(Backend.ContentType.Marker, preamble, scene.MarkerFileName);
             }
 
             return JsonConvert.SerializeObject(content, Formatting.Indented);
-        }
-        string mapFilenameToDownloadLink(RessourceType ressourceType, string filename)
-        {
-            string controllerPath = prot + "://" + host + "/content/";
-            string fullpath = "";
-
-            switch ((int)ressourceType)
-            {
-                case (int)RessourceType.asset:
-                    fullpath = controllerPath + "assets/" + filename;
-                    break;
-                case (int)RessourceType.marker:
-                    fullpath = controllerPath + "marker/" + getFullyQualifiedFilename(filename);
-                    break;
-                case (int)RessourceType.thumbnail:
-                    fullpath = controllerPath + "thumbnails/" + filename + ".png"; //are always png
-                    break;
-                case (int)RessourceType.worldmap:
-                    fullpath = controllerPath + "worldmaps/" + filename;
-                    break;
-                default:
-                    fullpath = "";
-                    break;
-            }
-            return fullpath;
-        }
-
-        string getFullyQualifiedFilename(string filename)
-        {
-            try
-            {
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "static", "content", "marker");
-
-                String[] files = Directory.GetFiles(path);
-
-                foreach (String file in files)
-                {
-                    if (file.Contains(filename))
-                    {
-                        string[] tmp = file.Split(".");
-                        return filename + "." + tmp.Last();
-                    }
-                }
-            }
-            catch
-            {
-                Console.WriteLine("whoops...");
-                filename = "notfound"; //put some default file here prb. Provides static link to non-existing scene or so
-            }
-
-
-            return filename + ".png"; //defined behaviour
-        }
-
-        string mapAssetType(int? ID)
-        {
-            switch (ID)
-            {
-                case (int)AssetTypes.model:
-                    return "3d";
-                case (int)AssetTypes.image:
-                    return "image";
-                case (int)AssetTypes.video:
-                    return "video";
-                case (int)AssetTypes.pdf:
-                    return "pdf";
-                case (int)AssetTypes.light:
-                    return "light";
-                default:
-                    return "";
-            }
-        }
-
-        AssetTypes getAssetTypeFromFilename(string filename) {
-            string extension = System.IO.Path.GetExtension(filename);
-            string[] imageExtensions = {".png", ".jpg", ".jpeg"};
-            string[] videoExtensions = {".mp4", ".mov"};
-            if (imageExtensions.Contains(extension)) {
-                return AssetTypes.image;
-            } else if (videoExtensions.Contains(extension)) {
-                return AssetTypes.video;
-            } else {
-                return AssetTypes.model;
-            }
-        }
-
-        private enum AssetTypes
-        {
-            model = 1,
-            image = 2,
-            video = 3,
-            pdf = 4,
-            light = 5
-        }
-
-        private enum RessourceType
-        {
-            asset,
-            worldmap,
-            marker,
-            thumbnail
         }
     }
 }

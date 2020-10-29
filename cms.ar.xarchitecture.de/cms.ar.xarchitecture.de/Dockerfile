@@ -28,11 +28,14 @@ ENTRYPOINT ["dotnet", "cms.ar.xarchitecture.de.dll"]
 USER 1003:1004
 
 # environment variables (db connection, etc.)
-ENV DB_SERVER=127.0.0.1
-ENV DB_PORT=9000
-ENV DB_NAME=default
-ENV DB_USER=default
-ENV DB_PASSWORD=default
+ENV DATABASE_HOST=127.0.0.1
+ENV DATABASE_REMOTE_PORT=9000
+ENV DATABASE_NAME=default
+ENV DATABASE_USER=default
+ENV DATABASE_PASSWORD=default
+
+ENV USDZ_CONVERTER_HOST=default
+ENV USDZ_CONVERTER_PORT=9000
 
 # mount these volumes on the host machine
 VOLUME /app/static/content/assets

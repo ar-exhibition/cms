@@ -34,7 +34,7 @@ namespace cms.ar.xarchitecture.de.Helper
                 bitmap.Save(stream, imageFormat);
             }
 
-            return markerUUID;
+            return filename;
         }
     }
 }

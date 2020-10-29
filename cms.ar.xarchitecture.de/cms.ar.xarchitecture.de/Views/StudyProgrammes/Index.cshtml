@@ -1,4 +1,4 @@
-﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsXARCH.Term>
+﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsXARCH.StudyProgramme>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,16 +14,21 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.TermName)
+                @Html.DisplayNameFor(model => model.ProgrammeName)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.UniversityNavigation)
+            </th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.TermName)
+                @Html.DisplayFor(modelItem => item.ProgrammeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UniversityNavigation.UniversityName)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item._id">Edit</a> |

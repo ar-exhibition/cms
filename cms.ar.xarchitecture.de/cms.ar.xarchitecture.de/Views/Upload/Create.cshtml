@@ -17,31 +17,37 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <label asp-for="creator" class="control-label"></label>
-                <input asp-for="creator" class="form-control" />
-                <span asp-validation-for="creator" class="text-danger"></span>
+                <label asp-for="Creator" class="control-label"></label>
+                <input asp-for="Creator" class="form-control" />
+                <span asp-validation-for="Creator" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="programme" class="control-label"></label>
-                <select asp-for="programme" class="form-control" asp-items="ViewBag.Programme"></select>
+                <label asp-for="University" class="control-label"></label>
+                <select asp-for="University" class="form-control" asp-items="ViewBag.University"></select>
             </div>
 
             <div class="form-group">
-                <label asp-for="course" class="control-label"></label>
-                <select asp-for="course" class="form-control" asp-items="ViewBag.CourseName"></select>
+                <label asp-for="StudyProgramme" class="control-label"></label>
+                <select asp-for="StudyProgramme" class="form-control" asp-items="ViewBag.StudyProgramme"></select>
             </div>
 
             <div class="form-group">
-                <label asp-for="assetName" class="control-label"></label>
-                <input asp-for="assetName" class="form-control" />
-                <span asp-validation-for="assetName" class="text-danger"></span>
+                <label asp-for="Course" class="control-label"></label>
+                <select asp-for="Course" class="form-control" asp-items="ViewBag.CourseName"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AssetName" class="control-label"></label>
+                <input asp-for="AssetName" class="form-control" />
+                <span asp-validation-for="AssetName" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label class="control-label">Select your model!</label>
-                <input asp-for="FileToUpload" id="fileButton" type="file" class="btn btn-primary" onchange="fileInputChanged(event)" />
-                <span asp-validation-for="FileToUpload"></span>
+
+                <input asp-for="AssetFile" id="fileButton" type="file" class="btn btn-primary" onchange="fileInputChanged(event)" />
+                <span asp-validation-for="AssetFile"></span>
             </div>
 
             <div class="form-group" id="model-container" style="display: none;">
@@ -49,7 +55,7 @@
                 <div id="model-viewer"></div>
                 <button type="button" onclick="grabThumbnail()" style="display: none;" id="thumbnail-screenshot" class="btn btn-primary">Take screenshot for thumbnail</button>
             </div>
-            
+
             <div class="form-group" id="video-container" style="display: none;">
                 <p style="display: none;" id="loading-video">Loading Video...</p>
                 <div id="video-viewer"></div>
@@ -61,8 +67,7 @@
                 <img id="thumbnail-image" alt="">
             </div>
 
-            <input type="hidden" id="thumbnail" asp-for="tumbnailBase64" class="form-control" />
-
+            <input type="hidden" id="thumbnail" asp-for="ThumbnailBase64" class="form-control" />
 
             <div class="form-group">
                 <input id="submitBtn" type="submit" value="waiting..." class="btn btn-primary" disabled="disabled" />
@@ -112,11 +117,17 @@
 
     function grabImageTumbnail() {
         var file = document.getElementById('fileButton').files[0];
-        var fileURL = URL.createObjectURL(file)
-        document.getElementsByClassName("thumbnail-container")[0].style.display = "block";
-        var data = document.getElementById("thumbnail");
-        data.value = fileURL;
-        document.getElementById("thumbnail-image").src = data.value;
+
+        var fileReader = new FileReader();
+        
+        fileReader.addEventListener("load", function(e) {
+            document.getElementsByClassName("thumbnail-container")[0].style.display = "block";
+            var data = document.getElementById("thumbnail");
+            data.value = e.target.result;
+            document.getElementById("thumbnail-image").src = data.value;
+        }); 
+    
+        fileReader.readAsDataURL(file);
     }
 
     function showModelViewer() {
