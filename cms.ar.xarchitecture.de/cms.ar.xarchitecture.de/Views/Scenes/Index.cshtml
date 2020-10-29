@@ -1,4 +1,4 @@
-﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsXARCH.Scene>
+﻿@model IEnumerable<cms.ar.xarchitecture.de.cmsXARCH.SceneView>
 
 @{
     ViewData["Title"] = "Index";
@@ -17,10 +17,10 @@
                 @Html.DisplayNameFor(model => model.SceneName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.WorldMapFileName)
+                @Html.DisplayNameFor(model => model.MarkerFileLink)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MarkerFileName)
+                @Html.DisplayNameFor(model => model.DateChanged)
             </th>
             <th></th>
         </tr>
@@ -32,10 +32,10 @@
                 @Html.DisplayFor(modelItem => item.SceneName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.WorldMapFileName)
+                @Html.Raw(System.Web.HttpUtility.HtmlDecode(item.MarkerFileLink))
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MarkerFileName)
+                @Html.DisplayFor(modelItem => item.DateChanged)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item._id">Edit</a> |
