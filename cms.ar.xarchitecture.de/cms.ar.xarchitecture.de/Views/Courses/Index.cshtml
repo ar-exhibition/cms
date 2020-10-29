@@ -17,13 +17,13 @@
                 @Html.DisplayNameFor(model => model.CourseName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UniversityNavigation)
+                @Html.DisplayNameFor(model => model.University)
             </th>            
             <th>
-                @Html.DisplayNameFor(model => model.ProgrammeNavigation)
+                @Html.DisplayNameFor(model => model.StudyProgramme)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TermNavigation)
+                @Html.DisplayNameFor(model => model.Term)
             </th>
             <th></th>
         </tr>
@@ -35,13 +35,13 @@
                 @Html.DisplayFor(modelItem => item.CourseName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UniversityNavigation.UniversityName)
+                @Html.DisplayFor(modelItem => item.University)
             </td>            
             <td>
-                @Html.DisplayFor(modelItem => item.ProgrammeNavigation.ProgrammeName)
+                @Html.DisplayFor(modelItem => item.StudyProgramme)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TermNavigation.TermName)
+                @Html.DisplayFor(modelItem => item.Term)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item._id">Edit</a> |
